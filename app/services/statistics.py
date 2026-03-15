@@ -10,6 +10,8 @@ class UserStatsSummary:
     correct_answers: int = 0
     skipped_answers: int = 0
     wrong_attempts: int = 0
+    tracked_items: int = 0
+    mastered_items: int = 0
     last_completed_at: datetime | None = None
 
     @property

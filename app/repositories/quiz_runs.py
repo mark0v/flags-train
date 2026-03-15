@@ -5,6 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.constants import QuizAnswerOutcome, QuizCategory, QuizRunStatus, SupportedLanguage
 from app.db.models import QuizAnswer, QuizRun
+from app.repositories.learning_progress import LearningProgressRepository
 from app.services.quiz.engine import Question
 from app.services.statistics import UserStatsSummary
 
@@ -100,6 +101,9 @@ class QuizRunRepository:
         ).where(QuizRun.user_id == user_id)
         result = await self._session.execute(stmt)
         row = result.one()
+        tracked_items, mastered_items = await LearningProgressRepository(
+            self._session
+        ).get_progress_counters(user_id)
         return UserStatsSummary(
             quizzes_started=row[0] or 0,
             quizzes_completed=row[1] or 0,
@@ -108,4 +112,6 @@ class QuizRunRepository:
             skipped_answers=row[4] or 0,
             wrong_attempts=row[5] or 0,
             last_completed_at=row[6],
+            tracked_items=tracked_items,
+            mastered_items=mastered_items,
         )

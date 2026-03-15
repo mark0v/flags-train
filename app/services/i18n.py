@@ -55,6 +55,8 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
             "Правильно: <b>{correct}</b>\n"
             "Пропущено: <b>{skipped}</b>\n"
             "Ошибок: <b>{mistakes}</b>\n"
+            "Отслеживаемых карточек: <b>{tracked}</b>\n"
+            "Освоено: <b>{mastered}</b>\n"
             "Точность: <b>{accuracy}%</b>\n"
             "Последний завершенный квиз: <b>{last_completed}</b>"
         ),
@@ -66,6 +68,8 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
             "Correct: <b>{correct}</b>\n"
             "Skipped: <b>{skipped}</b>\n"
             "Mistakes: <b>{mistakes}</b>\n"
+            "Tracked cards: <b>{tracked}</b>\n"
+            "Mastered: <b>{mastered}</b>\n"
             "Accuracy: <b>{accuracy}%</b>\n"
             "Last completed quiz: <b>{last_completed}</b>"
         ),
@@ -77,6 +81,8 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
             "Richtig: <b>{correct}</b>\n"
             "Ubersprungen: <b>{skipped}</b>\n"
             "Fehler: <b>{mistakes}</b>\n"
+            "Verfolgte Karten: <b>{tracked}</b>\n"
+            "Beherrscht: <b>{mastered}</b>\n"
             "Genauigkeit: <b>{accuracy}%</b>\n"
             "Letztes abgeschlossenes Quiz: <b>{last_completed}</b>"
         ),

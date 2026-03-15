@@ -17,6 +17,7 @@ from app.bot.states import QuizStates
 from app.config import Settings
 from app.constants import QuizAnswerOutcome, QuizCategory, QuizRunStatus, SupportedLanguage
 from app.db.models import User
+from app.repositories.learning_progress import LearningProgressRepository
 from app.repositories.quiz_runs import QuizRunRepository
 from app.repositories.users import UserRepository
 from app.services.country_store import CountryStore
@@ -125,6 +126,7 @@ async def _show_retry_question(
 
 async def _persist_resolution(
     session: AsyncSession,
+    user_id: int,
     quiz_run_id: int,
     quiz_session: QuizSession,
     question: Question,
@@ -135,6 +137,12 @@ async def _persist_resolution(
         quiz_run_id=quiz_run_id,
         question=question,
         selected_option=selected_option,
+        outcome=outcome,
+        wrong_attempts=quiz_session.wrong_attempts(question.id),
+    )
+    await LearningProgressRepository(session).record_result(
+        user_id=user_id,
+        question=question,
         outcome=outcome,
         wrong_attempts=quiz_session.wrong_attempts(question.id),
     )
@@ -264,6 +272,7 @@ async def begin_quiz(
         language=language.value,
         quiz_session=quiz_session,
         quiz_run_id=quiz_run.id,
+        user_id=user.id,
         selected_categories=[item.value for item in categories],
     )
     await callback.message.edit_text(" ")
@@ -304,6 +313,7 @@ async def answer_question(
     language = SupportedLanguage(data["language"])
     quiz_session: QuizSession = data["quiz_session"]
     quiz_run_id: int = data["quiz_run_id"]
+    user_id: int = data["user_id"]
     question = quiz_session.current_question()
     if question is None:
         await callback.answer()
@@ -324,6 +334,7 @@ async def answer_question(
         if resolution.resolved:
             await _persist_resolution(
                 session,
+                user_id,
                 quiz_run_id,
                 quiz_session,
                 resolution.question,
@@ -360,6 +371,7 @@ async def answer_action(
     quiz_session: QuizSession = data["quiz_session"]
     question: Question = data["wrong_question"]
     quiz_run_id: int = data["quiz_run_id"]
+    user_id: int = data["user_id"]
     action = callback.data.split(":")[1]
 
     if action == "show":
@@ -379,6 +391,7 @@ async def answer_action(
     if resolution.resolved:
         await _persist_resolution(
             session,
+            user_id,
             quiz_run_id,
             quiz_session,
             resolution.question,

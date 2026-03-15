@@ -28,6 +28,7 @@ class User(Base):
         DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
     )
     quiz_runs: Mapped[list["QuizRun"]] = relationship(back_populates="user")
+    learning_progress: Mapped[list["UserLearningProgress"]] = relationship(back_populates="user")
 
 
 class QuizRun(Base):
@@ -75,3 +76,34 @@ class QuizAnswer(Base):
     )
 
     quiz_run: Mapped[QuizRun] = relationship(back_populates="answers")
+
+
+class UserLearningProgress(Base):
+    __tablename__ = "user_learning_progress"
+    __table_args__ = (
+        UniqueConstraint(
+            "user_id",
+            "country_code",
+            "category",
+            name="uq_learning_progress_user_country_category",
+        ),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
+    country_code: Mapped[str] = mapped_column(String(3))
+    category: Mapped[str] = mapped_column(String(20))
+    attempts_count: Mapped[int] = mapped_column(Integer, default=0)
+    correct_answers: Mapped[int] = mapped_column(Integer, default=0)
+    skipped_answers: Mapped[int] = mapped_column(Integer, default=0)
+    wrong_attempts: Mapped[int] = mapped_column(Integer, default=0)
+    current_streak: Mapped[int] = mapped_column(Integer, default=0)
+    proficiency_score: Mapped[int] = mapped_column(Integer, default=0)
+    last_outcome: Mapped[str | None] = mapped_column(String(20), nullable=True)
+    last_reviewed_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+    )
+    next_review_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+    user: Mapped[User] = relationship(back_populates="learning_progress")

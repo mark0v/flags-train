@@ -2,6 +2,7 @@ from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
 from app.constants import QuizAnswerOutcome, QuizCategory, QuizRunStatus, SupportedLanguage
 from app.db.base import Base
+from app.repositories.learning_progress import LearningProgressRepository
 from app.repositories.quiz_runs import QuizRunRepository
 from app.repositories.users import UserRepository
 from app.services.quiz.engine import Question
@@ -47,6 +48,12 @@ async def test_quiz_run_repository_aggregates_user_summary() -> None:
             outcome=QuizAnswerOutcome.CORRECT,
             wrong_attempts=1,
         )
+        await LearningProgressRepository(session).record_result(
+            user_id=user.id,
+            question=question,
+            outcome=QuizAnswerOutcome.CORRECT,
+            wrong_attempts=1,
+        )
         await repo.finish_run(
             quiz_run_id=run.id,
             status=QuizRunStatus.COMPLETED,
@@ -66,4 +73,53 @@ async def test_quiz_run_repository_aggregates_user_summary() -> None:
     assert summary.resolved_questions == 1
     assert summary.correct_answers == 1
     assert summary.wrong_attempts == 1
+    assert summary.tracked_items == 1
     assert summary.last_completed_at is not None
+
+
+async def test_learning_progress_repository_tracks_mastery() -> None:
+    engine = create_async_engine("sqlite+aiosqlite:///:memory:")
+    async with engine.begin() as connection:
+        await connection.run_sync(Base.metadata.create_all)
+
+    session_factory = async_sessionmaker(engine, expire_on_commit=False)
+    async with session_factory() as session:
+        user = await UserRepository(session).get_or_create(2, "student", "Student")
+        user.language = SupportedLanguage.EN.value
+        progress_repo = LearningProgressRepository(session)
+        question = Question(
+            id="FRA:capital",
+            country_code="FRA",
+            category=QuizCategory.CAPITAL,
+            prompt="Capital?",
+            options=["Paris", "Berlin", "Rome", "Madrid"],
+            correct_option="Paris",
+            answer_context="Paris",
+        )
+
+        await progress_repo.record_result(
+            user_id=user.id,
+            question=question,
+            outcome=QuizAnswerOutcome.CORRECT,
+            wrong_attempts=0,
+        )
+        await progress_repo.record_result(
+            user_id=user.id,
+            question=question,
+            outcome=QuizAnswerOutcome.CORRECT,
+            wrong_attempts=0,
+        )
+        await progress_repo.record_result(
+            user_id=user.id,
+            question=question,
+            outcome=QuizAnswerOutcome.CORRECT,
+            wrong_attempts=0,
+        )
+        await session.commit()
+
+        tracked_items, mastered_items = await progress_repo.get_progress_counters(user.id)
+
+    await engine.dispose()
+
+    assert tracked_items == 1
+    assert mastered_items == 1

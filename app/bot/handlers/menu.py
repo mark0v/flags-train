@@ -50,6 +50,8 @@ def _format_stats(
         correct=str(summary.correct_answers),
         skipped=str(summary.skipped_answers),
         mistakes=str(summary.wrong_attempts),
+        tracked=str(summary.tracked_items),
+        mastered=str(summary.mastered_items),
         accuracy=str(summary.accuracy_percent),
         last_completed=last_completed,
     )
