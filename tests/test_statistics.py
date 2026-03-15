@@ -128,6 +128,41 @@ async def test_learning_progress_repository_tracks_mastery() -> None:
     assert mastered_items == 1
 
 
+async def test_learning_progress_repository_gives_short_review_for_dirty_correct_answers() -> None:
+    engine = create_async_engine("sqlite+aiosqlite:///:memory:")
+    async with engine.begin() as connection:
+        await connection.run_sync(Base.metadata.create_all)
+
+    session_factory = async_sessionmaker(engine, expire_on_commit=False)
+    async with session_factory() as session:
+        user = await UserRepository(session).get_or_create(6, "retry", "Retry")
+        user.language = SupportedLanguage.EN.value
+        progress_repo = LearningProgressRepository(session)
+        question = Question(
+            id="ESP:capital",
+            country_code="ESP",
+            category=QuizCategory.CAPITAL,
+            prompt="Capital?",
+            options=["Madrid", "Paris", "Rome", "Berlin"],
+            correct_option="Madrid",
+            answer_context="Madrid",
+        )
+
+        progress = await progress_repo.record_result(
+            user_id=user.id,
+            question=question,
+            outcome=QuizAnswerOutcome.CORRECT,
+            wrong_attempts=2,
+        )
+
+    await engine.dispose()
+
+    assert progress.current_streak == 1
+    assert progress.next_review_at is not None
+    assert progress.last_reviewed_at is not None
+    assert progress.next_review_at - progress.last_reviewed_at == timedelta(hours=8)
+
+
 async def test_due_country_codes_returns_only_due_items_for_selected_categories() -> None:
     engine = create_async_engine("sqlite+aiosqlite:///:memory:")
     async with engine.begin() as connection:

@@ -59,6 +59,7 @@ class LearningProgressRepository:
             outcome,
             progress.proficiency_score,
             wrong_attempts,
+            progress.current_streak,
             now=progress.last_reviewed_at,
         )
 
