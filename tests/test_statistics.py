@@ -189,6 +189,95 @@ async def test_due_country_codes_returns_only_due_items_for_selected_categories(
     assert due_count == 1
 
 
+async def test_quiz_run_repository_includes_category_breakdown() -> None:
+    engine = create_async_engine("sqlite+aiosqlite:///:memory:")
+    async with engine.begin() as connection:
+        await connection.run_sync(Base.metadata.create_all)
+
+    session_factory = async_sessionmaker(engine, expire_on_commit=False)
+    async with session_factory() as session:
+        user = await UserRepository(session).get_or_create(5, "breakdown", "Breakdown")
+        user.language = SupportedLanguage.EN.value
+        progress_repo = LearningProgressRepository(session)
+        now = datetime(2026, 3, 15, 12, 0, tzinfo=UTC)
+        capital_question = Question(
+            id="UKR:capital",
+            country_code="UKR",
+            category=QuizCategory.CAPITAL,
+            prompt="Capital?",
+            options=["Kyiv", "Paris", "Rome", "Madrid"],
+            correct_option="Kyiv",
+            answer_context="Kyiv",
+        )
+        language_question = Question(
+            id="DEU:language",
+            country_code="DEU",
+            category=QuizCategory.LANGUAGE,
+            prompt="Language?",
+            options=["German", "French", "Italian", "Spanish"],
+            correct_option="German",
+            answer_context="German",
+        )
+
+        due_progress = await progress_repo.record_result(
+            user_id=user.id,
+            question=capital_question,
+            outcome=QuizAnswerOutcome.SKIPPED,
+            wrong_attempts=0,
+        )
+        due_progress.next_review_at = now - timedelta(hours=2)
+
+        await progress_repo.record_result(
+            user_id=user.id,
+            question=language_question,
+            outcome=QuizAnswerOutcome.CORRECT,
+            wrong_attempts=0,
+        )
+        await progress_repo.record_result(
+            user_id=user.id,
+            question=language_question,
+            outcome=QuizAnswerOutcome.CORRECT,
+            wrong_attempts=0,
+        )
+        await progress_repo.record_result(
+            user_id=user.id,
+            question=language_question,
+            outcome=QuizAnswerOutcome.CORRECT,
+            wrong_attempts=0,
+        )
+
+        run = await QuizRunRepository(session).create_run(
+            user_id=user.id,
+            language=SupportedLanguage.EN,
+            countries_count=10,
+            categories=[QuizCategory.CAPITAL, QuizCategory.LANGUAGE],
+            total_questions=20,
+        )
+        await QuizRunRepository(session).finish_run(
+            quiz_run_id=run.id,
+            status=QuizRunStatus.COMPLETED,
+            resolved_questions=3,
+            correct_answers=2,
+            skipped_answers=1,
+            wrong_attempts=0,
+        )
+        await session.commit()
+
+        summary = await QuizRunRepository(session).get_user_summary(user.id)
+
+    await engine.dispose()
+
+    assert summary.category_breakdown is not None
+    assert [item.category for item in summary.category_breakdown] == [
+        QuizCategory.CAPITAL,
+        QuizCategory.LANGUAGE,
+    ]
+    assert summary.category_breakdown[0].due_items == 1
+    assert summary.category_breakdown[0].accuracy_percent == 0
+    assert summary.category_breakdown[1].mastered_items == 1
+    assert summary.category_breakdown[1].accuracy_percent == 100
+
+
 async def test_studied_country_codes_returns_distinct_country_list() -> None:
     engine = create_async_engine("sqlite+aiosqlite:///:memory:")
     async with engine.begin() as connection:

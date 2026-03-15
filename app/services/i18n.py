@@ -475,6 +475,33 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
             "Letztes abgeschlossenes Quiz: <b>{last_completed}</b>"
         ),
     },
+    "stats_category_breakdown_title": {
+        "ru": "<b>Прогресс по категориям</b>",
+        "en": "<b>Progress by category</b>",
+        "de": "<b>Fortschritt nach Kategorien</b>",
+    },
+    "stats_category_breakdown_line": {
+        "ru": (
+            "• {category}: к повтору <b>{due}</b>, "
+            "освоено <b>{mastered}/{tracked}</b>, "
+            "точность <b>{accuracy}%</b>"
+        ),
+        "en": (
+            "• {category}: due <b>{due}</b>, "
+            "mastered <b>{mastered}/{tracked}</b>, "
+            "accuracy <b>{accuracy}%</b>"
+        ),
+        "de": (
+            "• {category}: fällig <b>{due}</b>, "
+            "beherrscht <b>{mastered}/{tracked}</b>, "
+            "Genauigkeit <b>{accuracy}%</b>"
+        ),
+    },
+    "stats_focus_now": {
+        "ru": "Сейчас стоит повторить: <b>{category}</b>",
+        "en": "Best focus right now: <b>{category}</b>",
+        "de": "Aktueller Fokus: <b>{category}</b>",
+    },
     "quiz_setup_title": {
         "ru": "Настройка квиза",
         "en": "Quiz setup",

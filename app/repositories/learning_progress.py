@@ -3,10 +3,11 @@ from datetime import UTC, datetime
 from sqlalchemy import case, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.constants import QuizAnswerOutcome, QuizCategory
+from app.constants import QUESTION_ORDER, QuizAnswerOutcome, QuizCategory
 from app.db.models import UserLearningProgress
 from app.services.quiz.engine import Question
 from app.services.srs import schedule_next_review
+from app.services.statistics import CategoryProgressStat
 
 
 class LearningProgressRepository:
@@ -84,6 +85,67 @@ class LearningProgressRepository:
         result = await self._session.execute(stmt)
         row = result.one()
         return int(row[0] or 0), int(row[1] or 0)
+
+    async def get_category_breakdown(
+        self,
+        user_id: int,
+        *,
+        now: datetime | None = None,
+    ) -> list[CategoryProgressStat]:
+        current_time = now or datetime.now(UTC)
+        stmt = (
+            select(
+                UserLearningProgress.category,
+                func.count(UserLearningProgress.id),
+                func.coalesce(
+                    func.sum(
+                        case(
+                            (
+                                (UserLearningProgress.proficiency_score >= 5)
+                                & (UserLearningProgress.current_streak >= 2),
+                                1,
+                            ),
+                            else_=0,
+                        )
+                    ),
+                    0,
+                ),
+                func.coalesce(
+                    func.sum(
+                        case(
+                            (
+                                UserLearningProgress.next_review_at.is_not(None)
+                                & (UserLearningProgress.next_review_at <= current_time),
+                                1,
+                            ),
+                            else_=0,
+                        )
+                    ),
+                    0,
+                ),
+                func.coalesce(func.sum(UserLearningProgress.correct_answers), 0),
+                func.coalesce(func.sum(UserLearningProgress.attempts_count), 0),
+            )
+            .where(UserLearningProgress.user_id == user_id)
+            .group_by(UserLearningProgress.category)
+        )
+        result = await self._session.execute(stmt)
+        stats_by_category = {
+            QuizCategory(row[0]): CategoryProgressStat(
+                category=QuizCategory(row[0]),
+                tracked_items=int(row[1] or 0),
+                mastered_items=int(row[2] or 0),
+                due_items=int(row[3] or 0),
+                correct_answers=int(row[4] or 0),
+                attempts_count=int(row[5] or 0),
+            )
+            for row in result.all()
+        }
+        return [
+            stats_by_category[category]
+            for category in QUESTION_ORDER
+            if category in stats_by_category
+        ]
 
     async def get_due_country_codes(
         self,

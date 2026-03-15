@@ -20,7 +20,7 @@ from app.services.catalog_health import format_code_list
 from app.services.catalog_sync_preview import CatalogSyncPreview
 from app.services.dataset_validation import DatasetValidationReport
 from app.services.i18n import I18nService
-from app.services.statistics import UserStatsSummary
+from app.services.statistics import CategoryProgressStat, UserStatsSummary
 
 router = Router()
 
@@ -52,7 +52,7 @@ def _format_stats(
         if summary.last_completed_at
         else "-"
     )
-    return i18n.text(
+    stats_text = i18n.text(
         "stats_text",
         language,
         started=str(summary.quizzes_started),
@@ -66,6 +66,51 @@ def _format_stats(
         due=str(summary.due_items),
         accuracy=str(summary.accuracy_percent),
         last_completed=last_completed,
+    )
+    category_section = _format_stats_category_breakdown(summary, language, i18n)
+    if not category_section:
+        return stats_text
+    return f"{stats_text}\n\n{category_section}"
+
+
+def _format_stats_category_breakdown(
+    summary: UserStatsSummary,
+    language: SupportedLanguage,
+    i18n: I18nService,
+) -> str:
+    breakdown = summary.category_breakdown or []
+    if not breakdown:
+        return ""
+
+    focus_category = max(
+        breakdown,
+        key=lambda item: (item.due_items, -item.accuracy_percent, item.tracked_items),
+    )
+    lines = [
+        i18n.text("stats_category_breakdown_title", language),
+        i18n.text(
+            "stats_focus_now",
+            language,
+            category=i18n.category_label(focus_category.category, language),
+        ),
+    ]
+    lines.extend(_format_stats_category_line(item, language, i18n) for item in breakdown)
+    return "\n".join(lines)
+
+
+def _format_stats_category_line(
+    item: CategoryProgressStat,
+    language: SupportedLanguage,
+    i18n: I18nService,
+) -> str:
+    return i18n.text(
+        "stats_category_breakdown_line",
+        language,
+        category=i18n.category_label(item.category, language),
+        due=str(item.due_items),
+        mastered=str(item.mastered_items),
+        tracked=str(item.tracked_items),
+        accuracy=str(item.accuracy_percent),
     )
 
 
