@@ -1,3 +1,5 @@
+from datetime import UTC, datetime, timedelta
+from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import AsyncMock
 
@@ -10,14 +12,17 @@ from app.bot.handlers import menu as menu_handlers
 from app.bot.handlers import quiz as quiz_handlers
 from app.bot.states import QuizStates
 from app.config import Settings
-from app.constants import QuizCategory, QuizMode, SupportedLanguage
+from app.constants import QuizAnswerOutcome, QuizCategory, QuizMode, SupportedLanguage
 from app.db.base import Base
+from app.repositories.learning_progress import LearningProgressRepository
 from app.repositories.users import UserRepository
 from app.services.admin_catalog import AdminCatalogDashboard
 from app.services.catalog_health import CatalogHealthReport
 from app.services.catalog_sync_preview import CatalogSyncPreview
+from app.services.country_store import Country, CountryStore
 from app.services.dataset_validation import DatasetValidationReport
 from app.services.i18n import I18nService
+from app.services.quiz.engine import Question
 from app.services.statistics import CategoryProgressStat, UserStatsSummary
 
 
@@ -36,9 +41,31 @@ def _build_callback(user_id: int = 42, username: str = "tester", first_name: str
     return callback
 
 
+def _build_bot():
+    return SimpleNamespace(send_photo=AsyncMock())
+
+
 def _build_state() -> FSMContext:
     storage = MemoryStorage()
     return FSMContext(storage=storage, key=StorageKey(bot_id=1, chat_id=1, user_id=42))
+
+
+def _build_country_store(total: int = 12) -> CountryStore:
+    countries = [
+        Country(
+            code=f"C{i:02d}",
+            localized_name={"en": f"Country {i}", "ru": f"Страна {i}", "de": f"Land {i}"},
+            capital={"en": f"Capital {i}", "ru": f"Столица {i}", "de": f"Hauptstadt {i}"},
+            official_language={"en": f"Language {i}", "ru": f"Язык {i}", "de": f"Sprache {i}"},
+            population=1_000_000 + i,
+            population_display={"en": f"{i} M", "ru": f"{i} млн", "de": f"{i} Mio"},
+            currency_name={"en": f"Currency {i}", "ru": f"Валюта {i}", "de": f"Wahrung {i}"},
+            currency_code=f"X{i:02d}",
+            flag_file=f"c{i:02d}.svg",
+        )
+        for i in range(1, total + 1)
+    ]
+    return CountryStore(countries=countries, flags_dir=Path("data/flags"))
 
 
 async def test_start_quiz_setup_initializes_state_and_renders_setup() -> None:
@@ -289,3 +316,104 @@ async def test_stats_review_setup_preconfigures_review_mode(monkeypatch) -> None
     assert data["selected_mode"] == menu_handlers.QuizMode.REVIEW.value
     assert data["selected_categories"] == ["flag", "capital"]
     render_setup.assert_awaited_once()
+
+
+async def test_begin_quiz_starts_review_mode_when_due_countries_are_available() -> None:
+    engine = create_async_engine("sqlite+aiosqlite:///:memory:")
+    async with engine.begin() as connection:
+        await connection.run_sync(Base.metadata.create_all)
+
+    session_factory = async_sessionmaker(engine, expire_on_commit=False)
+    callback = _build_callback()
+    bot = _build_bot()
+    state = _build_state()
+    i18n = I18nService()
+    country_store = _build_country_store(12)
+    now = datetime(2026, 3, 15, 12, 0, tzinfo=UTC)
+
+    async with session_factory() as session:
+        user = await UserRepository(session).get_or_create(42, "tester", "Test")
+        user.language = SupportedLanguage.EN.value
+        progress_repo = LearningProgressRepository(session)
+
+        for index, country in enumerate(country_store.countries[:10], start=1):
+            question = Question(
+                id=f"{country.code}:capital",
+                country_code=country.code,
+                category=QuizCategory.CAPITAL,
+                prompt=f"Capital of {country.name(SupportedLanguage.EN)}?",
+                options=[
+                    country.capital_name(SupportedLanguage.EN),
+                    "Wrong 1",
+                    "Wrong 2",
+                    "Wrong 3",
+                ],
+                correct_option=country.capital_name(SupportedLanguage.EN),
+                answer_context=country.capital_name(SupportedLanguage.EN),
+            )
+            progress = await progress_repo.record_result(
+                user_id=user.id,
+                question=question,
+                outcome=QuizAnswerOutcome.SKIPPED,
+                wrong_attempts=0,
+            )
+            progress.next_review_at = now - timedelta(hours=index)
+
+        await session.commit()
+        await state.set_state(QuizStates.setup)
+        await state.update_data(
+            selected_count=10,
+            selected_mode=QuizMode.REVIEW.value,
+            selected_categories=[QuizCategory.CAPITAL.value],
+            language=SupportedLanguage.EN.value,
+        )
+
+        await quiz_handlers.begin_quiz(callback, bot, state, session, i18n, country_store)
+        data = await state.get_data()
+
+    await engine.dispose()
+
+    assert await state.get_state() == QuizStates.in_progress.state
+    assert data["selected_categories"] == ["capital"]
+    assert data["quiz_session"].total_questions == 10
+    callback.message.edit_text.assert_awaited()
+    callback.message.answer.assert_awaited()
+    rendered_question = callback.message.answer.await_args.args[0]
+    assert "What is the capital of" in rendered_question
+    callback.answer.assert_awaited()
+    bot.send_photo.assert_not_called()
+
+
+async def test_begin_quiz_review_mode_shows_alert_when_due_countries_are_missing() -> None:
+    engine = create_async_engine("sqlite+aiosqlite:///:memory:")
+    async with engine.begin() as connection:
+        await connection.run_sync(Base.metadata.create_all)
+
+    session_factory = async_sessionmaker(engine, expire_on_commit=False)
+    callback = _build_callback()
+    bot = _build_bot()
+    state = _build_state()
+    i18n = I18nService()
+    country_store = _build_country_store(12)
+
+    async with session_factory() as session:
+        user = await UserRepository(session).get_or_create(42, "tester", "Test")
+        user.language = SupportedLanguage.EN.value
+        await session.commit()
+        await state.set_state(QuizStates.setup)
+        await state.update_data(
+            selected_count=10,
+            selected_mode=QuizMode.REVIEW.value,
+            selected_categories=[QuizCategory.CAPITAL.value],
+            language=SupportedLanguage.EN.value,
+        )
+
+        await quiz_handlers.begin_quiz(callback, bot, state, session, i18n, country_store)
+
+    await engine.dispose()
+
+    assert await state.get_state() == QuizStates.setup.state
+    callback.answer.assert_awaited()
+    assert callback.answer.await_args.kwargs["show_alert"] is True
+    assert "There are not enough cards due for review" in callback.answer.await_args.args[0]
+    callback.message.answer.assert_not_awaited()
