@@ -7,7 +7,7 @@ from app.services.i18n import I18nService
 
 def language_keyboard() -> InlineKeyboardMarkup:
     builder = InlineKeyboardBuilder()
-    builder.button(text="Russkii", callback_data="lang:ru")
+    builder.button(text="Русский", callback_data="lang:ru")
     builder.button(text="English", callback_data="lang:en")
     builder.button(text="Deutsch", callback_data="lang:de")
     builder.adjust(1)
@@ -36,18 +36,18 @@ def quiz_setup_keyboard(
 ) -> InlineKeyboardMarkup:
     builder = InlineKeyboardBuilder()
     for size in QUIZ_SIZES:
-        prefix = "* " if size == selected_count else ""
+        prefix = "● " if size == selected_count else ""
         builder.button(text=f"{prefix}{size}", callback_data=f"quiz:size:{size}")
 
     for mode in QuizMode:
-        prefix = "* " if mode == selected_mode else ""
+        prefix = "● " if mode == selected_mode else ""
         builder.button(
             text=f"{prefix}{i18n.mode_label(mode, language)}",
             callback_data=f"quiz:mode:{mode.value}",
         )
 
     for category in QuizCategory:
-        mark = "+ " if category in selected_categories else ""
+        mark = "✓ " if category in selected_categories else ""
         builder.button(
             text=f"{mark}{i18n.category_label(category, language)}",
             callback_data=f"quiz:category:{category.value}",
@@ -80,9 +80,9 @@ def answer_feedback_keyboard(
     builder = InlineKeyboardBuilder()
     for index, option in enumerate(options):
         if option == correct_option:
-            label = f"[OK] {option}"
+            label = f"✅ {option}"
         elif index == selected_index:
-            label = f"[X] {option}"
+            label = f"❌ {option}"
         else:
             label = option
         builder.button(text=label, callback_data="answer:locked")

@@ -2,59 +2,59 @@ from app.constants import QuizCategory, QuizMode, SupportedLanguage
 
 TRANSLATIONS: dict[str, dict[str, str]] = {
     "choose_language": {
-        "ru": "Vyberite yazyk",
+        "ru": "Выберите язык",
         "en": "Choose your language",
-        "de": "Sprache auswaehlen",
+        "de": "Sprache auswählen",
     },
     "language_changed": {
-        "ru": "Yazyk obnovlen.",
+        "ru": "Язык обновлен.",
         "en": "Language updated.",
         "de": "Sprache aktualisiert.",
     },
     "main_menu": {
-        "ru": "Glavnoe menyu",
+        "ru": "Главное меню",
         "en": "Main menu",
-        "de": "Hauptmenue",
+        "de": "Hauptmenü",
     },
     "menu_start_quiz": {
-        "ru": "Nachat kviz",
+        "ru": "Начать квиз",
         "en": "Start quiz",
         "de": "Quiz starten",
     },
     "menu_settings": {
-        "ru": "Nastroiki",
+        "ru": "Настройки",
         "en": "Settings",
         "de": "Einstellungen",
     },
     "menu_change_language": {
-        "ru": "Smenit yazyk",
+        "ru": "Сменить язык",
         "en": "Change language",
         "de": "Sprache wechseln",
     },
     "menu_stats": {
-        "ru": "Statistika",
+        "ru": "Статистика",
         "en": "Statistics",
         "de": "Statistik",
     },
     "stats_empty": {
-        "ru": "Poka net zavershennykh dannykh. Sygrayte pervyi kviz.",
+        "ru": "Пока нет завершенных данных. Сыграйте первый квиз.",
         "en": "No completed data yet. Play your first quiz.",
         "de": "Noch keine abgeschlossenen Daten. Spielen Sie zuerst ein Quiz.",
     },
     "stats_text": {
         "ru": (
-            "<b>Statistika</b>\n\n"
-            "Zapuskov: <b>{started}</b>\n"
-            "Zaversheno: <b>{completed}</b>\n"
-            "Zavershennykh voprosov: <b>{resolved}</b>\n"
-            "Pravilno: <b>{correct}</b>\n"
-            "Propushcheno: <b>{skipped}</b>\n"
-            "Oshibok: <b>{mistakes}</b>\n"
-            "Otslezhivaemykh kartochek: <b>{tracked}</b>\n"
-            "Osvoeno: <b>{mastered}</b>\n"
-            "Gotovo k povtoru: <b>{due}</b>\n"
-            "Tochnost: <b>{accuracy}%</b>\n"
-            "Poslednii zavershennyi kviz: <b>{last_completed}</b>"
+            "<b>Статистика</b>\n\n"
+            "Запусков: <b>{started}</b>\n"
+            "Завершено: <b>{completed}</b>\n"
+            "Завершенных вопросов: <b>{resolved}</b>\n"
+            "Правильно: <b>{correct}</b>\n"
+            "Пропущено: <b>{skipped}</b>\n"
+            "Ошибок: <b>{mistakes}</b>\n"
+            "Отслеживаемых карточек: <b>{tracked}</b>\n"
+            "Освоено: <b>{mastered}</b>\n"
+            "Готово к повтору: <b>{due}</b>\n"
+            "Точность: <b>{accuracy}%</b>\n"
+            "Последний завершенный квиз: <b>{last_completed}</b>"
         ),
         "en": (
             "<b>Statistics</b>\n\n"
@@ -76,53 +76,53 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
             "Abgeschlossen: <b>{completed}</b>\n"
             "Abgeschlossene Fragen: <b>{resolved}</b>\n"
             "Richtig: <b>{correct}</b>\n"
-            "Uebersprungen: <b>{skipped}</b>\n"
+            "Übersprungen: <b>{skipped}</b>\n"
             "Fehler: <b>{mistakes}</b>\n"
             "Verfolgte Karten: <b>{tracked}</b>\n"
             "Beherrscht: <b>{mastered}</b>\n"
-            "Faellig zur Wiederholung: <b>{due}</b>\n"
+            "Fällig zur Wiederholung: <b>{due}</b>\n"
             "Genauigkeit: <b>{accuracy}%</b>\n"
             "Letztes abgeschlossenes Quiz: <b>{last_completed}</b>"
         ),
     },
     "quiz_setup_title": {
-        "ru": "Nastroika kviza",
+        "ru": "Настройка квиза",
         "en": "Quiz setup",
         "de": "Quiz-Einstellungen",
     },
     "quiz_choose_count": {
-        "ru": "Kolichestvo stran",
+        "ru": "Количество стран",
         "en": "Number of countries",
-        "de": "Anzahl der Laender",
+        "de": "Anzahl der Länder",
     },
     "quiz_choose_mode": {
-        "ru": "Rezhim",
+        "ru": "Режим",
         "en": "Mode",
         "de": "Modus",
     },
     "quiz_choose_categories": {
-        "ru": "Kategorii",
+        "ru": "Категории",
         "en": "Categories",
         "de": "Kategorien",
     },
-    "quiz_start": {"ru": "Start", "en": "Start", "de": "Start"},
-    "quiz_exit": {"ru": "Vyiti", "en": "Exit", "de": "Beenden"},
+    "quiz_start": {"ru": "Старт", "en": "Start", "de": "Start"},
+    "quiz_exit": {"ru": "Выйти", "en": "Exit", "de": "Beenden"},
     "quiz_exit_confirm": {
-        "ru": "Vyiti iz kviza? Tekushchii progress budet poteryan.",
+        "ru": "Выйти из квиза? Текущий прогресс будет потерян.",
         "en": "Exit the quiz? Current progress will be lost.",
         "de": "Quiz beenden? Der aktuelle Fortschritt geht verloren.",
     },
-    "confirm_yes": {"ru": "Da", "en": "Yes", "de": "Ja"},
-    "confirm_no": {"ru": "Net", "en": "No", "de": "Nein"},
-    "answer_show": {"ru": "Pokazat otvet", "en": "Show answer", "de": "Antwort zeigen"},
-    "answer_retry": {"ru": "Povtorit popytku", "en": "Try again", "de": "Nochmal versuchen"},
-    "answer_skip": {"ru": "Propustit", "en": "Skip", "de": "Ueberspringen"},
+    "confirm_yes": {"ru": "Да", "en": "Yes", "de": "Ja"},
+    "confirm_no": {"ru": "Нет", "en": "No", "de": "Nein"},
+    "answer_show": {"ru": "Показать ответ", "en": "Show answer", "de": "Antwort zeigen"},
+    "answer_retry": {"ru": "Повторить попытку", "en": "Try again", "de": "Nochmal versuchen"},
+    "answer_skip": {"ru": "Пропустить", "en": "Skip", "de": "Überspringen"},
     "quiz_complete_stats": {
         "ru": (
-            "Kviz zavershen.\n\n"
-            "Pravilno: <b>{correct}</b>\n"
-            "Propushcheno: <b>{skipped}</b>\n"
-            "Oshibok: <b>{mistakes}</b>"
+            "Квиз завершен.\n\n"
+            "Правильно: <b>{correct}</b>\n"
+            "Пропущено: <b>{skipped}</b>\n"
+            "Ошибок: <b>{mistakes}</b>"
         ),
         "en": (
             "Quiz complete.\n\n"
@@ -133,54 +133,54 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "de": (
             "Quiz abgeschlossen.\n\n"
             "Richtig: <b>{correct}</b>\n"
-            "Uebersprungen: <b>{skipped}</b>\n"
+            "Übersprungen: <b>{skipped}</b>\n"
             "Fehler: <b>{mistakes}</b>"
         ),
     },
     "not_enough_categories": {
-        "ru": "Vyberite hotya by odnu kategoriyu.",
+        "ru": "Выберите хотя бы одну категорию.",
         "en": "Choose at least one category.",
-        "de": "Waehlen Sie mindestens eine Kategorie.",
+        "de": "Wählen Sie mindestens eine Kategorie.",
     },
     "dataset_too_small": {
-        "ru": "Nedostatochno lokalnykh dannykh dlya takogo razmera kviza.",
+        "ru": "Недостаточно локальных данных для такого размера квиза.",
         "en": "The local dataset is too small for this quiz size.",
-        "de": "Der lokale Datensatz ist fuer diese Quizgroesse zu klein.",
+        "de": "Der lokale Datensatz ist für diese Quizgröße zu klein.",
     },
     "review_not_enough": {
-        "ru": "Nedostatochno kartochek, gotovykh k povtoru, dlya takogo kviza.",
+        "ru": "Недостаточно карточек, готовых к повтору, для такого квиза.",
         "en": "There are not enough cards due for review for this quiz.",
-        "de": "Es gibt nicht genug faellige Karten fuer dieses Quiz.",
+        "de": "Es gibt nicht genug fällige Karten für dieses Quiz.",
     },
     "new_not_enough": {
-        "ru": "Nedostatochno novykh kartochek dlya takogo kviza.",
+        "ru": "Недостаточно новых карточек для такого квиза.",
         "en": "There are not enough new cards for this quiz.",
-        "de": "Es gibt nicht genug neue Karten fuer dieses Quiz.",
+        "de": "Es gibt nicht genug neue Karten für dieses Quiz.",
     },
     "show_answer_text": {
-        "ru": "Pravilnyi otvet: <b>{answer}</b>",
+        "ru": "Правильный ответ: <b>{answer}</b>",
         "en": "Correct answer: <b>{answer}</b>",
         "de": "Richtige Antwort: <b>{answer}</b>",
     },
     "settings_text": {
-        "ru": "Nastroiki: yazyk interfeisa mozhno menyat v lyuboi moment.",
+        "ru": "Настройки: язык интерфейса можно менять в любой момент.",
         "en": "Settings: you can change the interface language any time.",
-        "de": "Einstellungen: Die Sprache kann jederzeit geaendert werden.",
+        "de": "Einstellungen: Die Sprache kann jederzeit geändert werden.",
     },
 }
 
 CATEGORY_LABELS: dict[QuizCategory, dict[str, str]] = {
-    QuizCategory.FLAG: {"ru": "Flag", "en": "Flag", "de": "Flagge"},
-    QuizCategory.CAPITAL: {"ru": "Stolitsa", "en": "Capital", "de": "Hauptstadt"},
-    QuizCategory.LANGUAGE: {"ru": "Yazyk", "en": "Language", "de": "Sprache"},
-    QuizCategory.POPULATION: {"ru": "Naselenie", "en": "Population", "de": "Bevoelkerung"},
-    QuizCategory.CURRENCY: {"ru": "Valyuta", "en": "Currency", "de": "Wahrung"},
+    QuizCategory.FLAG: {"ru": "Флаг", "en": "Flag", "de": "Flagge"},
+    QuizCategory.CAPITAL: {"ru": "Столица", "en": "Capital", "de": "Hauptstadt"},
+    QuizCategory.LANGUAGE: {"ru": "Язык", "en": "Language", "de": "Sprache"},
+    QuizCategory.POPULATION: {"ru": "Население", "en": "Population", "de": "Bevölkerung"},
+    QuizCategory.CURRENCY: {"ru": "Валюта", "en": "Currency", "de": "Wahrung"},
 }
 
 MODE_LABELS: dict[QuizMode, dict[str, str]] = {
-    QuizMode.MIXED: {"ru": "Smeshannyi", "en": "Mixed", "de": "Gemischt"},
-    QuizMode.REVIEW: {"ru": "Povtorenie", "en": "Review", "de": "Wiederholung"},
-    QuizMode.NEW: {"ru": "Novyi", "en": "New", "de": "Neu"},
+    QuizMode.MIXED: {"ru": "Смешанный", "en": "Mixed", "de": "Gemischt"},
+    QuizMode.REVIEW: {"ru": "Повторение", "en": "Review", "de": "Wiederholung"},
+    QuizMode.NEW: {"ru": "Новый", "en": "New", "de": "Neu"},
 }
 
 
