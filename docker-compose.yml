@@ -33,7 +33,7 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    command: sh -c "python scripts/validate_countries_data.py && alembic upgrade head && python scripts/run_bot.py"
+    command: sh -c "python scripts/validate_countries_data.py && alembic upgrade head && python scripts/runtime_preflight.py && python scripts/run_bot.py"
     volumes:
       - ./data:/app/data
 

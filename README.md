@@ -40,6 +40,7 @@ python scripts/country_catalog_summary.py
 python scripts/check_country_catalog.py
 python scripts/admin_overview.py
 python scripts/admin_progress_report.py
+python scripts/runtime_preflight.py
 ```
 
 В боте для админов доступна команда `/admin`.
@@ -63,6 +64,7 @@ docker compose up --build
 pip install -e .[dev]
 python scripts/validate_countries_data.py
 alembic upgrade head
+python scripts/runtime_preflight.py
 python scripts/sync_countries_to_db.py
 python scripts/run_bot.py
 ```

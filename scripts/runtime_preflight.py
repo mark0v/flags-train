@@ -3,11 +3,10 @@ from __future__ import annotations
 import asyncio
 
 from app.config import get_settings
-from app.main import main as run_bot
 from app.services.runtime_checks import run_runtime_preflight
 
 
-def validate_runtime() -> None:
+def main() -> None:
     settings = get_settings()
     report = asyncio.run(run_runtime_preflight(settings))
     if not report.dataset.is_valid:
@@ -21,10 +20,11 @@ def validate_runtime() -> None:
             f"Expected revision: {report.database.expected_revision}."
         )
 
-
-def main() -> None:
-    validate_runtime()
-    asyncio.run(run_bot())
+    print(
+        "Runtime preflight is OK. "
+        f"Dataset countries: {report.dataset.countries_count}. "
+        f"DB revision: {report.database.current_revision}."
+    )
 
 
 if __name__ == "__main__":
