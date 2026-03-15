@@ -95,9 +95,11 @@ async def _show_question(
             i18n.text(
                 "quiz_complete_stats",
                 language,
+                resolved=str(session_obj.resolved_questions),
                 correct=str(session_obj.correct_answers),
                 skipped=str(session_obj.skipped_answers),
                 mistakes=str(session_obj.mistakes),
+                menu_hint=i18n.text("quiz_back_to_menu", language),
             ),
             reply_markup=main_menu_keyboard(language, i18n),
         )
@@ -337,7 +339,10 @@ async def begin_quiz(
         user_id=user.id,
         selected_categories=[item.value for item in categories],
     )
-    await callback.message.edit_text(" ")
+    await callback.message.edit_text(
+        f"<b>{i18n.text('quiz_setup_title', language)}</b>\n\n"
+        f"{i18n.text('quiz_start', language)}..."
+    )
     await _show_question(bot, callback, state, quiz_session, i18n)
     await callback.answer()
 
@@ -352,7 +357,8 @@ async def cancel_setup(
     language = await _user_language(session, callback)
     await state.clear()
     await callback.message.edit_text(
-        i18n.text("main_menu", language),
+        f"{i18n.text('quiz_setup_cancelled', language)}\n\n"
+        f"{i18n.text('main_menu', language)}",
         reply_markup=main_menu_keyboard(language, i18n),
     )
     await callback.answer()
@@ -510,7 +516,8 @@ async def exit_yes(
         await _finalize_run(session, state, quiz_session, QuizRunStatus.ABANDONED)
     await state.clear()
     await callback.message.answer(
-        i18n.text("main_menu", language),
+        f"{i18n.text('quiz_abandoned', language)}\n\n"
+        f"{i18n.text('main_menu', language)}",
         reply_markup=main_menu_keyboard(language, i18n),
     )
     await callback.answer()

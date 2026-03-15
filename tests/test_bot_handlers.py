@@ -92,6 +92,8 @@ async def test_cancel_setup_clears_state_and_returns_to_main_menu() -> None:
     assert await state.get_state() is None
     assert await state.get_data() == {}
     callback.message.edit_text.assert_awaited()
+    rendered_text = callback.message.edit_text.await_args.args[0]
+    assert "Quiz setup cancelled." in rendered_text
     callback.answer.assert_awaited()
 
 
@@ -208,4 +210,32 @@ async def test_admin_sync_prepare_no_changes_returns_to_admin_keyboard(monkeypat
     callback.message.edit_text.assert_awaited()
     rendered_text = callback.message.edit_text.await_args.args[0]
     assert "No sync needed" in rendered_text
+    callback.answer.assert_awaited()
+
+
+async def test_exit_yes_sends_abandoned_quiz_message() -> None:
+    engine = create_async_engine("sqlite+aiosqlite:///:memory:")
+    async with engine.begin() as connection:
+        await connection.run_sync(Base.metadata.create_all)
+
+    session_factory = async_sessionmaker(engine, expire_on_commit=False)
+    callback = _build_callback()
+    state = _build_state()
+    i18n = I18nService()
+
+    async with session_factory() as session:
+        user = await UserRepository(session).get_or_create(42, "tester", "Test")
+        user.language = SupportedLanguage.EN.value
+        await session.commit()
+        await state.set_state(QuizStates.exit_confirm)
+
+        await quiz_handlers.exit_yes(callback, state, session, i18n)
+
+    await engine.dispose()
+
+    assert await state.get_state() is None
+    callback.message.answer.assert_awaited()
+    rendered_text = callback.message.answer.await_args.args[0]
+    assert "Quiz ended early." in rendered_text
+    assert "Main menu" in rendered_text
     callback.answer.assert_awaited()

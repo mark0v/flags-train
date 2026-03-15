@@ -16,6 +16,11 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "en": "Main menu",
         "de": "Hauptmenü",
     },
+    "quiz_back_to_menu": {
+        "ru": "Вы вернулись в главное меню.",
+        "en": "You are back in the main menu.",
+        "de": "Sie sind wieder im Hauptmenü.",
+    },
     "menu_start_quiz": {
         "ru": "Начать квиз",
         "en": "Start quiz",
@@ -492,6 +497,16 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
     },
     "quiz_start": {"ru": "Старт", "en": "Start", "de": "Start"},
     "quiz_exit": {"ru": "Выйти", "en": "Exit", "de": "Beenden"},
+    "quiz_setup_cancelled": {
+        "ru": "Настройка квиза отменена.",
+        "en": "Quiz setup cancelled.",
+        "de": "Die Quiz-Einrichtung wurde abgebrochen.",
+    },
+    "quiz_abandoned": {
+        "ru": "Квиз завершён досрочно.",
+        "en": "Quiz ended early.",
+        "de": "Das Quiz wurde vorzeitig beendet.",
+    },
     "quiz_exit_confirm": {
         "ru": "Выйти из квиза? Текущий прогресс будет потерян.",
         "en": "Exit the quiz? Current progress will be lost.",
@@ -504,22 +519,28 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
     "answer_skip": {"ru": "Пропустить", "en": "Skip", "de": "Überspringen"},
     "quiz_complete_stats": {
         "ru": (
-            "Квиз завершен.\n\n"
+            "<b>Квиз завершён</b>\n\n"
+            "Решено вопросов: <b>{resolved}</b>\n"
             "Правильно: <b>{correct}</b>\n"
             "Пропущено: <b>{skipped}</b>\n"
-            "Ошибок: <b>{mistakes}</b>"
+            "Ошибок: <b>{mistakes}</b>\n\n"
+            "{menu_hint}"
         ),
         "en": (
-            "Quiz complete.\n\n"
+            "<b>Quiz complete</b>\n\n"
+            "Resolved questions: <b>{resolved}</b>\n"
             "Correct: <b>{correct}</b>\n"
             "Skipped: <b>{skipped}</b>\n"
-            "Mistakes: <b>{mistakes}</b>"
+            "Mistakes: <b>{mistakes}</b>\n\n"
+            "{menu_hint}"
         ),
         "de": (
-            "Quiz abgeschlossen.\n\n"
+            "<b>Quiz abgeschlossen</b>\n\n"
+            "Gelöste Fragen: <b>{resolved}</b>\n"
             "Richtig: <b>{correct}</b>\n"
             "Übersprungen: <b>{skipped}</b>\n"
-            "Fehler: <b>{mistakes}</b>"
+            "Fehler: <b>{mistakes}</b>\n\n"
+            "{menu_hint}"
         ),
     },
     "not_enough_categories": {
