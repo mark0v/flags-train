@@ -33,6 +33,36 @@ from app.services.quiz.engine import Question, QuizEngine, QuizSession
 router = Router()
 
 
+async def _send_question_media(
+    bot: Bot,
+    chat_id: int,
+    question: Question,
+    caption: str,
+    i18n: I18nService,
+    language: SupportedLanguage,
+) -> None:
+    if question.flag_path is None:
+        raise ValueError("Question media is missing.")
+
+    media = FSInputFile(question.flag_path)
+    reply_markup = answer_keyboard(question.options, language, i18n)
+    if question.flag_path.suffix.lower() == ".svg":
+        await bot.send_document(
+            chat_id=chat_id,
+            document=media,
+            caption=caption,
+            reply_markup=reply_markup,
+        )
+        return
+
+    await bot.send_photo(
+        chat_id=chat_id,
+        photo=media,
+        caption=caption,
+        reply_markup=reply_markup,
+    )
+
+
 async def _get_user(session: AsyncSession, callback: CallbackQuery) -> User:
     users = UserRepository(session)
     return await users.get_or_create(
@@ -109,11 +139,13 @@ async def _show_question(
     await state.update_data(current_question_id=question.id)
     caption = f"{question.prompt}\n\n<i>{session_obj.progress_text()}</i>"
     if question.flag_path:
-        await bot.send_photo(
-            chat_id=callback.message.chat.id,
-            photo=FSInputFile(question.flag_path),
-            caption=caption,
-            reply_markup=answer_keyboard(question.options, session_obj.language, i18n),
+        await _send_question_media(
+            bot,
+            callback.message.chat.id,
+            question,
+            caption,
+            i18n,
+            session_obj.language,
         )
         return
     await callback.message.answer(
@@ -129,10 +161,13 @@ async def _show_retry_question(
     i18n: I18nService,
 ) -> None:
     if question.flag_path:
-        await callback.message.answer_photo(
-            photo=FSInputFile(question.flag_path),
-            caption=question.prompt,
-            reply_markup=answer_keyboard(question.options, language, i18n),
+        await _send_question_media(
+            callback.bot,
+            callback.message.chat.id,
+            question,
+            question.prompt,
+            i18n,
+            language,
         )
         return
     await callback.message.answer(

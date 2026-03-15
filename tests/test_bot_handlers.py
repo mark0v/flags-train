@@ -1,3 +1,4 @@
+from collections import deque
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from types import SimpleNamespace
@@ -37,6 +38,7 @@ def _build_callback(user_id: int = 42, username: str = "tester", first_name: str
         edit_text=AsyncMock(),
         answer=AsyncMock(),
         edit_reply_markup=AsyncMock(),
+        chat=SimpleNamespace(id=100),
     )
     callback = SimpleNamespace(
         from_user=SimpleNamespace(id=user_id, username=username, first_name=first_name),
@@ -48,7 +50,7 @@ def _build_callback(user_id: int = 42, username: str = "tester", first_name: str
 
 
 def _build_bot():
-    return SimpleNamespace(send_photo=AsyncMock())
+    return SimpleNamespace(send_photo=AsyncMock(), send_document=AsyncMock())
 
 
 def _build_state() -> FSMContext:
@@ -422,6 +424,37 @@ async def test_begin_quiz_review_mode_shows_alert_when_due_countries_are_missing
     callback.answer.assert_awaited()
     assert callback.answer.await_args.kwargs["show_alert"] is True
     assert "There are not enough cards due for review" in callback.answer.await_args.args[0]
+    callback.message.answer.assert_not_awaited()
+
+
+async def test_show_question_uses_document_for_svg_flags() -> None:
+    callback = _build_callback()
+    bot = _build_bot()
+    callback.bot = bot
+    state = _build_state()
+    i18n = I18nService()
+    question = Question(
+        id="DEU:flag",
+        country_code="DEU",
+        category=QuizCategory.FLAG,
+        prompt="Which country does this flag belong to?",
+        options=["Germany", "France", "Italy", "Belgium"],
+        correct_option="Germany",
+        answer_context="Germany",
+        flag_path=Path("data/flags/de.svg"),
+    )
+    session = quiz_handlers.QuizSession(
+        language=SupportedLanguage.EN,
+        countries_count=10,
+        categories=[QuizCategory.FLAG],
+        questions=deque([question]),
+        total_questions=10,
+    )
+
+    await quiz_handlers._show_question(bot, callback, state, session, i18n)
+
+    bot.send_document.assert_awaited()
+    bot.send_photo.assert_not_called()
     callback.message.answer.assert_not_awaited()
 
 
