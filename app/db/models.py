@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from sqlalchemy import (
+    JSON,
     BigInteger,
     DateTime,
     ForeignKey,
@@ -29,6 +30,25 @@ class User(Base):
     )
     quiz_runs: Mapped[list["QuizRun"]] = relationship(back_populates="user")
     learning_progress: Mapped[list["UserLearningProgress"]] = relationship(back_populates="user")
+
+
+class CountryCatalog(Base):
+    __tablename__ = "countries"
+
+    code: Mapped[str] = mapped_column(String(3), primary_key=True)
+    localized_name: Mapped[dict[str, str]] = mapped_column(JSON)
+    capital: Mapped[dict[str, str]] = mapped_column(JSON)
+    official_language: Mapped[dict[str, str]] = mapped_column(JSON)
+    population: Mapped[int] = mapped_column(Integer)
+    population_display: Mapped[dict[str, str]] = mapped_column(JSON)
+    currency_name: Mapped[dict[str, str]] = mapped_column(JSON)
+    currency_code: Mapped[str] = mapped_column(String(8))
+    flag_file: Mapped[str] = mapped_column(String(255))
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        onupdate=func.now(),
+    )
 
 
 class QuizRun(Base):

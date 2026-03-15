@@ -31,7 +31,15 @@ python scripts/fetch_countries_data.py
 python scripts/validate_countries_data.py
 ```
 
-3. Запустите через Docker:
+3. Синхронизируйте каталог стран в БД:
+
+```bash
+python scripts/sync_countries_to_db.py
+python scripts/country_catalog_summary.py
+python scripts/check_country_catalog.py
+```
+
+4. Запустите через Docker:
 
 ```bash
 docker compose up --build
@@ -50,6 +58,7 @@ docker compose up --build
 pip install -e .[dev]
 python scripts/validate_countries_data.py
 alembic upgrade head
+python scripts/sync_countries_to_db.py
 python scripts/run_bot.py
 ```
 
@@ -72,6 +81,8 @@ python scripts/run_bot.py
 - конфиг читается из env
 - данные лежат локально и доступны контейнеру через volume
 - data pipeline отделен от рантайма бота: данные можно обновлять вручную или отдельным job
+- каталог `countries` в PostgreSQL синхронизируется из локального `countries.json` отдельной командой
+- есть отдельные dev/admin-утилиты для summary и health-check согласованности между `countries.json`, флагами и таблицей `countries`
 - контейнер бота валидирует локальный датасет перед стартом и падает рано, если `countries.json` или флаги отсутствуют
 
 ## Что дальше легко нарастить
