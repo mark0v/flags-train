@@ -15,7 +15,7 @@ from app.constants import SupportedLanguage
 from app.repositories.admin import AdminRepository, format_progress_country_stat
 from app.repositories.quiz_runs import QuizRunRepository
 from app.repositories.users import UserRepository
-from app.services.admin_catalog import AdminCatalogService
+from app.services.admin_catalog import AdminCatalogDashboard, AdminCatalogService
 from app.services.catalog_health import format_code_list
 from app.services.catalog_sync_preview import CatalogSyncPreview
 from app.services.dataset_validation import DatasetValidationReport
@@ -150,6 +150,48 @@ def _format_admin_dataset_validation(
         title=title,
         status=i18n.text("admin_revalidate_error", language),
         error=report.error or "-",
+    )
+
+
+def _format_admin_catalog_dashboard(
+    dashboard: AdminCatalogDashboard,
+    language: SupportedLanguage,
+    i18n: I18nService,
+) -> str:
+    title = i18n.text("admin_catalog_dashboard_title", language)
+    validation_status = i18n.text(
+        "admin_revalidate_ok" if dashboard.validation.is_valid else "admin_revalidate_error",
+        language,
+    )
+    if not dashboard.validation.is_valid:
+        return i18n.text(
+            "admin_catalog_dashboard_invalid",
+            language,
+            title=title,
+            validation_status=validation_status,
+            error=dashboard.validation.error or "-",
+        )
+
+    assert dashboard.health is not None
+    assert dashboard.preview is not None
+    return i18n.text(
+        "admin_catalog_dashboard_text",
+        language,
+        title=title,
+        validation_status=validation_status,
+        countries=str(dashboard.validation.countries_count),
+        health_status=i18n.text(
+            "admin_health_ok" if dashboard.health.is_healthy else "admin_health_issue",
+            language,
+        ),
+        missing_in_db=format_code_list(dashboard.health.missing_in_db),
+        stale_in_db=format_code_list(dashboard.health.stale_in_db),
+        pending_sync=i18n.text(
+            "admin_catalog_sync_pending_yes"
+            if dashboard.preview.has_changes
+            else "admin_catalog_sync_pending_no",
+            language,
+        ),
     )
 
 
@@ -404,6 +446,9 @@ async def admin_actions(
             language,
             i18n,
         )
+    elif action == "catalog_dashboard":
+        dashboard = await catalog_service.dashboard()
+        text = _format_admin_catalog_dashboard(dashboard, language, i18n)
     elif action == "health":
         try:
             report = await catalog_service.catalog_health()

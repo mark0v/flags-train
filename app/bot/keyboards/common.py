@@ -113,6 +113,10 @@ def exit_confirmation_keyboard(
 def admin_keyboard(language: SupportedLanguage, i18n: I18nService) -> InlineKeyboardMarkup:
     builder = InlineKeyboardBuilder()
     builder.button(text=i18n.text("admin_refresh", language), callback_data="admin:overview")
+    builder.button(
+        text=i18n.text("admin_catalog_dashboard_button", language),
+        callback_data="admin:catalog_dashboard",
+    )
     builder.button(text=i18n.text("admin_health_button", language), callback_data="admin:health")
     builder.button(
         text=i18n.text("admin_revalidate_button", language),
@@ -132,7 +136,7 @@ def admin_keyboard(language: SupportedLanguage, i18n: I18nService) -> InlineKeyb
         callback_data="admin:strongest",
     )
     builder.button(text=i18n.text("admin_back", language), callback_data="admin:back")
-    builder.adjust(2, 2, 2, 2)
+    builder.adjust(2, 2, 2, 2, 1)
     return builder.as_markup()
 
 

@@ -105,6 +105,11 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "en": "Catalog health",
         "de": "Katalogcheck",
     },
+    "admin_catalog_dashboard_button": {
+        "ru": "Каталог dashboard",
+        "en": "Catalog dashboard",
+        "de": "Katalog-Dashboard",
+    },
     "admin_revalidate_button": {
         "ru": "Проверить dataset",
         "en": "Revalidate dataset",
@@ -163,6 +168,70 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "ru": "Не удалось проверить каталог. Проверьте локальные данные и логи.",
         "en": "Failed to check the catalog. Verify local data and logs.",
         "de": "Der Katalog konnte nicht gepruft werden. Bitte lokale Daten und Logs prufen.",
+    },
+    "admin_catalog_dashboard_title": {
+        "ru": "<b>Состояние каталога</b>",
+        "en": "<b>Catalog status</b>",
+        "de": "<b>Katalogstatus</b>",
+    },
+    "admin_catalog_dashboard_text": {
+        "ru": (
+            "{title}\n\n"
+            "Dataset: <b>{validation_status}</b>\n"
+            "Стран в dataset: <b>{countries}</b>\n"
+            "Health-check: <b>{health_status}</b>\n"
+            "Нет в DB: <b>{missing_in_db}</b>\n"
+            "Лишнее в DB: <b>{stale_in_db}</b>\n"
+            "Pending sync: <b>{pending_sync}</b>"
+        ),
+        "en": (
+            "{title}\n\n"
+            "Dataset: <b>{validation_status}</b>\n"
+            "Dataset countries: <b>{countries}</b>\n"
+            "Health check: <b>{health_status}</b>\n"
+            "Missing in DB: <b>{missing_in_db}</b>\n"
+            "Stale in DB: <b>{stale_in_db}</b>\n"
+            "Pending sync: <b>{pending_sync}</b>"
+        ),
+        "de": (
+            "{title}\n\n"
+            "Datensatz: <b>{validation_status}</b>\n"
+            "Datensatz-Lander: <b>{countries}</b>\n"
+            "Health-Check: <b>{health_status}</b>\n"
+            "Fehlt in DB: <b>{missing_in_db}</b>\n"
+            "Veraltet in DB: <b>{stale_in_db}</b>\n"
+            "Ausstehender Sync: <b>{pending_sync}</b>"
+        ),
+    },
+    "admin_catalog_dashboard_invalid": {
+        "ru": (
+            "{title}\n\n"
+            "Dataset: <b>{validation_status}</b>\n"
+            "Ошибка: <b>{error}</b>\n"
+            "Health-check и sync preview недоступны, пока dataset не исправлен."
+        ),
+        "en": (
+            "{title}\n\n"
+            "Dataset: <b>{validation_status}</b>\n"
+            "Error: <b>{error}</b>\n"
+            "Health check and sync preview are unavailable until the dataset is fixed."
+        ),
+        "de": (
+            "{title}\n\n"
+            "Datensatz: <b>{validation_status}</b>\n"
+            "Fehler: <b>{error}</b>\n"
+            "Health-Check und Sync-Vorschau sind erst nach einer Korrektur verfugbar."
+        ),
+    },
+    "admin_catalog_sync_pending_yes": {
+        "ru": "да",
+        "en": "yes",
+        "de": "ja",
+    },
+    "admin_catalog_sync_pending_no": {
+        "ru": "нет",
+        "en": "no",
+        "de": "nein",
     },
     "admin_revalidate_title": {
         "ru": "<b>Проверка dataset</b>",

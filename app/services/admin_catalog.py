@@ -17,6 +17,13 @@ class AdminCatalogSyncResult:
     synced_count: int
 
 
+@dataclass(slots=True)
+class AdminCatalogDashboard:
+    validation: DatasetValidationReport
+    health: CatalogHealthReport | None = None
+    preview: CatalogSyncPreview | None = None
+
+
 class AdminCatalogService:
     def __init__(self, session: AsyncSession, settings: Settings) -> None:
         self._session = session
@@ -40,6 +47,24 @@ class AdminCatalogService:
 
     async def dataset_validation(self) -> DatasetValidationReport:
         return validate_local_dataset(self._dataset_path(), self._flags_dir())
+
+    async def dashboard(self) -> AdminCatalogDashboard:
+        validation = await self.dataset_validation()
+        if not validation.is_valid:
+            return AdminCatalogDashboard(validation=validation)
+
+        store = self._load_store()
+        health = build_catalog_health_report(
+            store=store,
+            db_codes=await self._repository.list_codes(),
+            flags_dir=self._flags_dir(),
+        )
+        preview = build_catalog_sync_preview(store, await self._repository.list_countries())
+        return AdminCatalogDashboard(
+            validation=validation,
+            health=health,
+            preview=preview,
+        )
 
     async def catalog_health(self) -> CatalogHealthReport:
         store = self._load_store()

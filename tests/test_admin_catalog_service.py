@@ -164,3 +164,62 @@ async def test_admin_catalog_service_sync_preview_requires_valid_dataset(tmp_pat
     await engine.dispose()
 
     assert error == "Dataset is empty."
+
+
+async def test_admin_catalog_service_dashboard_returns_invalid_state_when_dataset_is_broken(
+    tmp_path: Path,
+) -> None:
+    engine = create_async_engine("sqlite+aiosqlite:///:memory:")
+    async with engine.begin() as connection:
+        await connection.run_sync(Base.metadata.create_all)
+
+    session_factory = async_sessionmaker(engine, expire_on_commit=False)
+    settings = Settings.model_construct(
+        bot_token="token",
+        app_env="test",
+        database_url="sqlite+aiosqlite:///:memory:",
+        countries_data_path=tmp_path / "countries.json",
+        flags_dir=tmp_path / "flags",
+        quiz_autonext_seconds=1.2,
+        admin_ids_raw="",
+    )
+    settings.flags_dir.mkdir()
+    settings.countries_data_path.write_text("[]", encoding="utf-8")
+
+    async with session_factory() as session:
+        service = AdminCatalogService(session, settings)
+        dashboard = await service.dashboard()
+
+    await engine.dispose()
+
+    assert dashboard.validation.is_valid is False
+    assert dashboard.health is None
+    assert dashboard.preview is None
+
+
+async def test_admin_catalog_service_dashboard_aggregates_valid_state(tmp_path: Path) -> None:
+    engine = create_async_engine("sqlite+aiosqlite:///:memory:")
+    async with engine.begin() as connection:
+        await connection.run_sync(Base.metadata.create_all)
+
+    session_factory = async_sessionmaker(engine, expire_on_commit=False)
+    settings = _settings(tmp_path)
+
+    async with session_factory() as session:
+        repository = CountryCatalogRepository(session)
+        store = CountryStore.from_path(
+            Path("tests/fixtures/countries.json"),
+            Path("tests/fixtures"),
+        )
+        await repository.upsert_many(store.countries[:2])
+        await session.commit()
+
+        service = AdminCatalogService(session, settings)
+        dashboard = await service.dashboard()
+
+    await engine.dispose()
+
+    assert dashboard.validation.is_valid is True
+    assert dashboard.health is not None
+    assert dashboard.preview is not None
+    assert dashboard.preview.to_create == ["ESP", "ITA", "POL", "UKR"]
