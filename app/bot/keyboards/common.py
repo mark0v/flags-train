@@ -97,10 +97,12 @@ def answer_feedback_keyboard(
     options: list[str],
     selected_index: int,
     correct_option: str,
+    *,
+    reveal_correct: bool = True,
 ) -> InlineKeyboardMarkup:
     builder = InlineKeyboardBuilder()
     for index, option in enumerate(options):
-        if option == correct_option:
+        if reveal_correct and option == correct_option:
             label = f"✅ {option}"
         elif index == selected_index:
             label = f"❌ {option}"

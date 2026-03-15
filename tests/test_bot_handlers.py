@@ -7,10 +7,12 @@ from unittest.mock import AsyncMock
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.storage.base import StorageKey
 from aiogram.fsm.storage.memory import MemoryStorage
+from aiogram.types import InlineKeyboardMarkup
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
 from app.bot.handlers import menu as menu_handlers
 from app.bot.handlers import quiz as quiz_handlers
+from app.bot.keyboards.common import answer_feedback_keyboard
 from app.bot.states import QuizStates
 from app.config import Settings
 from app.constants import (
@@ -74,6 +76,10 @@ def _build_country_store(total: int = 12) -> CountryStore:
         for i in range(1, total + 1)
     ]
     return CountryStore(countries=countries, flags_dir=Path("data/flags"))
+
+
+def _keyboard_texts(markup: InlineKeyboardMarkup) -> list[str]:
+    return [button.text for row in markup.inline_keyboard for button in row]
 
 
 async def test_start_quiz_setup_initializes_state_and_renders_setup() -> None:
@@ -584,3 +590,24 @@ async def test_continue_learning_shows_alert_without_history() -> None:
     callback.answer.assert_awaited()
     assert callback.answer.await_args.kwargs["show_alert"] is True
     assert "There is no previous quiz setup to restore yet." in callback.answer.await_args.args[0]
+
+
+async def test_answer_feedback_keyboard_hides_correct_option_until_revealed() -> None:
+    markup = answer_feedback_keyboard(
+        ["Peru", "Ghana", "Bulgaria", "Mali"],
+        0,
+        "Bulgaria",
+        reveal_correct=False,
+    )
+
+    assert _keyboard_texts(markup) == ["❌ Peru", "Ghana", "Bulgaria", "Mali"]
+
+
+async def test_answer_feedback_keyboard_reveals_correct_option_for_success() -> None:
+    markup = answer_feedback_keyboard(
+        ["Peru", "Ghana", "Bulgaria", "Mali"],
+        2,
+        "Bulgaria",
+    )
+
+    assert _keyboard_texts(markup) == ["Peru", "Ghana", "✅ Bulgaria", "Mali"]

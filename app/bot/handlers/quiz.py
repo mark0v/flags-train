@@ -430,15 +430,17 @@ async def answer_question(
 
     selected_index = int(callback.data.split(":")[1])
     selected_option = question.options[selected_index]
+    reveal_correct = selected_option == question.correct_option
     await callback.message.edit_reply_markup(
         reply_markup=answer_feedback_keyboard(
             question.options,
             selected_index,
             question.correct_option,
+            reveal_correct=reveal_correct,
         )
     )
 
-    if selected_option == question.correct_option:
+    if reveal_correct:
         resolution = quiz_session.on_correct(selected_option)
         if resolution.resolved:
             await _persist_resolution(
