@@ -44,9 +44,15 @@ async def _send_question_media(
     if question.flag_path is None:
         raise ValueError("Question media is missing.")
 
-    media = FSInputFile(question.flag_path)
+    media_path = question.flag_path
+    if media_path.suffix.lower() == ".svg":
+        png_path = media_path.with_suffix(".png")
+        if png_path.exists():
+            media_path = png_path
+
+    media = FSInputFile(media_path)
     reply_markup = answer_keyboard(question.options, language, i18n)
-    if question.flag_path.suffix.lower() == ".svg":
+    if media_path.suffix.lower() == ".svg":
         await bot.send_document(
             chat_id=chat_id,
             document=media,

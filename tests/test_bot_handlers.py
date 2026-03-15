@@ -427,12 +427,14 @@ async def test_begin_quiz_review_mode_shows_alert_when_due_countries_are_missing
     callback.message.answer.assert_not_awaited()
 
 
-async def test_show_question_uses_document_for_svg_flags() -> None:
+async def test_show_question_uses_document_for_svg_flags(tmp_path: Path) -> None:
     callback = _build_callback()
     bot = _build_bot()
     callback.bot = bot
     state = _build_state()
     i18n = I18nService()
+    svg_path = tmp_path / "de.svg"
+    svg_path.write_text("<svg />", encoding="utf-8")
     question = Question(
         id="DEU:flag",
         country_code="DEU",
@@ -441,7 +443,7 @@ async def test_show_question_uses_document_for_svg_flags() -> None:
         options=["Germany", "France", "Italy", "Belgium"],
         correct_option="Germany",
         answer_context="Germany",
-        flag_path=Path("data/flags/de.svg"),
+        flag_path=svg_path,
     )
     session = quiz_handlers.QuizSession(
         language=SupportedLanguage.EN,
@@ -456,6 +458,40 @@ async def test_show_question_uses_document_for_svg_flags() -> None:
     bot.send_document.assert_awaited()
     bot.send_photo.assert_not_called()
     callback.message.answer.assert_not_awaited()
+
+
+async def test_show_question_prefers_png_preview_when_available(tmp_path: Path) -> None:
+    callback = _build_callback()
+    bot = _build_bot()
+    callback.bot = bot
+    state = _build_state()
+    i18n = I18nService()
+    svg_path = tmp_path / "de.svg"
+    png_path = tmp_path / "de.png"
+    svg_path.write_text("<svg />", encoding="utf-8")
+    png_path.write_bytes(b"png")
+    question = Question(
+        id="DEU:flag",
+        country_code="DEU",
+        category=QuizCategory.FLAG,
+        prompt="Which country does this flag belong to?",
+        options=["Germany", "France", "Italy", "Belgium"],
+        correct_option="Germany",
+        answer_context="Germany",
+        flag_path=svg_path,
+    )
+    session = quiz_handlers.QuizSession(
+        language=SupportedLanguage.EN,
+        countries_count=10,
+        categories=[QuizCategory.FLAG],
+        questions=deque([question]),
+        total_questions=10,
+    )
+
+    await quiz_handlers._show_question(bot, callback, state, session, i18n)
+
+    bot.send_photo.assert_awaited()
+    bot.send_document.assert_not_called()
 
 
 async def test_continue_learning_restores_last_quiz_setup() -> None:

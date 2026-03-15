@@ -64,7 +64,7 @@ async def fetch_country_lookup(client: httpx.AsyncClient, country_name: str) -> 
 
 def remove_stale_flags(expected_flag_files: set[str]) -> int:
     removed = 0
-    for path in FLAGS_DIR.glob("*.svg"):
+    for path in list(FLAGS_DIR.glob("*.svg")) + list(FLAGS_DIR.glob("*.png")):
         if path.name not in expected_flag_files:
             path.unlink()
             removed += 1
@@ -93,14 +93,25 @@ async def main() -> None:
                 continue
             normalized_country = normalize_country(item)
             normalized.append(normalized_country)
-            expected_flag_files.add(normalized_country["flag_file"])
-            tasks.append(
-                download_flag(
-                    client,
-                    semaphore,
-                    item["flags"]["svg"],
-                    FLAGS_DIR / normalized_country["flag_file"],
-                )
+            svg_flag_file = normalized_country["flag_file"]
+            png_flag_file = Path(svg_flag_file).with_suffix(".png").name
+            expected_flag_files.add(svg_flag_file)
+            expected_flag_files.add(png_flag_file)
+            tasks.extend(
+                [
+                    download_flag(
+                        client,
+                        semaphore,
+                        item["flags"]["svg"],
+                        FLAGS_DIR / svg_flag_file,
+                    ),
+                    download_flag(
+                        client,
+                        semaphore,
+                        item["flags"]["png"],
+                        FLAGS_DIR / png_flag_file,
+                    ),
+                ]
             )
 
         existing_codes = {country["code"] for country in normalized}
@@ -111,14 +122,25 @@ async def main() -> None:
             normalized_country = normalize_country(extra_item)
             normalized.append(normalized_country)
             existing_codes.add(normalized_country["code"])
-            expected_flag_files.add(normalized_country["flag_file"])
-            tasks.append(
-                download_flag(
-                    client,
-                    semaphore,
-                    extra_item["flags"]["svg"],
-                    FLAGS_DIR / normalized_country["flag_file"],
-                )
+            svg_flag_file = normalized_country["flag_file"]
+            png_flag_file = Path(svg_flag_file).with_suffix(".png").name
+            expected_flag_files.add(svg_flag_file)
+            expected_flag_files.add(png_flag_file)
+            tasks.extend(
+                [
+                    download_flag(
+                        client,
+                        semaphore,
+                        extra_item["flags"]["svg"],
+                        FLAGS_DIR / svg_flag_file,
+                    ),
+                    download_flag(
+                        client,
+                        semaphore,
+                        extra_item["flags"]["png"],
+                        FLAGS_DIR / png_flag_file,
+                    ),
+                ]
             )
 
         await asyncio.gather(*tasks)
