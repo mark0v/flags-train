@@ -126,3 +126,19 @@ class LearningProgressRepository:
         )
         result = await self._session.execute(stmt)
         return int(result.scalar() or 0)
+
+    async def get_studied_country_codes(
+        self,
+        user_id: int,
+        categories: list[QuizCategory],
+    ) -> list[str]:
+        stmt = (
+            select(UserLearningProgress.country_code)
+            .where(
+                UserLearningProgress.user_id == user_id,
+                UserLearningProgress.category.in_([category.value for category in categories]),
+            )
+            .group_by(UserLearningProgress.country_code)
+        )
+        result = await self._session.execute(stmt)
+        return [row[0] for row in result.all()]

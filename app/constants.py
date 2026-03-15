@@ -26,6 +26,12 @@ class QuizAnswerOutcome(StrEnum):
     SKIPPED = "skipped"
 
 
+class QuizMode(StrEnum):
+    MIXED = "mixed"
+    REVIEW = "review"
+    NEW = "new"
+
+
 QUESTION_ORDER = [
     QuizCategory.FLAG,
     QuizCategory.CAPITAL,

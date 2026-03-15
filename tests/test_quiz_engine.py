@@ -94,3 +94,21 @@ def test_quiz_prioritizes_due_countries() -> None:
 
     assert questions[0].country_code == "UKR"
     assert questions[1].country_code == "POL"
+
+
+def test_quiz_excludes_already_studied_countries_for_new_mode() -> None:
+    store = CountryStore.from_path(
+        Path("tests/fixtures/countries.json"),
+        Path("tests/fixtures"),
+    )
+    engine = QuizEngine(store, random.Random(13))
+    session = engine.create_session(
+        language=SupportedLanguage.EN,
+        countries_count=2,
+        categories=[QuizCategory.CAPITAL],
+        excluded_country_codes=["UKR", "POL", "DEU", "FRA"],
+    )
+
+    country_codes = [question.country_code for question in session.questions]
+
+    assert set(country_codes) == {"ESP", "ITA"}

@@ -121,10 +121,16 @@ class QuizEngine:
         countries_count: int,
         categories: list[QuizCategory],
         priority_country_codes: list[str] | None = None,
+        excluded_country_codes: list[str] | None = None,
     ) -> QuizSession:
-        if len(self._store.countries) < countries_count:
+        available_countries = self._available_countries(excluded_country_codes or [])
+        if len(available_countries) < countries_count:
             raise ValueError("dataset too small")
-        selected_countries = self._select_countries(countries_count, priority_country_codes or [])
+        selected_countries = self._select_countries(
+            available_countries,
+            countries_count,
+            priority_country_codes or [],
+        )
         questions: list[Question] = []
         for country in selected_countries:
             for category in QUESTION_ORDER:
@@ -138,12 +144,17 @@ class QuizEngine:
             questions=deque(questions),
         )
 
+    def _available_countries(self, excluded_country_codes: list[str]) -> list[Country]:
+        excluded = set(excluded_country_codes)
+        return [country for country in self._store.countries if country.code not in excluded]
+
     def _select_countries(
         self,
+        available_countries: list[Country],
         countries_count: int,
         priority_country_codes: list[str],
     ) -> list[Country]:
-        countries_by_code = {country.code: country for country in self._store.countries}
+        countries_by_code = {country.code: country for country in available_countries}
         selected: list[Country] = []
         seen_codes: set[str] = set()
 
@@ -156,7 +167,7 @@ class QuizEngine:
             if len(selected) == countries_count:
                 return selected
 
-        remaining = [country for country in self._store.countries if country.code not in seen_codes]
+        remaining = [country for country in available_countries if country.code not in seen_codes]
         selected.extend(self._random.sample(remaining, countries_count - len(selected)))
         return selected
 

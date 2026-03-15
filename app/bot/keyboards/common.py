@@ -1,13 +1,13 @@
 from aiogram.types import InlineKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
-from app.constants import QUIZ_SIZES, QuizCategory, SupportedLanguage
+from app.constants import QUIZ_SIZES, QuizCategory, QuizMode, SupportedLanguage
 from app.services.i18n import I18nService
 
 
 def language_keyboard() -> InlineKeyboardMarkup:
     builder = InlineKeyboardBuilder()
-    builder.button(text="Русский", callback_data="lang:ru")
+    builder.button(text="Russkii", callback_data="lang:ru")
     builder.button(text="English", callback_data="lang:en")
     builder.button(text="Deutsch", callback_data="lang:de")
     builder.adjust(1)
@@ -32,14 +32,22 @@ def quiz_setup_keyboard(
     i18n: I18nService,
     selected_count: int,
     selected_categories: list[QuizCategory],
+    selected_mode: QuizMode,
 ) -> InlineKeyboardMarkup:
     builder = InlineKeyboardBuilder()
     for size in QUIZ_SIZES:
-        prefix = "● " if size == selected_count else ""
+        prefix = "* " if size == selected_count else ""
         builder.button(text=f"{prefix}{size}", callback_data=f"quiz:size:{size}")
 
+    for mode in QuizMode:
+        prefix = "* " if mode == selected_mode else ""
+        builder.button(
+            text=f"{prefix}{i18n.mode_label(mode, language)}",
+            callback_data=f"quiz:mode:{mode.value}",
+        )
+
     for category in QuizCategory:
-        mark = "✓ " if category in selected_categories else ""
+        mark = "+ " if category in selected_categories else ""
         builder.button(
             text=f"{mark}{i18n.category_label(category, language)}",
             callback_data=f"quiz:category:{category.value}",
@@ -47,7 +55,7 @@ def quiz_setup_keyboard(
 
     builder.button(text=i18n.text("quiz_start", language), callback_data="quiz:begin")
     builder.button(text=i18n.text("quiz_exit", language), callback_data="quiz:cancel")
-    builder.adjust(3, 2, 3, 1, 1)
+    builder.adjust(3, 3, 2, 3, 1, 1)
     return builder.as_markup()
 
 
@@ -72,9 +80,9 @@ def answer_feedback_keyboard(
     builder = InlineKeyboardBuilder()
     for index, option in enumerate(options):
         if option == correct_option:
-            label = f"✅ {option}"
+            label = f"[OK] {option}"
         elif index == selected_index:
-            label = f"❌ {option}"
+            label = f"[X] {option}"
         else:
             label = option
         builder.button(text=label, callback_data="answer:locked")

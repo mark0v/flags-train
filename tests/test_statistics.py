@@ -187,3 +187,56 @@ async def test_due_country_codes_returns_only_due_items_for_selected_categories(
 
     assert due_codes == ["UKR"]
     assert due_count == 1
+
+
+async def test_studied_country_codes_returns_distinct_country_list() -> None:
+    engine = create_async_engine("sqlite+aiosqlite:///:memory:")
+    async with engine.begin() as connection:
+        await connection.run_sync(Base.metadata.create_all)
+
+    session_factory = async_sessionmaker(engine, expire_on_commit=False)
+    async with session_factory() as session:
+        user = await UserRepository(session).get_or_create(4, "mixed", "Mixed")
+        user.language = SupportedLanguage.EN.value
+        progress_repo = LearningProgressRepository(session)
+        capital_question = Question(
+            id="DEU:capital",
+            country_code="DEU",
+            category=QuizCategory.CAPITAL,
+            prompt="Capital?",
+            options=["Berlin", "Paris", "Rome", "Madrid"],
+            correct_option="Berlin",
+            answer_context="Berlin",
+        )
+        flag_question = Question(
+            id="DEU:flag",
+            country_code="DEU",
+            category=QuizCategory.FLAG,
+            prompt="Flag?",
+            options=["Germany", "France", "Italy", "Spain"],
+            correct_option="Germany",
+            answer_context="Germany",
+        )
+
+        await progress_repo.record_result(
+            user_id=user.id,
+            question=capital_question,
+            outcome=QuizAnswerOutcome.CORRECT,
+            wrong_attempts=0,
+        )
+        await progress_repo.record_result(
+            user_id=user.id,
+            question=flag_question,
+            outcome=QuizAnswerOutcome.CORRECT,
+            wrong_attempts=0,
+        )
+        await session.commit()
+
+        studied_codes = await progress_repo.get_studied_country_codes(
+            user.id,
+            [QuizCategory.CAPITAL, QuizCategory.FLAG],
+        )
+
+    await engine.dispose()
+
+    assert studied_codes == ["DEU"]
