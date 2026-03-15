@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from app.services.catalog_health import build_catalog_health_report
+from app.services.catalog_health import build_catalog_health_report, format_code_list
 from app.services.country_store import CountryStore
 
 
@@ -38,3 +38,13 @@ def test_catalog_health_report_is_healthy_when_all_codes_and_flags_exist(tmp_pat
     )
 
     assert report.is_healthy is True
+
+
+def test_format_code_list_limits_long_output() -> None:
+    assert format_code_list(["ARG", "BRA", "CHL", "DEU", "ESP", "FRA"], limit=3) == (
+        "ARG, BRA, CHL (+3)"
+    )
+
+
+def test_format_code_list_handles_empty_values() -> None:
+    assert format_code_list([]) == "-"

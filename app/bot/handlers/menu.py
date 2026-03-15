@@ -8,8 +8,11 @@ from app.bot.keyboards.common import admin_keyboard, language_keyboard, main_men
 from app.config import Settings
 from app.constants import SupportedLanguage
 from app.repositories.admin import AdminRepository, format_progress_country_stat
+from app.repositories.countries import CountryCatalogRepository
 from app.repositories.quiz_runs import QuizRunRepository
 from app.repositories.users import UserRepository
+from app.services.catalog_health import build_catalog_health_report, format_code_list
+from app.services.country_store import CountryStore
 from app.services.i18n import I18nService
 from app.services.statistics import UserStatsSummary
 
@@ -92,6 +95,31 @@ def _format_admin_progress_list(
     if not items:
         return f"{title}\n\n{i18n.text('admin_empty_progress', language)}"
     return f"{title}\n\n" + "\n".join(f"- {item}" for item in items)
+
+
+def _format_admin_catalog_health(
+    dataset_count: int,
+    db_count: int,
+    missing_in_db: list[str],
+    stale_in_db: list[str],
+    missing_flag_files: list[str],
+    language: SupportedLanguage,
+    i18n: I18nService,
+) -> str:
+    status_key = "admin_health_ok" if not (
+        missing_in_db or stale_in_db or missing_flag_files
+    ) else "admin_health_issue"
+    return i18n.text(
+        "admin_health_text",
+        language,
+        title=i18n.text("admin_health_title", language),
+        status=i18n.text(status_key, language),
+        dataset=str(dataset_count),
+        db=str(db_count),
+        missing_in_db=format_code_list(missing_in_db),
+        stale_in_db=format_code_list(stale_in_db),
+        missing_flags=format_code_list(missing_flag_files),
+    )
 
 
 def _is_admin(user_id: int, settings: Settings) -> bool:
@@ -262,6 +290,27 @@ async def admin_actions(
             language,
             i18n,
         )
+    elif action == "health":
+        try:
+            dataset_path = settings.resolve_path(settings.countries_data_path)
+            flags_dir = settings.resolve_path(settings.flags_dir)
+            store = CountryStore.from_path(dataset_path, flags_dir)
+            report = build_catalog_health_report(
+                store=store,
+                db_codes=await CountryCatalogRepository(session).list_codes(),
+                flags_dir=flags_dir,
+            )
+            text = _format_admin_catalog_health(
+                report.dataset_count,
+                report.db_count,
+                report.missing_in_db,
+                report.stale_in_db,
+                report.missing_flag_files,
+                language,
+                i18n,
+            )
+        except Exception:
+            text = i18n.text("admin_health_error", language)
     elif action == "weakest":
         weakest = await repository.weakest_countries()
         text = _format_admin_progress_list(

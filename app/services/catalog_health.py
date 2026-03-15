@@ -17,6 +17,17 @@ class CatalogHealthReport:
         return not self.missing_in_db and not self.stale_in_db and not self.missing_flag_files
 
 
+def format_code_list(codes: list[str], *, limit: int = 5) -> str:
+    if not codes:
+        return "-"
+
+    preview = codes[:limit]
+    remaining = len(codes) - len(preview)
+    if remaining <= 0:
+        return ", ".join(preview)
+    return f"{', '.join(preview)} (+{remaining})"
+
+
 def build_catalog_health_report(
     store: CountryStore,
     db_codes: list[str],

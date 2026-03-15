@@ -95,6 +95,60 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "en": "Refresh",
         "de": "Aktualisieren",
     },
+    "admin_health_title": {
+        "ru": "<b>Здоровье каталога</b>",
+        "en": "<b>Catalog health</b>",
+        "de": "<b>Katalogzustand</b>",
+    },
+    "admin_health_button": {
+        "ru": "Проверка каталога",
+        "en": "Catalog health",
+        "de": "Katalogcheck",
+    },
+    "admin_health_ok": {
+        "ru": "OK",
+        "en": "OK",
+        "de": "OK",
+    },
+    "admin_health_issue": {
+        "ru": "Есть проблемы",
+        "en": "Issues found",
+        "de": "Probleme gefunden",
+    },
+    "admin_health_text": {
+        "ru": (
+            "{title}\n\n"
+            "Статус: <b>{status}</b>\n"
+            "В dataset: <b>{dataset}</b>\n"
+            "В DB: <b>{db}</b>\n"
+            "Нет в DB: <b>{missing_in_db}</b>\n"
+            "Лишнее в DB: <b>{stale_in_db}</b>\n"
+            "Нет файлов флагов: <b>{missing_flags}</b>"
+        ),
+        "en": (
+            "{title}\n\n"
+            "Status: <b>{status}</b>\n"
+            "Dataset countries: <b>{dataset}</b>\n"
+            "DB countries: <b>{db}</b>\n"
+            "Missing in DB: <b>{missing_in_db}</b>\n"
+            "Stale in DB: <b>{stale_in_db}</b>\n"
+            "Missing flag files: <b>{missing_flags}</b>"
+        ),
+        "de": (
+            "{title}\n\n"
+            "Status: <b>{status}</b>\n"
+            "Datensatz-Lander: <b>{dataset}</b>\n"
+            "DB-Lander: <b>{db}</b>\n"
+            "Fehlt in DB: <b>{missing_in_db}</b>\n"
+            "Veraltet in DB: <b>{stale_in_db}</b>\n"
+            "Fehlende Flaggendateien: <b>{missing_flags}</b>"
+        ),
+    },
+    "admin_health_error": {
+        "ru": "Не удалось проверить каталог. Проверьте локальные данные и логи.",
+        "en": "Failed to check the catalog. Verify local data and logs.",
+        "de": "Der Katalog konnte nicht gepruft werden. Bitte lokale Daten und Logs prufen.",
+    },
     "admin_weakest_button": {
         "ru": "Слабые",
         "en": "Weakest",
