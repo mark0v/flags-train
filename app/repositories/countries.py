@@ -13,6 +13,10 @@ class CountryCatalogRepository:
         result = await self._session.execute(select(CountryCatalog.code))
         return [row[0] for row in result.all()]
 
+    async def list_countries(self) -> list[CountryCatalog]:
+        result = await self._session.execute(select(CountryCatalog).order_by(CountryCatalog.code))
+        return list(result.scalars().all())
+
     async def upsert_many(self, countries: list[Country]) -> None:
         existing_codes = set(await self.list_codes())
         incoming_codes = {country.code for country in countries}

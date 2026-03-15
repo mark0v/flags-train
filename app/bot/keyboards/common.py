@@ -118,11 +118,15 @@ def admin_keyboard(language: SupportedLanguage, i18n: I18nService) -> InlineKeyb
         text=i18n.text("admin_revalidate_button", language),
         callback_data="admin:revalidate",
     )
+    builder.button(
+        text=i18n.text("admin_sync_preview_button", language),
+        callback_data="admin:sync_preview",
+    )
     builder.button(text=i18n.text("admin_weakest_button", language), callback_data="admin:weakest")
     builder.button(
         text=i18n.text("admin_strongest_button", language),
         callback_data="admin:strongest",
     )
     builder.button(text=i18n.text("admin_back", language), callback_data="admin:back")
-    builder.adjust(2, 2, 2)
+    builder.adjust(2, 2, 2, 1)
     return builder.as_markup()

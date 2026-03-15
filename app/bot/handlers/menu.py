@@ -12,6 +12,7 @@ from app.repositories.countries import CountryCatalogRepository
 from app.repositories.quiz_runs import QuizRunRepository
 from app.repositories.users import UserRepository
 from app.services.catalog_health import build_catalog_health_report, format_code_list
+from app.services.catalog_sync_preview import CatalogSyncPreview, build_catalog_sync_preview
 from app.services.country_store import CountryStore
 from app.services.dataset_validation import DatasetValidationReport, validate_local_dataset
 from app.services.i18n import I18nService
@@ -145,6 +146,26 @@ def _format_admin_dataset_validation(
         title=title,
         status=i18n.text("admin_revalidate_error", language),
         error=report.error or "-",
+    )
+
+
+def _format_admin_sync_preview(
+    preview: CatalogSyncPreview,
+    language: SupportedLanguage,
+    i18n: I18nService,
+) -> str:
+    return i18n.text(
+        "admin_sync_preview_text",
+        language,
+        title=i18n.text("admin_sync_preview_title", language),
+        dataset=str(preview.dataset_count),
+        db=str(preview.db_count),
+        create_count=str(len(preview.to_create)),
+        create_codes=format_code_list(preview.to_create),
+        update_count=str(len(preview.to_update)),
+        update_codes=format_code_list(preview.to_update),
+        delete_count=str(len(preview.to_delete)),
+        delete_codes=format_code_list(preview.to_delete),
     )
 
 
@@ -342,6 +363,16 @@ async def admin_actions(
         flags_dir = settings.resolve_path(settings.flags_dir)
         report = validate_local_dataset(dataset_path, flags_dir)
         text = _format_admin_dataset_validation(report, language, i18n)
+    elif action == "sync_preview":
+        try:
+            dataset_path = settings.resolve_path(settings.countries_data_path)
+            flags_dir = settings.resolve_path(settings.flags_dir)
+            store = CountryStore.from_path(dataset_path, flags_dir)
+            db_countries = await CountryCatalogRepository(session).list_countries()
+            preview = build_catalog_sync_preview(store, db_countries)
+            text = _format_admin_sync_preview(preview, language, i18n)
+        except Exception:
+            text = i18n.text("admin_sync_preview_error", language)
     elif action == "weakest":
         weakest = await repository.weakest_countries()
         text = _format_admin_progress_list(

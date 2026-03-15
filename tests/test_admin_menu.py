@@ -1,5 +1,10 @@
-from app.bot.handlers.menu import _format_admin_catalog_health, _format_admin_dataset_validation
+from app.bot.handlers.menu import (
+    _format_admin_catalog_health,
+    _format_admin_dataset_validation,
+    _format_admin_sync_preview,
+)
 from app.constants import SupportedLanguage
+from app.services.catalog_sync_preview import CatalogSyncPreview
 from app.services.dataset_validation import DatasetValidationReport
 from app.services.i18n import I18nService
 
@@ -63,3 +68,21 @@ def test_format_admin_dataset_validation_for_invalid_report() -> None:
 
     assert "Status: <b>Dataset is invalid</b>" in text
     assert "Error: <b>Missing flag file for DEU: de.svg</b>" in text
+
+
+def test_format_admin_sync_preview_uses_counts_and_truncated_lists() -> None:
+    text = _format_admin_sync_preview(
+        CatalogSyncPreview(
+            dataset_count=193,
+            db_count=190,
+            to_create=["ARG", "BRA", "CHL", "DEU", "ESP", "FRA"],
+            to_update=["UKR"],
+            to_delete=["OLD"],
+        ),
+        SupportedLanguage.EN,
+        I18nService(),
+    )
+
+    assert "Will create: <b>6</b> (ARG, BRA, CHL, DEU, ESP (+1))" in text
+    assert "Will update: <b>1</b> (UKR)" in text
+    assert "Will delete: <b>1</b> (OLD)" in text

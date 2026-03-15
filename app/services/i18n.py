@@ -110,6 +110,11 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "en": "Revalidate dataset",
         "de": "Datensatz prufen",
     },
+    "admin_sync_preview_button": {
+        "ru": "Предпросмотр sync",
+        "en": "Sync preview",
+        "de": "Sync-Vorschau",
+    },
     "admin_health_ok": {
         "ru": "OK",
         "en": "OK",
@@ -193,6 +198,42 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "ru": "{title}\n\nСтатус: <b>{status}</b>\nОшибка: <b>{error}</b>",
         "en": "{title}\n\nStatus: <b>{status}</b>\nError: <b>{error}</b>",
         "de": "{title}\n\nStatus: <b>{status}</b>\nFehler: <b>{error}</b>",
+    },
+    "admin_sync_preview_title": {
+        "ru": "<b>Предпросмотр sync каталога</b>",
+        "en": "<b>Catalog sync preview</b>",
+        "de": "<b>Katalog-Sync-Vorschau</b>",
+    },
+    "admin_sync_preview_text": {
+        "ru": (
+            "{title}\n\n"
+            "В dataset: <b>{dataset}</b>\n"
+            "В DB: <b>{db}</b>\n"
+            "Будет создано: <b>{create_count}</b> ({create_codes})\n"
+            "Будет обновлено: <b>{update_count}</b> ({update_codes})\n"
+            "Будет удалено: <b>{delete_count}</b> ({delete_codes})"
+        ),
+        "en": (
+            "{title}\n\n"
+            "Dataset countries: <b>{dataset}</b>\n"
+            "DB countries: <b>{db}</b>\n"
+            "Will create: <b>{create_count}</b> ({create_codes})\n"
+            "Will update: <b>{update_count}</b> ({update_codes})\n"
+            "Will delete: <b>{delete_count}</b> ({delete_codes})"
+        ),
+        "de": (
+            "{title}\n\n"
+            "Datensatz-Lander: <b>{dataset}</b>\n"
+            "DB-Lander: <b>{db}</b>\n"
+            "Wird erstellt: <b>{create_count}</b> ({create_codes})\n"
+            "Wird aktualisiert: <b>{update_count}</b> ({update_codes})\n"
+            "Wird entfernt: <b>{delete_count}</b> ({delete_codes})"
+        ),
+    },
+    "admin_sync_preview_error": {
+        "ru": "Не удалось построить предпросмотр sync. Проверьте dataset и доступность БД.",
+        "en": "Failed to build sync preview. Verify dataset and database availability.",
+        "de": "Die Sync-Vorschau konnte nicht erstellt werden. Bitte Datensatz und DB prufen.",
     },
     "admin_weakest_button": {
         "ru": "Слабые",
