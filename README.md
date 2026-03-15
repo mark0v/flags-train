@@ -2,40 +2,140 @@
 
 Telegram-бот для изучения флагов, столиц, языков, населения и валют стран ООН в формате Anki-подобного квиза.
 
-## Что уже заложено
+## Что уже есть
 
-- aiogram 3 + inline-first UX
-- PostgreSQL + SQLAlchemy + Alembic
+- `aiogram 3` и inline-first UX
+- `PostgreSQL + SQLAlchemy + Alembic`
 - локализация `ru / en / de`
-- локальный `countries.json` и локальная папка с флагами
-- статистика, межсессионный прогресс и базовый spaced repetition
-- режимы квиза: `mixed / review / new`
+- локальный офлайн dataset: `data/normalized/countries.json`
+- локальные SVG-флаги в `data/flags/`
+- quiz modes: `mixed / review / new`
+- межсессионный learning progress
+- базовая статистика пользователя
+- SRS-приоритизация на базе `proficiency_score`, `current_streak`, `next_review_at`
+- встроенный `/admin` с безопасными catalog actions
+- runtime preflight перед запуском
 - Dockerfile, `docker-compose.yml`, `.env.example`
-- unit-тесты для ядра квиза, статистики и подготовки данных
+- тесты и `ruff`
 
-## Структура
+## Структура проекта
 
-- `app/` - бот, сервисы, БД, локализация
-- `scripts/fetch_countries_data.py` - data pipeline для загрузки и нормализации локальных данных
-- `data/normalized/` - нормализованный датасет
+- `app/` - бот, сервисы, БД, локализация, доменная логика
+- `alembic/` - миграции БД
+- `data/normalized/` - локальный dataset стран
 - `data/flags/` - локальные флаги
-- `tests/` - unit-тесты
+- `scripts/` - data pipeline, sync, preflight и dev/admin CLI
+- `tests/` - unit и integration tests
 
 ## Быстрый старт
 
-1. Скопируйте `.env.example` в `.env` и заполните `BOT_TOKEN`.
-   Если нужен доступ к встроенной read-only админке бота, добавьте `ADMIN_IDS`, например `123456789,987654321`.
-2. Подготовьте локальные данные:
+1. Создайте `.env` из `.env.example` и заполните `BOT_TOKEN`.
+
+2. Установите зависимости:
 
 ```bash
-python scripts/fetch_countries_data.py
+pip install -e .[dev]
+```
+
+3. Проверьте локальный dataset:
+
+```bash
 python scripts/validate_countries_data.py
 ```
 
-3. Синхронизируйте каталог стран в БД:
+4. Примените миграции:
+
+```bash
+alembic upgrade head
+```
+
+5. Синхронизируйте каталог стран в БД:
 
 ```bash
 python scripts/sync_countries_to_db.py
+```
+
+6. Выполните preflight:
+
+```bash
+python scripts/runtime_preflight.py
+```
+
+7. Запустите бота:
+
+```bash
+python scripts/run_bot.py
+```
+
+## Docker Compose
+
+Основной runtime:
+
+```bash
+docker compose up --build db bot
+```
+
+Подготовка локальных данных внутри Docker:
+
+```bash
+docker compose --profile setup run --rm data
+```
+
+Operational one-shot services:
+
+```bash
+docker compose --profile ops run --rm migrate
+docker compose --profile ops run --rm sync
+docker compose --profile ops run --rm preflight
+```
+
+Рекомендуемый порядок для первого запуска через Docker:
+
+```bash
+docker compose up -d db
+docker compose --profile ops run --rm migrate
+docker compose --profile ops run --rm sync
+docker compose --profile ops run --rm preflight
+docker compose up --build bot
+```
+
+`bot` больше не делает миграции автоматически при старте. Это сделано специально, чтобы запуск runtime был предсказуемым и безопаснее для production-like окружения.
+
+## Data Pipeline
+
+Скрипт `scripts/fetch_countries_data.py`:
+
+- загружает страны из открытого источника `restcountries`
+- оставляет только государства-члены ООН
+- нормализует поля под нужды бота
+- сохраняет локальные SVG-флаги в `data/flags/`
+- сохраняет итоговый dataset в `data/normalized/countries.json`
+
+Проверка dataset:
+
+```bash
+python scripts/validate_countries_data.py
+```
+
+Рантайм бота не использует внешние API. Сеть нужна только на этапе подготовки локальных данных.
+
+## Admin и ops
+
+В боте для разрешённых `ADMIN_IDS` доступна команда `/admin`.
+
+Сейчас через бота доступны:
+
+- admin overview
+- weakest / strongest progress
+- catalog dashboard
+- catalog health-check
+- dataset revalidate
+- sync preview
+- confirmable catalog sync
+
+CLI-утилиты:
+
+```bash
 python scripts/country_catalog_summary.py
 python scripts/check_country_catalog.py
 python scripts/admin_overview.py
@@ -43,59 +143,32 @@ python scripts/admin_progress_report.py
 python scripts/runtime_preflight.py
 ```
 
-В боте для админов доступна команда `/admin`.
+## Проверки
 
-4. Запустите через Docker:
-
-```bash
-docker compose up --build
-```
-
-Если хотите собрать данные внутри Docker:
+Полный прогон:
 
 ```bash
-docker compose --profile setup run --rm data
-docker compose up --build
+pytest
+ruff check app tests scripts
 ```
 
-Или локально:
+## Deploy checklist
 
-```bash
-pip install -e .[dev]
-python scripts/validate_countries_data.py
-alembic upgrade head
-python scripts/runtime_preflight.py
-python scripts/sync_countries_to_db.py
-python scripts/run_bot.py
-```
+Перед выкладкой стоит пройти этот минимум:
 
-## Data Pipeline
+1. `python scripts/validate_countries_data.py`
+2. `alembic upgrade head`
+3. `python scripts/sync_countries_to_db.py`
+4. `python scripts/runtime_preflight.py`
+5. `pytest`
+6. `ruff check app tests scripts`
 
-Скрипт `scripts/fetch_countries_data.py`:
-
-- берет страны из открытого источника `restcountries`
-- фильтрует только `unMember == true`
-- сохраняет только страны, у которых есть валюта и двухбуквенный код флага
-- нормализует поля под нужды бота
-- скачивает SVG-флаги локально в `data/flags`
-- сохраняет итоговый файл `data/normalized/countries.json`
-
-Рантайм бота не использует внешние API. Сеть нужна только для подготовки локального датасета.
-
-## Dev / Prod
-
-- миграции применяются отдельно через Alembic
-- конфиг читается из env
-- данные лежат локально и доступны контейнеру через volume
-- data pipeline отделен от рантайма бота: данные можно обновлять вручную или отдельным job
-- каталог `countries` в PostgreSQL синхронизируется из локального `countries.json` отдельной командой
-- есть отдельные dev/admin-утилиты для summary и health-check согласованности между `countries.json`, флагами и таблицей `countries`
-- есть read-only admin-утилиты по пользователям и учебному прогрессу
-- контейнер бота валидирует локальный датасет перед стартом и падает рано, если `countries.json` или флаги отсутствуют
+Для Docker-потока те же шаги можно выполнить через `data`, `migrate`, `sync`, `preflight`.
 
 ## Что дальше легко нарастить
 
-- отдельный review dashboard
-- более гибкие интервалы SRS
-- админскую панель
-- web-клиент поверх того же quiz/domain слоя
+- более продвинутый review dashboard
+- richer user stats screens
+- более гибкие SRS-правила
+- расширенную admin panel
+- web-клиент поверх того же domain-слоя

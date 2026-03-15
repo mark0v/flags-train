@@ -24,6 +24,43 @@ services:
     volumes:
       - ./data:/app/data
 
+  migrate:
+    build:
+      context: .
+    profiles: ["ops"]
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+    command: alembic upgrade head
+
+  sync:
+    build:
+      context: .
+    profiles: ["ops"]
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+    command: python scripts/sync_countries_to_db.py
+    volumes:
+      - ./data:/app/data
+
+  preflight:
+    build:
+      context: .
+    profiles: ["ops"]
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+    command: python scripts/runtime_preflight.py
+    volumes:
+      - ./data:/app/data
+
   bot:
     build:
       context: .
@@ -33,7 +70,7 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    command: sh -c "python scripts/validate_countries_data.py && alembic upgrade head && python scripts/runtime_preflight.py && python scripts/run_bot.py"
+    command: python scripts/run_bot.py
     volumes:
       - ./data:/app/data
 
