@@ -122,11 +122,27 @@ def admin_keyboard(language: SupportedLanguage, i18n: I18nService) -> InlineKeyb
         text=i18n.text("admin_sync_preview_button", language),
         callback_data="admin:sync_preview",
     )
+    builder.button(
+        text=i18n.text("admin_sync_button", language),
+        callback_data="admin:sync_prepare",
+    )
     builder.button(text=i18n.text("admin_weakest_button", language), callback_data="admin:weakest")
     builder.button(
         text=i18n.text("admin_strongest_button", language),
         callback_data="admin:strongest",
     )
     builder.button(text=i18n.text("admin_back", language), callback_data="admin:back")
-    builder.adjust(2, 2, 2, 1)
+    builder.adjust(2, 2, 2, 2)
+    return builder.as_markup()
+
+
+def admin_sync_confirmation_keyboard(
+    language: SupportedLanguage,
+    i18n: I18nService,
+) -> InlineKeyboardMarkup:
+    builder = InlineKeyboardBuilder()
+    builder.button(text=i18n.text("confirm_yes", language), callback_data="admin:sync_apply")
+    builder.button(text=i18n.text("confirm_no", language), callback_data="admin:sync_preview")
+    builder.button(text=i18n.text("admin_back", language), callback_data="admin:overview")
+    builder.adjust(2, 1)
     return builder.as_markup()

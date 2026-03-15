@@ -4,7 +4,12 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.bot.keyboards.common import admin_keyboard, language_keyboard, main_menu_keyboard
+from app.bot.keyboards.common import (
+    admin_keyboard,
+    admin_sync_confirmation_keyboard,
+    language_keyboard,
+    main_menu_keyboard,
+)
 from app.config import Settings
 from app.constants import SupportedLanguage
 from app.repositories.admin import AdminRepository, format_progress_country_stat
@@ -13,6 +18,7 @@ from app.repositories.quiz_runs import QuizRunRepository
 from app.repositories.users import UserRepository
 from app.services.catalog_health import build_catalog_health_report, format_code_list
 from app.services.catalog_sync_preview import CatalogSyncPreview, build_catalog_sync_preview
+from app.services.country_catalog_sync import sync_country_catalog
 from app.services.country_store import CountryStore
 from app.services.dataset_validation import DatasetValidationReport, validate_local_dataset
 from app.services.i18n import I18nService
@@ -167,6 +173,53 @@ def _format_admin_sync_preview(
         delete_count=str(len(preview.to_delete)),
         delete_codes=format_code_list(preview.to_delete),
     )
+
+
+def _format_admin_sync_confirmation(
+    preview: CatalogSyncPreview,
+    language: SupportedLanguage,
+    i18n: I18nService,
+) -> str:
+    return i18n.text(
+        "admin_sync_confirm_text",
+        language,
+        title=i18n.text("admin_sync_confirm_title", language),
+        create_count=str(len(preview.to_create)),
+        create_codes=format_code_list(preview.to_create),
+        update_count=str(len(preview.to_update)),
+        update_codes=format_code_list(preview.to_update),
+        delete_count=str(len(preview.to_delete)),
+        delete_codes=format_code_list(preview.to_delete),
+    )
+
+
+def _format_admin_sync_result(
+    preview: CatalogSyncPreview,
+    synced_count: int,
+    language: SupportedLanguage,
+    i18n: I18nService,
+) -> str:
+    return i18n.text(
+        "admin_sync_result_text",
+        language,
+        title=i18n.text("admin_sync_result_title", language),
+        synced_count=str(synced_count),
+        create_count=str(len(preview.to_create)),
+        update_count=str(len(preview.to_update)),
+        delete_count=str(len(preview.to_delete)),
+    )
+
+
+async def _load_catalog_store_and_preview(
+    session: AsyncSession,
+    settings: Settings,
+) -> tuple[CountryStore, CatalogSyncPreview]:
+    dataset_path = settings.resolve_path(settings.countries_data_path)
+    flags_dir = settings.resolve_path(settings.flags_dir)
+    store = CountryStore.from_path(dataset_path, flags_dir)
+    db_countries = await CountryCatalogRepository(session).list_countries()
+    preview = build_catalog_sync_preview(store, db_countries)
+    return store, preview
 
 
 def _is_admin(user_id: int, settings: Settings) -> bool:
@@ -365,14 +418,30 @@ async def admin_actions(
         text = _format_admin_dataset_validation(report, language, i18n)
     elif action == "sync_preview":
         try:
-            dataset_path = settings.resolve_path(settings.countries_data_path)
-            flags_dir = settings.resolve_path(settings.flags_dir)
-            store = CountryStore.from_path(dataset_path, flags_dir)
-            db_countries = await CountryCatalogRepository(session).list_countries()
-            preview = build_catalog_sync_preview(store, db_countries)
+            _, preview = await _load_catalog_store_and_preview(session, settings)
             text = _format_admin_sync_preview(preview, language, i18n)
         except Exception:
             text = i18n.text("admin_sync_preview_error", language)
+    elif action == "sync_prepare":
+        try:
+            _, preview = await _load_catalog_store_and_preview(session, settings)
+            text = _format_admin_sync_confirmation(preview, language, i18n)
+            await callback.message.edit_text(
+                text,
+                reply_markup=admin_sync_confirmation_keyboard(language, i18n),
+            )
+            await callback.answer()
+            return
+        except Exception:
+            text = i18n.text("admin_sync_error", language)
+    elif action == "sync_apply":
+        try:
+            store, preview = await _load_catalog_store_and_preview(session, settings)
+            synced_count = await sync_country_catalog(CountryCatalogRepository(session), store)
+            await session.commit()
+            text = _format_admin_sync_result(preview, synced_count, language, i18n)
+        except Exception:
+            text = i18n.text("admin_sync_error", language)
     elif action == "weakest":
         weakest = await repository.weakest_countries()
         text = _format_admin_progress_list(

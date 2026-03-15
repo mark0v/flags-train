@@ -1,7 +1,9 @@
 from app.bot.handlers.menu import (
     _format_admin_catalog_health,
     _format_admin_dataset_validation,
+    _format_admin_sync_confirmation,
     _format_admin_sync_preview,
+    _format_admin_sync_result,
 )
 from app.constants import SupportedLanguage
 from app.services.catalog_sync_preview import CatalogSyncPreview
@@ -86,3 +88,41 @@ def test_format_admin_sync_preview_uses_counts_and_truncated_lists() -> None:
     assert "Will create: <b>6</b> (ARG, BRA, CHL, DEU, ESP (+1))" in text
     assert "Will update: <b>1</b> (UKR)" in text
     assert "Will delete: <b>1</b> (OLD)" in text
+
+
+def test_format_admin_sync_confirmation_shows_planned_changes() -> None:
+    text = _format_admin_sync_confirmation(
+        CatalogSyncPreview(
+            dataset_count=193,
+            db_count=190,
+            to_create=["ARG"],
+            to_update=["UKR"],
+            to_delete=["OLD"],
+        ),
+        SupportedLanguage.EN,
+        I18nService(),
+    )
+
+    assert "The following changes will be applied to the `countries` table." in text
+    assert "Create: <b>1</b> (ARG)" in text
+    assert "Continue?" in text
+
+
+def test_format_admin_sync_result_reports_completed_counts() -> None:
+    text = _format_admin_sync_result(
+        CatalogSyncPreview(
+            dataset_count=193,
+            db_count=190,
+            to_create=["ARG"],
+            to_update=["UKR"],
+            to_delete=["OLD"],
+        ),
+        synced_count=193,
+        language=SupportedLanguage.EN,
+        i18n=I18nService(),
+    )
+
+    assert "Final catalog size: <b>193</b>" in text
+    assert "Created: <b>1</b>" in text
+    assert "Updated: <b>1</b>" in text
+    assert "Deleted: <b>1</b>" in text

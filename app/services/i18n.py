@@ -115,6 +115,11 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "en": "Sync preview",
         "de": "Sync-Vorschau",
     },
+    "admin_sync_button": {
+        "ru": "Синхронизировать каталог",
+        "en": "Sync catalog",
+        "de": "Katalog synchronisieren",
+    },
     "admin_health_ok": {
         "ru": "OK",
         "en": "OK",
@@ -234,6 +239,73 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "ru": "Не удалось построить предпросмотр sync. Проверьте dataset и доступность БД.",
         "en": "Failed to build sync preview. Verify dataset and database availability.",
         "de": "Die Sync-Vorschau konnte nicht erstellt werden. Bitte Datensatz und DB prufen.",
+    },
+    "admin_sync_confirm_title": {
+        "ru": "<b>Подтверждение sync каталога</b>",
+        "en": "<b>Confirm catalog sync</b>",
+        "de": "<b>Katalog-Sync bestatigen</b>",
+    },
+    "admin_sync_confirm_text": {
+        "ru": (
+            "{title}\n\n"
+            "Сейчас будут применены изменения в таблице `countries`.\n"
+            "Создать: <b>{create_count}</b> ({create_codes})\n"
+            "Обновить: <b>{update_count}</b> ({update_codes})\n"
+            "Удалить: <b>{delete_count}</b> ({delete_codes})\n\n"
+            "Продолжить?"
+        ),
+        "en": (
+            "{title}\n\n"
+            "The following changes will be applied to the `countries` table.\n"
+            "Create: <b>{create_count}</b> ({create_codes})\n"
+            "Update: <b>{update_count}</b> ({update_codes})\n"
+            "Delete: <b>{delete_count}</b> ({delete_codes})\n\n"
+            "Continue?"
+        ),
+        "de": (
+            "{title}\n\n"
+            "Die folgenden Anderungen werden auf die Tabelle `countries` angewendet.\n"
+            "Erstellen: <b>{create_count}</b> ({create_codes})\n"
+            "Aktualisieren: <b>{update_count}</b> ({update_codes})\n"
+            "Entfernen: <b>{delete_count}</b> ({delete_codes})\n\n"
+            "Fortfahren?"
+        ),
+    },
+    "admin_sync_result_title": {
+        "ru": "<b>Sync каталога завершён</b>",
+        "en": "<b>Catalog sync completed</b>",
+        "de": "<b>Katalog-Sync abgeschlossen</b>",
+    },
+    "admin_sync_result_text": {
+        "ru": (
+            "{title}\n\n"
+            "Итоговый размер каталога: <b>{synced_count}</b>\n"
+            "Создано: <b>{create_count}</b>\n"
+            "Обновлено: <b>{update_count}</b>\n"
+            "Удалено: <b>{delete_count}</b>"
+        ),
+        "en": (
+            "{title}\n\n"
+            "Final catalog size: <b>{synced_count}</b>\n"
+            "Created: <b>{create_count}</b>\n"
+            "Updated: <b>{update_count}</b>\n"
+            "Deleted: <b>{delete_count}</b>"
+        ),
+        "de": (
+            "{title}\n\n"
+            "Endgultige Kataloggrose: <b>{synced_count}</b>\n"
+            "Erstellt: <b>{create_count}</b>\n"
+            "Aktualisiert: <b>{update_count}</b>\n"
+            "Entfernt: <b>{delete_count}</b>"
+        ),
+    },
+    "admin_sync_error": {
+        "ru": "Не удалось выполнить sync каталога. Проверьте dataset, БД и логи.",
+        "en": "Failed to sync the catalog. Verify dataset, database, and logs.",
+        "de": (
+            "Der Katalog konnte nicht synchronisiert werden. "
+            "Bitte Datensatz, DB und Logs prufen."
+        ),
     },
     "admin_weakest_button": {
         "ru": "Слабые",
