@@ -4,10 +4,15 @@ from sqlalchemy import text
 from sqlalchemy.ext.asyncio import create_async_engine
 
 from app.config import Settings
+from app.services.dataset_validation import DatasetValidationReport
 from app.services.runtime_checks import (
+    RuntimeDatabaseReport,
+    RuntimePreflightReport,
     check_database_ready,
+    format_runtime_preflight_report,
     resolve_expected_alembic_revision,
     run_runtime_preflight,
+    runtime_preflight_failure_message,
 )
 
 
@@ -80,3 +85,24 @@ async def test_run_runtime_preflight_combines_dataset_and_database_checks(tmp_pa
     assert report.dataset.is_valid is True
     assert report.database.migrations_match is True
     assert report.is_ready is True
+
+
+def test_runtime_preflight_format_and_failure_message_are_human_readable() -> None:
+    report = RuntimePreflightReport(
+        dataset=DatasetValidationReport(
+            is_valid=False,
+            error="Dataset is empty.",
+        ),
+        database=RuntimeDatabaseReport(
+            is_reachable=True,
+            expected_revision="abc123",
+            current_revision="abc123",
+        ),
+    )
+
+    rendered = format_runtime_preflight_report(report)
+
+    assert "Overall: NOT READY" in rendered
+    assert "Dataset: FAILED (error=Dataset is empty.)" in rendered
+    assert "Database: OK (revision=abc123)" in rendered
+    assert runtime_preflight_failure_message(report) == "Dataset is empty."

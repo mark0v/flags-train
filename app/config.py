@@ -15,6 +15,7 @@ class Settings(BaseSettings):
     flags_dir: Path = Field(alias="FLAGS_DIR")
     quiz_autonext_seconds: float = Field(default=1.2, alias="QUIZ_AUTONEXT_SECONDS")
     admin_ids_raw: str = Field(default="", alias="ADMIN_IDS")
+    log_level: str = Field(default="INFO", alias="LOG_LEVEL")
 
     @property
     def base_dir(self) -> Path:

@@ -13,9 +13,10 @@ from app.middleware.db import DbSessionMiddleware
 from app.services.country_store import CountryStore
 from app.services.i18n import I18nService
 
+logger = logging.getLogger(__name__)
+
 
 async def main() -> None:
-    logging.basicConfig(level=logging.INFO)
     settings = get_settings()
     bot = Bot(
         token=settings.bot_token,
@@ -37,6 +38,12 @@ async def main() -> None:
     dispatcher["country_store"] = country_store
 
     register_handlers(dispatcher)
+    logger.info(
+        "Bot polling started env=%s countries=%s flags_dir=%s",
+        settings.app_env,
+        len(country_store.countries),
+        settings.resolve_path(settings.flags_dir),
+    )
     await dispatcher.start_polling(bot)
 
 

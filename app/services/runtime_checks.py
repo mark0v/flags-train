@@ -32,6 +32,50 @@ class RuntimePreflightReport:
         return self.dataset.is_valid and self.database.migrations_match
 
 
+def format_runtime_preflight_report(report: RuntimePreflightReport) -> str:
+    dataset_status = "OK" if report.dataset.is_valid else "FAILED"
+    dataset_detail = (
+        f"countries={report.dataset.countries_count}, "
+        f"range={report.dataset.first_country_code}-{report.dataset.last_country_code}"
+        if report.dataset.is_valid
+        else f"error={report.dataset.error or '-'}"
+    )
+    database_status = "OK" if report.database.is_reachable else "FAILED"
+    migration_status = "OK" if report.database.migrations_match else "FAILED"
+    database_detail = (
+        f"revision={report.database.current_revision or '-'}"
+        if report.database.is_reachable
+        else f"error={report.database.error or '-'}"
+    )
+    return "\n".join(
+        [
+            f"Overall: {'READY' if report.is_ready else 'NOT READY'}",
+            f"Dataset: {dataset_status} ({dataset_detail})",
+            f"Database: {database_status} ({database_detail})",
+            (
+                "Migrations: "
+                f"{migration_status} "
+                f"(current={report.database.current_revision or '-'}, "
+                f"expected={report.database.expected_revision})"
+            ),
+        ]
+    )
+
+
+def runtime_preflight_failure_message(report: RuntimePreflightReport) -> str:
+    if not report.dataset.is_valid:
+        return report.dataset.error or "Dataset validation failed."
+    if not report.database.is_reachable:
+        return report.database.error or "Database is not reachable."
+    if not report.database.migrations_match:
+        return (
+            "Database schema is out of date. "
+            f"Current revision: {report.database.current_revision or '-'}. "
+            f"Expected revision: {report.database.expected_revision}."
+        )
+    return "Runtime preflight is OK."
+
+
 def resolve_expected_alembic_revision(base_dir: Path) -> str:
     config = Config(str(base_dir / "alembic.ini"))
     script = ScriptDirectory.from_config(config)
