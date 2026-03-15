@@ -60,6 +60,7 @@ def _format_stats(
         language,
         started=str(summary.quizzes_started),
         completed=str(summary.quizzes_completed),
+        abandoned=str(summary.quizzes_abandoned),
         resolved=str(summary.resolved_questions),
         correct=str(summary.correct_answers),
         skipped=str(summary.skipped_answers),
@@ -68,6 +69,8 @@ def _format_stats(
         mastered=str(summary.mastered_items),
         due=str(summary.due_items),
         accuracy=str(summary.accuracy_percent),
+        completion_rate=str(summary.completion_rate_percent),
+        recent_completed=str(summary.completed_last_7_days),
         last_completed=last_completed,
     )
     category_section = _format_stats_category_breakdown(summary, language, i18n)

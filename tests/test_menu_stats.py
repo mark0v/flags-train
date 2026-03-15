@@ -9,6 +9,7 @@ def test_format_stats_includes_category_breakdown() -> None:
         UserStatsSummary(
             quizzes_started=4,
             quizzes_completed=3,
+            quizzes_abandoned=1,
             resolved_questions=12,
             correct_answers=9,
             skipped_answers=3,
@@ -16,6 +17,7 @@ def test_format_stats_includes_category_breakdown() -> None:
             tracked_items=4,
             mastered_items=1,
             due_items=2,
+            completed_last_7_days=2,
             category_breakdown=[
                 CategoryProgressStat(
                     category=QuizCategory.FLAG,
@@ -40,6 +42,9 @@ def test_format_stats_includes_category_breakdown() -> None:
     )
 
     assert "Progress by category" in rendered
+    assert "Abandoned: <b>1</b>" in rendered
+    assert "Completion rate: <b>75%</b>" in rendered
+    assert "Completed in 7 days: <b>2</b>" in rendered
     assert "Best focus right now: <b>Capital</b>" in rendered
     assert "• Flag: due <b>0</b>, mastered <b>1/2</b>, accuracy <b>75%</b>" in rendered
     assert "• Capital: due <b>2</b>, mastered <b>0/2</b>, accuracy <b>33%</b>" in rendered

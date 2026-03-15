@@ -1,4 +1,4 @@
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 
 from sqlalchemy import case, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -87,16 +87,34 @@ class QuizRunRepository:
         return quiz_run
 
     async def get_user_summary(self, user_id: int) -> UserStatsSummary:
+        recent_cutoff = datetime.now(UTC) - timedelta(days=7)
         stmt = select(
             func.count(QuizRun.id),
             func.coalesce(
                 func.sum(case((QuizRun.status == QuizRunStatus.COMPLETED.value, 1), else_=0)),
                 0,
             ),
+            func.coalesce(
+                func.sum(case((QuizRun.status == QuizRunStatus.ABANDONED.value, 1), else_=0)),
+                0,
+            ),
             func.coalesce(func.sum(QuizRun.resolved_questions), 0),
             func.coalesce(func.sum(QuizRun.correct_answers), 0),
             func.coalesce(func.sum(QuizRun.skipped_answers), 0),
             func.coalesce(func.sum(QuizRun.wrong_attempts), 0),
+            func.coalesce(
+                func.sum(
+                    case(
+                        (
+                            (QuizRun.status == QuizRunStatus.COMPLETED.value)
+                            & (QuizRun.completed_at >= recent_cutoff),
+                            1,
+                        ),
+                        else_=0,
+                    )
+                ),
+                0,
+            ),
             func.max(QuizRun.completed_at),
         ).where(QuizRun.user_id == user_id)
         result = await self._session.execute(stmt)
@@ -109,11 +127,13 @@ class QuizRunRepository:
         return UserStatsSummary(
             quizzes_started=row[0] or 0,
             quizzes_completed=row[1] or 0,
-            resolved_questions=row[2] or 0,
-            correct_answers=row[3] or 0,
-            skipped_answers=row[4] or 0,
-            wrong_attempts=row[5] or 0,
-            last_completed_at=row[6],
+            quizzes_abandoned=row[2] or 0,
+            resolved_questions=row[3] or 0,
+            correct_answers=row[4] or 0,
+            skipped_answers=row[5] or 0,
+            wrong_attempts=row[6] or 0,
+            completed_last_7_days=row[7] or 0,
+            last_completed_at=row[8],
             tracked_items=tracked_items,
             mastered_items=mastered_items,
             due_items=due_items,

@@ -24,6 +24,7 @@ class CategoryProgressStat:
 class UserStatsSummary:
     quizzes_started: int = 0
     quizzes_completed: int = 0
+    quizzes_abandoned: int = 0
     resolved_questions: int = 0
     correct_answers: int = 0
     skipped_answers: int = 0
@@ -32,6 +33,7 @@ class UserStatsSummary:
     mastered_items: int = 0
     due_items: int = 0
     due_countries: int = 0
+    completed_last_7_days: int = 0
     last_completed_at: datetime | None = None
     category_breakdown: list[CategoryProgressStat] | None = None
 
@@ -44,3 +46,9 @@ class UserStatsSummary:
         if self.resolved_questions == 0:
             return 0
         return round((self.correct_answers / self.resolved_questions) * 100)
+
+    @property
+    def completion_rate_percent(self) -> int:
+        if self.quizzes_started == 0:
+            return 0
+        return round((self.quizzes_completed / self.quizzes_started) * 100)

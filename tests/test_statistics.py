@@ -64,19 +64,37 @@ async def test_quiz_run_repository_aggregates_user_summary() -> None:
             skipped_answers=0,
             wrong_attempts=1,
         )
+        abandoned_run = await repo.create_run(
+            user_id=user.id,
+            language=SupportedLanguage.EN,
+            countries_count=10,
+            categories=[QuizCategory.FLAG],
+            total_questions=10,
+        )
+        await repo.finish_run(
+            quiz_run_id=abandoned_run.id,
+            status=QuizRunStatus.ABANDONED,
+            resolved_questions=0,
+            correct_answers=0,
+            skipped_answers=0,
+            wrong_attempts=0,
+        )
         await session.commit()
 
         summary = await repo.get_user_summary(user.id)
 
     await engine.dispose()
 
-    assert summary.quizzes_started == 1
+    assert summary.quizzes_started == 2
     assert summary.quizzes_completed == 1
+    assert summary.quizzes_abandoned == 1
     assert summary.resolved_questions == 1
     assert summary.correct_answers == 1
     assert summary.wrong_attempts == 1
     assert summary.tracked_items == 1
     assert summary.due_items == 0
+    assert summary.completed_last_7_days == 1
+    assert summary.completion_rate_percent == 50
     assert summary.last_completed_at is not None
 
 
