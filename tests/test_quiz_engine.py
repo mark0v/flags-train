@@ -75,3 +75,22 @@ def test_progress_counts_only_resolved_questions() -> None:
     session.on_correct(first.correct_option)
 
     assert session.progress_text() == "0/3"
+
+
+def test_quiz_prioritizes_due_countries() -> None:
+    store = CountryStore.from_path(
+        Path("tests/fixtures/countries.json"),
+        Path("tests/fixtures"),
+    )
+    engine = QuizEngine(store, random.Random(11))
+    session = engine.create_session(
+        language=SupportedLanguage.EN,
+        countries_count=3,
+        categories=[QuizCategory.CAPITAL],
+        priority_country_codes=["UKR", "POL"],
+    )
+
+    questions = list(session.questions)
+
+    assert questions[0].country_code == "UKR"
+    assert questions[1].country_code == "POL"

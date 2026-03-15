@@ -12,6 +12,7 @@ class UserStatsSummary:
     wrong_attempts: int = 0
     tracked_items: int = 0
     mastered_items: int = 0
+    due_items: int = 0
     last_completed_at: datetime | None = None
 
     @property

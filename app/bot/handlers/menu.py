@@ -52,6 +52,7 @@ def _format_stats(
         mistakes=str(summary.wrong_attempts),
         tracked=str(summary.tracked_items),
         mastered=str(summary.mastered_items),
+        due=str(summary.due_items),
         accuracy=str(summary.accuracy_percent),
         last_completed=last_completed,
     )

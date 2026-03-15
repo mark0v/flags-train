@@ -249,11 +249,17 @@ async def begin_quiz(
         return
 
     engine = QuizEngine(country_store)
+    due_country_codes = await LearningProgressRepository(session).get_due_country_codes(
+        user.id,
+        categories,
+        data["selected_count"],
+    )
     try:
         quiz_session = engine.create_session(
             language=language,
             countries_count=data["selected_count"],
             categories=categories,
+            priority_country_codes=due_country_codes,
         )
     except ValueError:
         await callback.answer(i18n.text("dataset_too_small", language), show_alert=True)

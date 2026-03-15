@@ -120,10 +120,11 @@ class QuizEngine:
         language: SupportedLanguage,
         countries_count: int,
         categories: list[QuizCategory],
+        priority_country_codes: list[str] | None = None,
     ) -> QuizSession:
         if len(self._store.countries) < countries_count:
             raise ValueError("dataset too small")
-        selected_countries = self._random.sample(self._store.countries, countries_count)
+        selected_countries = self._select_countries(countries_count, priority_country_codes or [])
         questions: list[Question] = []
         for country in selected_countries:
             for category in QUESTION_ORDER:
@@ -136,6 +137,28 @@ class QuizEngine:
             total_questions=len(questions),
             questions=deque(questions),
         )
+
+    def _select_countries(
+        self,
+        countries_count: int,
+        priority_country_codes: list[str],
+    ) -> list[Country]:
+        countries_by_code = {country.code: country for country in self._store.countries}
+        selected: list[Country] = []
+        seen_codes: set[str] = set()
+
+        for code in priority_country_codes:
+            country = countries_by_code.get(code)
+            if country is None or code in seen_codes:
+                continue
+            selected.append(country)
+            seen_codes.add(code)
+            if len(selected) == countries_count:
+                return selected
+
+        remaining = [country for country in self._store.countries if country.code not in seen_codes]
+        selected.extend(self._random.sample(remaining, countries_count - len(selected)))
+        return selected
 
     def _build_question(
         self,

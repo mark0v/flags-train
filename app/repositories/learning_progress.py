@@ -3,9 +3,10 @@ from datetime import UTC, datetime
 from sqlalchemy import case, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.constants import QuizAnswerOutcome
+from app.constants import QuizAnswerOutcome, QuizCategory
 from app.db.models import UserLearningProgress
 from app.services.quiz.engine import Question
+from app.services.srs import schedule_next_review
 
 
 class LearningProgressRepository:
@@ -53,6 +54,12 @@ class LearningProgressRepository:
             progress.skipped_answers += 1
             progress.current_streak = 0
             progress.proficiency_score = max(0, progress.proficiency_score - 1)
+        progress.next_review_at = schedule_next_review(
+            outcome,
+            progress.proficiency_score,
+            wrong_attempts,
+            now=progress.last_reviewed_at,
+        )
 
         await self._session.flush()
         return progress
@@ -77,3 +84,45 @@ class LearningProgressRepository:
         result = await self._session.execute(stmt)
         row = result.one()
         return int(row[0] or 0), int(row[1] or 0)
+
+    async def get_due_country_codes(
+        self,
+        user_id: int,
+        categories: list[QuizCategory],
+        limit: int,
+        *,
+        now: datetime | None = None,
+    ) -> list[str]:
+        current_time = now or datetime.now(UTC)
+        stmt = (
+            select(
+                UserLearningProgress.country_code,
+                func.min(UserLearningProgress.next_review_at).label("next_due"),
+            )
+            .where(
+                UserLearningProgress.user_id == user_id,
+                UserLearningProgress.category.in_([category.value for category in categories]),
+                UserLearningProgress.next_review_at.is_not(None),
+                UserLearningProgress.next_review_at <= current_time,
+            )
+            .group_by(UserLearningProgress.country_code)
+            .order_by("next_due")
+            .limit(limit)
+        )
+        result = await self._session.execute(stmt)
+        return [row[0] for row in result.all()]
+
+    async def get_due_items_count(
+        self,
+        user_id: int,
+        *,
+        now: datetime | None = None,
+    ) -> int:
+        current_time = now or datetime.now(UTC)
+        stmt = select(func.count(UserLearningProgress.id)).where(
+            UserLearningProgress.user_id == user_id,
+            UserLearningProgress.next_review_at.is_not(None),
+            UserLearningProgress.next_review_at <= current_time,
+        )
+        result = await self._session.execute(stmt)
+        return int(result.scalar() or 0)

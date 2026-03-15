@@ -101,9 +101,9 @@ class QuizRunRepository:
         ).where(QuizRun.user_id == user_id)
         result = await self._session.execute(stmt)
         row = result.one()
-        tracked_items, mastered_items = await LearningProgressRepository(
-            self._session
-        ).get_progress_counters(user_id)
+        progress_repo = LearningProgressRepository(self._session)
+        tracked_items, mastered_items = await progress_repo.get_progress_counters(user_id)
+        due_items = await progress_repo.get_due_items_count(user_id)
         return UserStatsSummary(
             quizzes_started=row[0] or 0,
             quizzes_completed=row[1] or 0,
@@ -114,4 +114,5 @@ class QuizRunRepository:
             last_completed_at=row[6],
             tracked_items=tracked_items,
             mastered_items=mastered_items,
+            due_items=due_items,
         )
