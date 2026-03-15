@@ -28,6 +28,7 @@ Telegram-бот для изучения флагов, столиц, языков
 
 ```bash
 python scripts/fetch_countries_data.py
+python scripts/validate_countries_data.py
 ```
 
 3. Запустите через Docker:
@@ -36,12 +37,20 @@ python scripts/fetch_countries_data.py
 docker compose up --build
 ```
 
+Если хотите собрать данные внутри Docker:
+
+```bash
+docker compose --profile setup run --rm data
+docker compose up --build
+```
+
 Или локально:
 
 ```bash
 pip install -e .[dev]
+python scripts/validate_countries_data.py
 alembic upgrade head
-python -m app.main
+python scripts/run_bot.py
 ```
 
 ## Data Pipeline
@@ -63,6 +72,7 @@ python -m app.main
 - конфиг читается из env
 - данные лежат локально и доступны контейнеру через volume
 - data pipeline отделен от рантайма бота: данные можно обновлять вручную или отдельным job
+- контейнер бота валидирует локальный датасет перед стартом и падает рано, если `countries.json` или флаги отсутствуют
 
 ## Что дальше легко нарастить
 

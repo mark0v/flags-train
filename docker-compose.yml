@@ -16,6 +16,14 @@ services:
       timeout: 5s
       retries: 5
 
+  data:
+    build:
+      context: .
+    profiles: ["setup"]
+    command: sh -c "python scripts/fetch_countries_data.py && python scripts/validate_countries_data.py"
+    volumes:
+      - ./data:/app/data
+
   bot:
     build:
       context: .
@@ -25,7 +33,7 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    command: sh -c "alembic upgrade head && python -m app.main"
+    command: sh -c "python scripts/validate_countries_data.py && alembic upgrade head && python scripts/run_bot.py"
     volumes:
       - ./data:/app/data
 

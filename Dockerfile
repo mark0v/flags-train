@@ -19,4 +19,4 @@ COPY data ./data
 RUN pip install --upgrade pip \
     && pip install .
 
-CMD ["python", "-m", "app.main"]
+CMD ["python", "scripts/run_bot.py"]
