@@ -12,7 +12,13 @@ from app.bot.handlers import menu as menu_handlers
 from app.bot.handlers import quiz as quiz_handlers
 from app.bot.states import QuizStates
 from app.config import Settings
-from app.constants import QuizAnswerOutcome, QuizCategory, QuizMode, SupportedLanguage
+from app.constants import (
+    QuizAnswerOutcome,
+    QuizCategory,
+    QuizMode,
+    QuizRunStatus,
+    SupportedLanguage,
+)
 from app.db.base import Base
 from app.repositories.learning_progress import LearningProgressRepository
 from app.repositories.users import UserRepository
@@ -417,3 +423,95 @@ async def test_begin_quiz_review_mode_shows_alert_when_due_countries_are_missing
     assert callback.answer.await_args.kwargs["show_alert"] is True
     assert "There are not enough cards due for review" in callback.answer.await_args.args[0]
     callback.message.answer.assert_not_awaited()
+
+
+async def test_continue_learning_restores_last_quiz_setup() -> None:
+    engine = create_async_engine("sqlite+aiosqlite:///:memory:")
+    async with engine.begin() as connection:
+        await connection.run_sync(Base.metadata.create_all)
+
+    session_factory = async_sessionmaker(engine, expire_on_commit=False)
+    callback = _build_callback()
+    callback.data = "menu:continue_learning"
+    state = _build_state()
+    i18n = I18nService()
+
+    async with session_factory() as session:
+        user = await UserRepository(session).get_or_create(42, "tester", "Test")
+        user.language = SupportedLanguage.EN.value
+        progress_repo = LearningProgressRepository(session)
+        question = Question(
+            id="C01:capital",
+            country_code="C01",
+            category=QuizCategory.CAPITAL,
+            prompt="Capital?",
+            options=["Capital 1", "Wrong 1", "Wrong 2", "Wrong 3"],
+            correct_option="Capital 1",
+            answer_context="Capital 1",
+        )
+        progress = await progress_repo.record_result(
+            user_id=user.id,
+            question=question,
+            outcome=QuizAnswerOutcome.SKIPPED,
+            wrong_attempts=0,
+        )
+        progress.next_review_at = datetime.now(UTC) - timedelta(hours=1)
+
+        quiz_run = await quiz_handlers.QuizRunRepository(session).create_run(
+            user_id=user.id,
+            language=SupportedLanguage.EN,
+            countries_count=10,
+            categories=[QuizCategory.CAPITAL],
+            total_questions=10,
+        )
+        await quiz_handlers.QuizRunRepository(session).finish_run(
+            quiz_run_id=quiz_run.id,
+            status=QuizRunStatus.COMPLETED,
+            resolved_questions=1,
+            correct_answers=0,
+            skipped_answers=1,
+            wrong_attempts=0,
+        )
+        await session.commit()
+
+        await menu_handlers.continue_learning(callback, state, session, i18n)
+        data = await state.get_data()
+
+    await engine.dispose()
+
+    assert await state.get_state() == QuizStates.setup.state
+    assert data["selected_count"] == 10
+    assert data["selected_categories"] == ["capital"]
+    assert data["selected_mode"] == QuizMode.MIXED.value
+    callback.message.edit_text.assert_awaited()
+    rendered_text = callback.message.edit_text.await_args.args[0]
+    assert "Quiz setup" in rendered_text
+    assert "Capital" in rendered_text
+    callback.answer.assert_awaited()
+    assert callback.answer.await_args.args[0] == "Your recent quiz setup has been restored."
+
+
+async def test_continue_learning_shows_alert_without_history() -> None:
+    engine = create_async_engine("sqlite+aiosqlite:///:memory:")
+    async with engine.begin() as connection:
+        await connection.run_sync(Base.metadata.create_all)
+
+    session_factory = async_sessionmaker(engine, expire_on_commit=False)
+    callback = _build_callback()
+    callback.data = "menu:continue_learning"
+    state = _build_state()
+    i18n = I18nService()
+
+    async with session_factory() as session:
+        user = await UserRepository(session).get_or_create(42, "tester", "Test")
+        user.language = SupportedLanguage.EN.value
+        await session.commit()
+
+        await menu_handlers.continue_learning(callback, state, session, i18n)
+
+    await engine.dispose()
+
+    assert await state.get_state() is None
+    callback.answer.assert_awaited()
+    assert callback.answer.await_args.kwargs["show_alert"] is True
+    assert "There is no previous quiz setup to restore yet." in callback.answer.await_args.args[0]

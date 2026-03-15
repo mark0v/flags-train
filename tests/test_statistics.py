@@ -331,6 +331,41 @@ async def test_quiz_run_repository_includes_category_breakdown() -> None:
     assert summary.category_breakdown[1].accuracy_percent == 100
 
 
+async def test_quiz_run_repository_returns_last_quiz_preferences() -> None:
+    engine = create_async_engine("sqlite+aiosqlite:///:memory:")
+    async with engine.begin() as connection:
+        await connection.run_sync(Base.metadata.create_all)
+
+    session_factory = async_sessionmaker(engine, expire_on_commit=False)
+    async with session_factory() as session:
+        user = await UserRepository(session).get_or_create(7, "prefs", "Prefs")
+        user.language = SupportedLanguage.EN.value
+        repo = QuizRunRepository(session)
+        await repo.create_run(
+            user_id=user.id,
+            language=SupportedLanguage.EN,
+            countries_count=10,
+            categories=[QuizCategory.FLAG],
+            total_questions=10,
+        )
+        await repo.create_run(
+            user_id=user.id,
+            language=SupportedLanguage.EN,
+            countries_count=25,
+            categories=[QuizCategory.CAPITAL, QuizCategory.LANGUAGE],
+            total_questions=50,
+        )
+        await session.commit()
+
+        preferences = await repo.get_last_quiz_preferences(user.id)
+
+    await engine.dispose()
+
+    assert preferences is not None
+    assert preferences.countries_count == 25
+    assert preferences.categories == [QuizCategory.CAPITAL, QuizCategory.LANGUAGE]
+
+
 async def test_studied_country_codes_returns_distinct_country_list() -> None:
     engine = create_async_engine("sqlite+aiosqlite:///:memory:")
     async with engine.begin() as connection:

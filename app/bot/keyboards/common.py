@@ -17,6 +17,10 @@ def language_keyboard() -> InlineKeyboardMarkup:
 def main_menu_keyboard(language: SupportedLanguage, i18n: I18nService) -> InlineKeyboardMarkup:
     builder = InlineKeyboardBuilder()
     builder.button(text=i18n.text("menu_start_quiz", language), callback_data="menu:start_quiz")
+    builder.button(
+        text=i18n.text("menu_continue_learning", language),
+        callback_data="menu:continue_learning",
+    )
     builder.button(text=i18n.text("menu_settings", language), callback_data="menu:settings")
     builder.button(
         text=i18n.text("menu_change_language", language),

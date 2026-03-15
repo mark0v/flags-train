@@ -7,7 +7,7 @@ from app.constants import QuizAnswerOutcome, QuizCategory, QuizRunStatus, Suppor
 from app.db.models import QuizAnswer, QuizRun
 from app.repositories.learning_progress import LearningProgressRepository
 from app.services.quiz.engine import Question
-from app.services.statistics import UserStatsSummary
+from app.services.statistics import LastQuizPreferences, UserStatsSummary
 
 
 class QuizRunRepository:
@@ -139,4 +139,26 @@ class QuizRunRepository:
             due_items=due_items,
             due_countries=due_countries,
             category_breakdown=category_breakdown,
+        )
+
+    async def get_last_quiz_preferences(self, user_id: int) -> LastQuizPreferences | None:
+        stmt = (
+            select(QuizRun.countries_count, QuizRun.categories_csv)
+            .where(QuizRun.user_id == user_id)
+            .order_by(QuizRun.started_at.desc(), QuizRun.id.desc())
+            .limit(1)
+        )
+        result = await self._session.execute(stmt)
+        row = result.first()
+        if row is None:
+            return None
+
+        categories = [
+            QuizCategory(value)
+            for value in row[1].split(",")
+            if value
+        ]
+        return LastQuizPreferences(
+            countries_count=int(row[0]),
+            categories=categories,
         )

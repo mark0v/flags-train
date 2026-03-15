@@ -16,6 +16,7 @@ from app.bot.states import QuizStates
 from app.config import Settings
 from app.constants import QUIZ_SIZES, QuizMode, SupportedLanguage
 from app.repositories.admin import AdminRepository, format_progress_country_stat
+from app.repositories.learning_progress import LearningProgressRepository
 from app.repositories.quiz_runs import QuizRunRepository
 from app.repositories.users import UserRepository
 from app.services.admin_catalog import AdminCatalogDashboard, AdminCatalogService
@@ -23,7 +24,11 @@ from app.services.catalog_health import format_code_list
 from app.services.catalog_sync_preview import CatalogSyncPreview
 from app.services.dataset_validation import DatasetValidationReport
 from app.services.i18n import I18nService
-from app.services.statistics import CategoryProgressStat, UserStatsSummary
+from app.services.statistics import (
+    CategoryProgressStat,
+    LastQuizPreferences,
+    UserStatsSummary,
+)
 
 router = Router()
 
@@ -108,6 +113,12 @@ def _recommended_review_size(due_countries: int) -> int | None:
         if due_countries >= size:
             return size
     return None
+
+
+def _resolved_continue_mode(preferences: LastQuizPreferences, due_country_count: int) -> QuizMode:
+    if due_country_count >= preferences.countries_count:
+        return QuizMode.REVIEW
+    return preferences.mode
 
 
 def _due_review_categories(summary: UserStatsSummary) -> list[str]:
@@ -483,6 +494,46 @@ async def settings(callback: CallbackQuery, session: AsyncSession, i18n: I18nSer
         reply_markup=main_menu_keyboard(language, i18n),
     )
     await callback.answer()
+
+
+@router.callback_query(F.data == "menu:continue_learning")
+async def continue_learning(
+    callback: CallbackQuery,
+    state: FSMContext,
+    session: AsyncSession,
+    i18n: I18nService,
+) -> None:
+    users = UserRepository(session)
+    user = await users.get_or_create(
+        telegram_id=callback.from_user.id,
+        username=callback.from_user.username,
+        first_name=callback.from_user.first_name,
+    )
+    language = SupportedLanguage(user.language)
+    quiz_runs = QuizRunRepository(session)
+    preferences = await quiz_runs.get_last_quiz_preferences(user.id)
+    if preferences is None:
+        await callback.answer(i18n.text("continue_learning_missing", language), show_alert=True)
+        return
+
+    progress_repo = LearningProgressRepository(session)
+    due_country_count = len(
+        await progress_repo.get_due_country_codes(
+            user.id,
+            preferences.categories,
+            preferences.countries_count,
+        )
+    )
+    selected_mode = _resolved_continue_mode(preferences, due_country_count)
+    await state.set_state(QuizStates.setup)
+    await state.update_data(
+        selected_count=preferences.countries_count,
+        selected_mode=selected_mode.value,
+        selected_categories=[category.value for category in preferences.categories],
+        language=language.value,
+    )
+    await render_quiz_setup(callback, state, language, i18n)
+    await callback.answer(i18n.text("continue_learning_restored", language))
 
 
 @router.callback_query(F.data == "menu:back")

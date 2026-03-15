@@ -26,6 +26,11 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "en": "Start quiz",
         "de": "Quiz starten",
     },
+    "menu_continue_learning": {
+        "ru": "Продолжить обучение",
+        "en": "Continue learning",
+        "de": "Weiter lernen",
+    },
     "menu_settings": {
         "ru": "Настройки",
         "en": "Settings",
@@ -45,6 +50,16 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "ru": "Назад в меню",
         "en": "Back to menu",
         "de": "Zurück zum Menü",
+    },
+    "continue_learning_missing": {
+        "ru": "Пока нет предыдущего квиза, который можно восстановить.",
+        "en": "There is no previous quiz setup to restore yet.",
+        "de": "Es gibt noch kein vorheriges Quiz-Setup zum Wiederherstellen.",
+    },
+    "continue_learning_restored": {
+        "ru": "Последняя настройка квиза восстановлена.",
+        "en": "Your recent quiz setup has been restored.",
+        "de": "Ihr letztes Quiz-Setup wurde wiederhergestellt.",
     },
     "admin_denied": {
         "ru": "Доступ запрещен.",

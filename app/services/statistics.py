@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from datetime import datetime
 
-from app.constants import QuizCategory
+from app.constants import QuizCategory, QuizMode
 
 
 @dataclass(slots=True)
@@ -18,6 +18,13 @@ class CategoryProgressStat:
         if self.attempts_count == 0:
             return 0
         return round((self.correct_answers / self.attempts_count) * 100)
+
+
+@dataclass(slots=True)
+class LastQuizPreferences:
+    countries_count: int
+    categories: list[QuizCategory]
+    mode: QuizMode = QuizMode.MIXED
 
 
 @dataclass(slots=True)
