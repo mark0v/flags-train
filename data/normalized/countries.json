@@ -1,0 +1,5985 @@
+[
+  {
+    "code": "AFG",
+    "localized_name": {
+      "en": "Afghanistan",
+      "ru": "Афганистан",
+      "de": "Afghanistan"
+    },
+    "capital": {
+      "en": "Kabul",
+      "ru": "Kabul",
+      "de": "Kabul"
+    },
+    "official_language": {
+      "en": "Dari",
+      "ru": "Dari",
+      "de": "Dari"
+    },
+    "population": 43844000,
+    "population_display": {
+      "ru": "44 млн",
+      "en": "44M",
+      "de": "44 Mio."
+    },
+    "currency_name": {
+      "en": "Afghan afghani",
+      "ru": "Afghan afghani",
+      "de": "Afghan afghani"
+    },
+    "currency_code": "AFN",
+    "flag_file": "af.svg"
+  },
+  {
+    "code": "ALB",
+    "localized_name": {
+      "en": "Albania",
+      "ru": "Албания",
+      "de": "Albanien"
+    },
+    "capital": {
+      "en": "Tirana",
+      "ru": "Tirana",
+      "de": "Tirana"
+    },
+    "official_language": {
+      "en": "Albanian",
+      "ru": "Albanian",
+      "de": "Albanian"
+    },
+    "population": 2363314,
+    "population_display": {
+      "ru": "2 млн",
+      "en": "2M",
+      "de": "2 Mio."
+    },
+    "currency_name": {
+      "en": "Albanian lek",
+      "ru": "Albanian lek",
+      "de": "Albanian lek"
+    },
+    "currency_code": "ALL",
+    "flag_file": "al.svg"
+  },
+  {
+    "code": "DZA",
+    "localized_name": {
+      "en": "Algeria",
+      "ru": "Алжир",
+      "de": "Algerien"
+    },
+    "capital": {
+      "en": "Algiers",
+      "ru": "Algiers",
+      "de": "Algiers"
+    },
+    "official_language": {
+      "en": "Arabic",
+      "ru": "Arabic",
+      "de": "Arabic"
+    },
+    "population": 47400000,
+    "population_display": {
+      "ru": "47 млн",
+      "en": "47M",
+      "de": "47 Mio."
+    },
+    "currency_name": {
+      "en": "Algerian dinar",
+      "ru": "Algerian dinar",
+      "de": "Algerian dinar"
+    },
+    "currency_code": "DZD",
+    "flag_file": "dz.svg"
+  },
+  {
+    "code": "AND",
+    "localized_name": {
+      "en": "Andorra",
+      "ru": "Андорра",
+      "de": "Andorra"
+    },
+    "capital": {
+      "en": "Andorra la Vella",
+      "ru": "Andorra la Vella",
+      "de": "Andorra la Vella"
+    },
+    "official_language": {
+      "en": "Catalan",
+      "ru": "Catalan",
+      "de": "Catalan"
+    },
+    "population": 88406,
+    "population_display": {
+      "ru": "0 млн",
+      "en": "0M",
+      "de": "0 Mio."
+    },
+    "currency_name": {
+      "en": "euro",
+      "ru": "euro",
+      "de": "euro"
+    },
+    "currency_code": "EUR",
+    "flag_file": "ad.svg"
+  },
+  {
+    "code": "AGO",
+    "localized_name": {
+      "en": "Angola",
+      "ru": "Ангола",
+      "de": "Angola"
+    },
+    "capital": {
+      "en": "Luanda",
+      "ru": "Luanda",
+      "de": "Luanda"
+    },
+    "official_language": {
+      "en": "Portuguese",
+      "ru": "Portuguese",
+      "de": "Portuguese"
+    },
+    "population": 36170961,
+    "population_display": {
+      "ru": "36 млн",
+      "en": "36M",
+      "de": "36 Mio."
+    },
+    "currency_name": {
+      "en": "Angolan kwanza",
+      "ru": "Angolan kwanza",
+      "de": "Angolan kwanza"
+    },
+    "currency_code": "AOA",
+    "flag_file": "ao.svg"
+  },
+  {
+    "code": "ATG",
+    "localized_name": {
+      "en": "Antigua and Barbuda",
+      "ru": "Антигуа и Барбуда",
+      "de": "Antigua und Barbuda"
+    },
+    "capital": {
+      "en": "Saint John's",
+      "ru": "Saint John's",
+      "de": "Saint John's"
+    },
+    "official_language": {
+      "en": "English",
+      "ru": "English",
+      "de": "English"
+    },
+    "population": 103603,
+    "population_display": {
+      "ru": "0 млн",
+      "en": "0M",
+      "de": "0 Mio."
+    },
+    "currency_name": {
+      "en": "Eastern Caribbean dollar",
+      "ru": "Eastern Caribbean dollar",
+      "de": "Eastern Caribbean dollar"
+    },
+    "currency_code": "XCD",
+    "flag_file": "ag.svg"
+  },
+  {
+    "code": "ARG",
+    "localized_name": {
+      "en": "Argentina",
+      "ru": "Аргентина",
+      "de": "Argentinien"
+    },
+    "capital": {
+      "en": "Buenos Aires",
+      "ru": "Buenos Aires",
+      "de": "Buenos Aires"
+    },
+    "official_language": {
+      "en": "Guaraní",
+      "ru": "Guaraní",
+      "de": "Guaraní"
+    },
+    "population": 46735004,
+    "population_display": {
+      "ru": "47 млн",
+      "en": "47M",
+      "de": "47 Mio."
+    },
+    "currency_name": {
+      "en": "Argentine peso",
+      "ru": "Argentine peso",
+      "de": "Argentine peso"
+    },
+    "currency_code": "ARS",
+    "flag_file": "ar.svg"
+  },
+  {
+    "code": "ARM",
+    "localized_name": {
+      "en": "Armenia",
+      "ru": "Армения",
+      "de": "Armenien"
+    },
+    "capital": {
+      "en": "Yerevan",
+      "ru": "Yerevan",
+      "de": "Yerevan"
+    },
+    "official_language": {
+      "en": "Armenian",
+      "ru": "Armenian",
+      "de": "Armenian"
+    },
+    "population": 3076200,
+    "population_display": {
+      "ru": "3 млн",
+      "en": "3M",
+      "de": "3 Mio."
+    },
+    "currency_name": {
+      "en": "Armenian dram",
+      "ru": "Armenian dram",
+      "de": "Armenian dram"
+    },
+    "currency_code": "AMD",
+    "flag_file": "am.svg"
+  },
+  {
+    "code": "AUS",
+    "localized_name": {
+      "en": "Australia",
+      "ru": "Австралия",
+      "de": "Australien"
+    },
+    "capital": {
+      "en": "Canberra",
+      "ru": "Canberra",
+      "de": "Canberra"
+    },
+    "official_language": {
+      "en": "English",
+      "ru": "English",
+      "de": "English"
+    },
+    "population": 27536874,
+    "population_display": {
+      "ru": "28 млн",
+      "en": "28M",
+      "de": "28 Mio."
+    },
+    "currency_name": {
+      "en": "Australian dollar",
+      "ru": "Australian dollar",
+      "de": "Australian dollar"
+    },
+    "currency_code": "AUD",
+    "flag_file": "au.svg"
+  },
+  {
+    "code": "AUT",
+    "localized_name": {
+      "en": "Austria",
+      "ru": "Австрия",
+      "de": "Österreich"
+    },
+    "capital": {
+      "en": "Vienna",
+      "ru": "Vienna",
+      "de": "Vienna"
+    },
+    "official_language": {
+      "en": "German",
+      "ru": "German",
+      "de": "German"
+    },
+    "population": 9200931,
+    "population_display": {
+      "ru": "9 млн",
+      "en": "9M",
+      "de": "9 Mio."
+    },
+    "currency_name": {
+      "en": "euro",
+      "ru": "euro",
+      "de": "euro"
+    },
+    "currency_code": "EUR",
+    "flag_file": "at.svg"
+  },
+  {
+    "code": "AZE",
+    "localized_name": {
+      "en": "Azerbaijan",
+      "ru": "Азербайджан",
+      "de": "Aserbaidschan"
+    },
+    "capital": {
+      "en": "Baku",
+      "ru": "Baku",
+      "de": "Baku"
+    },
+    "official_language": {
+      "en": "Azerbaijani",
+      "ru": "Azerbaijani",
+      "de": "Azerbaijani"
+    },
+    "population": 10241722,
+    "population_display": {
+      "ru": "10 млн",
+      "en": "10M",
+      "de": "10 Mio."
+    },
+    "currency_name": {
+      "en": "Azerbaijani manat",
+      "ru": "Azerbaijani manat",
+      "de": "Azerbaijani manat"
+    },
+    "currency_code": "AZN",
+    "flag_file": "az.svg"
+  },
+  {
+    "code": "BHS",
+    "localized_name": {
+      "en": "Bahamas",
+      "ru": "Багамские Острова",
+      "de": "Bahamas"
+    },
+    "capital": {
+      "en": "Nassau",
+      "ru": "Nassau",
+      "de": "Nassau"
+    },
+    "official_language": {
+      "en": "English",
+      "ru": "English",
+      "de": "English"
+    },
+    "population": 398165,
+    "population_display": {
+      "ru": "0 млн",
+      "en": "0M",
+      "de": "0 Mio."
+    },
+    "currency_name": {
+      "en": "Bahamian dollar",
+      "ru": "Bahamian dollar",
+      "de": "Bahamian dollar"
+    },
+    "currency_code": "BSD",
+    "flag_file": "bs.svg"
+  },
+  {
+    "code": "BHR",
+    "localized_name": {
+      "en": "Bahrain",
+      "ru": "Бахрейн",
+      "de": "Bahrain"
+    },
+    "capital": {
+      "en": "Manama",
+      "ru": "Manama",
+      "de": "Manama"
+    },
+    "official_language": {
+      "en": "Arabic",
+      "ru": "Arabic",
+      "de": "Arabic"
+    },
+    "population": 1594654,
+    "population_display": {
+      "ru": "2 млн",
+      "en": "2M",
+      "de": "2 Mio."
+    },
+    "currency_name": {
+      "en": "Bahraini dinar",
+      "ru": "Bahraini dinar",
+      "de": "Bahraini dinar"
+    },
+    "currency_code": "BHD",
+    "flag_file": "bh.svg"
+  },
+  {
+    "code": "BGD",
+    "localized_name": {
+      "en": "Bangladesh",
+      "ru": "Бангладеш",
+      "de": "Bangladesch"
+    },
+    "capital": {
+      "en": "Dhaka",
+      "ru": "Dhaka",
+      "de": "Dhaka"
+    },
+    "official_language": {
+      "en": "Bengali",
+      "ru": "Bengali",
+      "de": "Bengali"
+    },
+    "population": 169828911,
+    "population_display": {
+      "ru": "170 млн",
+      "en": "170M",
+      "de": "170 Mio."
+    },
+    "currency_name": {
+      "en": "Bangladeshi taka",
+      "ru": "Bangladeshi taka",
+      "de": "Bangladeshi taka"
+    },
+    "currency_code": "BDT",
+    "flag_file": "bd.svg"
+  },
+  {
+    "code": "BRB",
+    "localized_name": {
+      "en": "Barbados",
+      "ru": "Барбадос",
+      "de": "Barbados"
+    },
+    "capital": {
+      "en": "Bridgetown",
+      "ru": "Bridgetown",
+      "de": "Bridgetown"
+    },
+    "official_language": {
+      "en": "English",
+      "ru": "English",
+      "de": "English"
+    },
+    "population": 267800,
+    "population_display": {
+      "ru": "0 млн",
+      "en": "0M",
+      "de": "0 Mio."
+    },
+    "currency_name": {
+      "en": "Barbadian dollar",
+      "ru": "Barbadian dollar",
+      "de": "Barbadian dollar"
+    },
+    "currency_code": "BBD",
+    "flag_file": "bb.svg"
+  },
+  {
+    "code": "BLR",
+    "localized_name": {
+      "en": "Belarus",
+      "ru": "Беларусь",
+      "de": "Weißrussland"
+    },
+    "capital": {
+      "en": "Minsk",
+      "ru": "Minsk",
+      "de": "Minsk"
+    },
+    "official_language": {
+      "en": "Belarusian",
+      "ru": "Belarusian",
+      "de": "Belarusian"
+    },
+    "population": 9109280,
+    "population_display": {
+      "ru": "9 млн",
+      "en": "9M",
+      "de": "9 Mio."
+    },
+    "currency_name": {
+      "en": "Belarusian ruble",
+      "ru": "Belarusian ruble",
+      "de": "Belarusian ruble"
+    },
+    "currency_code": "BYN",
+    "flag_file": "by.svg"
+  },
+  {
+    "code": "BEL",
+    "localized_name": {
+      "en": "Belgium",
+      "ru": "Бельгия",
+      "de": "Belgien"
+    },
+    "capital": {
+      "en": "Brussels",
+      "ru": "Brussels",
+      "de": "Brussels"
+    },
+    "official_language": {
+      "en": "German",
+      "ru": "German",
+      "de": "German"
+    },
+    "population": 11825551,
+    "population_display": {
+      "ru": "12 млн",
+      "en": "12M",
+      "de": "12 Mio."
+    },
+    "currency_name": {
+      "en": "euro",
+      "ru": "euro",
+      "de": "euro"
+    },
+    "currency_code": "EUR",
+    "flag_file": "be.svg"
+  },
+  {
+    "code": "BLZ",
+    "localized_name": {
+      "en": "Belize",
+      "ru": "Белиз",
+      "de": "Belize"
+    },
+    "capital": {
+      "en": "Belmopan",
+      "ru": "Belmopan",
+      "de": "Belmopan"
+    },
+    "official_language": {
+      "en": "Belizean Creole",
+      "ru": "Belizean Creole",
+      "de": "Belizean Creole"
+    },
+    "population": 417634,
+    "population_display": {
+      "ru": "0 млн",
+      "en": "0M",
+      "de": "0 Mio."
+    },
+    "currency_name": {
+      "en": "Belize dollar",
+      "ru": "Belize dollar",
+      "de": "Belize dollar"
+    },
+    "currency_code": "BZD",
+    "flag_file": "bz.svg"
+  },
+  {
+    "code": "BEN",
+    "localized_name": {
+      "en": "Benin",
+      "ru": "Бенин",
+      "de": "Benin"
+    },
+    "capital": {
+      "en": "Porto-Novo",
+      "ru": "Porto-Novo",
+      "de": "Porto-Novo"
+    },
+    "official_language": {
+      "en": "French",
+      "ru": "French",
+      "de": "French"
+    },
+    "population": 13224860,
+    "population_display": {
+      "ru": "13 млн",
+      "en": "13M",
+      "de": "13 Mio."
+    },
+    "currency_name": {
+      "en": "West African CFA franc",
+      "ru": "West African CFA franc",
+      "de": "West African CFA franc"
+    },
+    "currency_code": "XOF",
+    "flag_file": "bj.svg"
+  },
+  {
+    "code": "BTN",
+    "localized_name": {
+      "en": "Bhutan",
+      "ru": "Бутан",
+      "de": "Bhutan"
+    },
+    "capital": {
+      "en": "Thimphu",
+      "ru": "Thimphu",
+      "de": "Thimphu"
+    },
+    "official_language": {
+      "en": "Dzongkha",
+      "ru": "Dzongkha",
+      "de": "Dzongkha"
+    },
+    "population": 784043,
+    "population_display": {
+      "ru": "1 млн",
+      "en": "1M",
+      "de": "1 Mio."
+    },
+    "currency_name": {
+      "en": "Bhutanese ngultrum",
+      "ru": "Bhutanese ngultrum",
+      "de": "Bhutanese ngultrum"
+    },
+    "currency_code": "BTN",
+    "flag_file": "bt.svg"
+  },
+  {
+    "code": "BOL",
+    "localized_name": {
+      "en": "Bolivia",
+      "ru": "Боливия",
+      "de": "Bolivien"
+    },
+    "capital": {
+      "en": "Sucre",
+      "ru": "Sucre",
+      "de": "Sucre"
+    },
+    "official_language": {
+      "en": "Aymara",
+      "ru": "Aymara",
+      "de": "Aymara"
+    },
+    "population": 11365333,
+    "population_display": {
+      "ru": "11 млн",
+      "en": "11M",
+      "de": "11 Mio."
+    },
+    "currency_name": {
+      "en": "Bolivian boliviano",
+      "ru": "Bolivian boliviano",
+      "de": "Bolivian boliviano"
+    },
+    "currency_code": "BOB",
+    "flag_file": "bo.svg"
+  },
+  {
+    "code": "BIH",
+    "localized_name": {
+      "en": "Bosnia and Herzegovina",
+      "ru": "Босния и Герцеговина",
+      "de": "Bosnien und Herzegowina"
+    },
+    "capital": {
+      "en": "Sarajevo",
+      "ru": "Sarajevo",
+      "de": "Sarajevo"
+    },
+    "official_language": {
+      "en": "Bosnian",
+      "ru": "Bosnian",
+      "de": "Bosnian"
+    },
+    "population": 3422000,
+    "population_display": {
+      "ru": "3 млн",
+      "en": "3M",
+      "de": "3 Mio."
+    },
+    "currency_name": {
+      "en": "Bosnia and Herzegovina convertible mark",
+      "ru": "Bosnia and Herzegovina convertible mark",
+      "de": "Bosnia and Herzegovina convertible mark"
+    },
+    "currency_code": "BAM",
+    "flag_file": "ba.svg"
+  },
+  {
+    "code": "BWA",
+    "localized_name": {
+      "en": "Botswana",
+      "ru": "Ботсвана",
+      "de": "Botswana"
+    },
+    "capital": {
+      "en": "Gaborone",
+      "ru": "Gaborone",
+      "de": "Gaborone"
+    },
+    "official_language": {
+      "en": "English",
+      "ru": "English",
+      "de": "English"
+    },
+    "population": 2359609,
+    "population_display": {
+      "ru": "2 млн",
+      "en": "2M",
+      "de": "2 Mio."
+    },
+    "currency_name": {
+      "en": "Botswana pula",
+      "ru": "Botswana pula",
+      "de": "Botswana pula"
+    },
+    "currency_code": "BWP",
+    "flag_file": "bw.svg"
+  },
+  {
+    "code": "BRA",
+    "localized_name": {
+      "en": "Brazil",
+      "ru": "Бразилия",
+      "de": "Brasilien"
+    },
+    "capital": {
+      "en": "Brasília",
+      "ru": "Brasília",
+      "de": "Brasília"
+    },
+    "official_language": {
+      "en": "Portuguese",
+      "ru": "Portuguese",
+      "de": "Portuguese"
+    },
+    "population": 213421037,
+    "population_display": {
+      "ru": "213 млн",
+      "en": "213M",
+      "de": "213 Mio."
+    },
+    "currency_name": {
+      "en": "Brazilian real",
+      "ru": "Brazilian real",
+      "de": "Brazilian real"
+    },
+    "currency_code": "BRL",
+    "flag_file": "br.svg"
+  },
+  {
+    "code": "BRN",
+    "localized_name": {
+      "en": "Brunei",
+      "ru": "Бруней",
+      "de": "Brunei"
+    },
+    "capital": {
+      "en": "Bandar Seri Begawan",
+      "ru": "Bandar Seri Begawan",
+      "de": "Bandar Seri Begawan"
+    },
+    "official_language": {
+      "en": "Malay",
+      "ru": "Malay",
+      "de": "Malay"
+    },
+    "population": 455500,
+    "population_display": {
+      "ru": "0 млн",
+      "en": "0M",
+      "de": "0 Mio."
+    },
+    "currency_name": {
+      "en": "Brunei dollar",
+      "ru": "Brunei dollar",
+      "de": "Brunei dollar"
+    },
+    "currency_code": "BND",
+    "flag_file": "bn.svg"
+  },
+  {
+    "code": "BGR",
+    "localized_name": {
+      "en": "Bulgaria",
+      "ru": "Болгария",
+      "de": "Bulgarien"
+    },
+    "capital": {
+      "en": "Sofia",
+      "ru": "Sofia",
+      "de": "Sofia"
+    },
+    "official_language": {
+      "en": "Bulgarian",
+      "ru": "Bulgarian",
+      "de": "Bulgarian"
+    },
+    "population": 6437360,
+    "population_display": {
+      "ru": "6 млн",
+      "en": "6M",
+      "de": "6 Mio."
+    },
+    "currency_name": {
+      "en": "Bulgarian lev",
+      "ru": "Bulgarian lev",
+      "de": "Bulgarian lev"
+    },
+    "currency_code": "BGN",
+    "flag_file": "bg.svg"
+  },
+  {
+    "code": "BFA",
+    "localized_name": {
+      "en": "Burkina Faso",
+      "ru": "Буркина-Фасо",
+      "de": "Burkina Faso"
+    },
+    "capital": {
+      "en": "Ouagadougou",
+      "ru": "Ouagadougou",
+      "de": "Ouagadougou"
+    },
+    "official_language": {
+      "en": "French",
+      "ru": "French",
+      "de": "French"
+    },
+    "population": 24070553,
+    "population_display": {
+      "ru": "24 млн",
+      "en": "24M",
+      "de": "24 Mio."
+    },
+    "currency_name": {
+      "en": "West African CFA franc",
+      "ru": "West African CFA franc",
+      "de": "West African CFA franc"
+    },
+    "currency_code": "XOF",
+    "flag_file": "bf.svg"
+  },
+  {
+    "code": "BDI",
+    "localized_name": {
+      "en": "Burundi",
+      "ru": "Бурунди",
+      "de": "Burundi"
+    },
+    "capital": {
+      "en": "Gitega",
+      "ru": "Gitega",
+      "de": "Gitega"
+    },
+    "official_language": {
+      "en": "French",
+      "ru": "French",
+      "de": "French"
+    },
+    "population": 12332788,
+    "population_display": {
+      "ru": "12 млн",
+      "en": "12M",
+      "de": "12 Mio."
+    },
+    "currency_name": {
+      "en": "Burundian franc",
+      "ru": "Burundian franc",
+      "de": "Burundian franc"
+    },
+    "currency_code": "BIF",
+    "flag_file": "bi.svg"
+  },
+  {
+    "code": "KHM",
+    "localized_name": {
+      "en": "Cambodia",
+      "ru": "Камбоджа",
+      "de": "Kambodscha"
+    },
+    "capital": {
+      "en": "Phnom Penh",
+      "ru": "Phnom Penh",
+      "de": "Phnom Penh"
+    },
+    "official_language": {
+      "en": "Khmer",
+      "ru": "Khmer",
+      "de": "Khmer"
+    },
+    "population": 17577760,
+    "population_display": {
+      "ru": "18 млн",
+      "en": "18M",
+      "de": "18 Mio."
+    },
+    "currency_name": {
+      "en": "Cambodian riel",
+      "ru": "Cambodian riel",
+      "de": "Cambodian riel"
+    },
+    "currency_code": "KHR",
+    "flag_file": "kh.svg"
+  },
+  {
+    "code": "CMR",
+    "localized_name": {
+      "en": "Cameroon",
+      "ru": "Камерун",
+      "de": "Kamerun"
+    },
+    "capital": {
+      "en": "Yaoundé",
+      "ru": "Yaoundé",
+      "de": "Yaoundé"
+    },
+    "official_language": {
+      "en": "English",
+      "ru": "English",
+      "de": "English"
+    },
+    "population": 29442327,
+    "population_display": {
+      "ru": "29 млн",
+      "en": "29M",
+      "de": "29 Mio."
+    },
+    "currency_name": {
+      "en": "Central African CFA franc",
+      "ru": "Central African CFA franc",
+      "de": "Central African CFA franc"
+    },
+    "currency_code": "XAF",
+    "flag_file": "cm.svg"
+  },
+  {
+    "code": "CAN",
+    "localized_name": {
+      "en": "Canada",
+      "ru": "Канада",
+      "de": "Kanada"
+    },
+    "capital": {
+      "en": "Ottawa",
+      "ru": "Ottawa",
+      "de": "Ottawa"
+    },
+    "official_language": {
+      "en": "English",
+      "ru": "English",
+      "de": "English"
+    },
+    "population": 41651653,
+    "population_display": {
+      "ru": "42 млн",
+      "en": "42M",
+      "de": "42 Mio."
+    },
+    "currency_name": {
+      "en": "Canadian dollar",
+      "ru": "Canadian dollar",
+      "de": "Canadian dollar"
+    },
+    "currency_code": "CAD",
+    "flag_file": "ca.svg"
+  },
+  {
+    "code": "CPV",
+    "localized_name": {
+      "en": "Cape Verde",
+      "ru": "Кабо-Верде",
+      "de": "Kap Verde"
+    },
+    "capital": {
+      "en": "Praia",
+      "ru": "Praia",
+      "de": "Praia"
+    },
+    "official_language": {
+      "en": "Portuguese",
+      "ru": "Portuguese",
+      "de": "Portuguese"
+    },
+    "population": 491233,
+    "population_display": {
+      "ru": "0 млн",
+      "en": "0M",
+      "de": "0 Mio."
+    },
+    "currency_name": {
+      "en": "Cape Verdean escudo",
+      "ru": "Cape Verdean escudo",
+      "de": "Cape Verdean escudo"
+    },
+    "currency_code": "CVE",
+    "flag_file": "cv.svg"
+  },
+  {
+    "code": "CAF",
+    "localized_name": {
+      "en": "Central African Republic",
+      "ru": "Центральноафриканская Республика",
+      "de": "Zentralafrikanische Republik"
+    },
+    "capital": {
+      "en": "Bangui",
+      "ru": "Bangui",
+      "de": "Bangui"
+    },
+    "official_language": {
+      "en": "French",
+      "ru": "French",
+      "de": "French"
+    },
+    "population": 6470307,
+    "population_display": {
+      "ru": "6 млн",
+      "en": "6M",
+      "de": "6 Mio."
+    },
+    "currency_name": {
+      "en": "Central African CFA franc",
+      "ru": "Central African CFA franc",
+      "de": "Central African CFA franc"
+    },
+    "currency_code": "XAF",
+    "flag_file": "cf.svg"
+  },
+  {
+    "code": "TCD",
+    "localized_name": {
+      "en": "Chad",
+      "ru": "Чад",
+      "de": "Tschad"
+    },
+    "capital": {
+      "en": "N'Djamena",
+      "ru": "N'Djamena",
+      "de": "N'Djamena"
+    },
+    "official_language": {
+      "en": "Arabic",
+      "ru": "Arabic",
+      "de": "Arabic"
+    },
+    "population": 19340757,
+    "population_display": {
+      "ru": "19 млн",
+      "en": "19M",
+      "de": "19 Mio."
+    },
+    "currency_name": {
+      "en": "Central African CFA franc",
+      "ru": "Central African CFA franc",
+      "de": "Central African CFA franc"
+    },
+    "currency_code": "XAF",
+    "flag_file": "td.svg"
+  },
+  {
+    "code": "CHL",
+    "localized_name": {
+      "en": "Chile",
+      "ru": "Чили",
+      "de": "Chile"
+    },
+    "capital": {
+      "en": "Santiago",
+      "ru": "Santiago",
+      "de": "Santiago"
+    },
+    "official_language": {
+      "en": "Spanish",
+      "ru": "Spanish",
+      "de": "Spanish"
+    },
+    "population": 20206953,
+    "population_display": {
+      "ru": "20 млн",
+      "en": "20M",
+      "de": "20 Mio."
+    },
+    "currency_name": {
+      "en": "Chilean peso",
+      "ru": "Chilean peso",
+      "de": "Chilean peso"
+    },
+    "currency_code": "CLP",
+    "flag_file": "cl.svg"
+  },
+  {
+    "code": "CHN",
+    "localized_name": {
+      "en": "China",
+      "ru": "Китай",
+      "de": "China"
+    },
+    "capital": {
+      "en": "Beijing",
+      "ru": "Beijing",
+      "de": "Beijing"
+    },
+    "official_language": {
+      "en": "Chinese",
+      "ru": "Chinese",
+      "de": "Chinese"
+    },
+    "population": 1408280000,
+    "population_display": {
+      "ru": "1408 млн",
+      "en": "1408M",
+      "de": "1408 Mio."
+    },
+    "currency_name": {
+      "en": "Chinese yuan",
+      "ru": "Chinese yuan",
+      "de": "Chinese yuan"
+    },
+    "currency_code": "CNY",
+    "flag_file": "cn.svg"
+  },
+  {
+    "code": "COL",
+    "localized_name": {
+      "en": "Colombia",
+      "ru": "Колумбия",
+      "de": "Kolumbien"
+    },
+    "capital": {
+      "en": "Bogotá",
+      "ru": "Bogotá",
+      "de": "Bogotá"
+    },
+    "official_language": {
+      "en": "Spanish",
+      "ru": "Spanish",
+      "de": "Spanish"
+    },
+    "population": 53057212,
+    "population_display": {
+      "ru": "53 млн",
+      "en": "53M",
+      "de": "53 Mio."
+    },
+    "currency_name": {
+      "en": "Colombian peso",
+      "ru": "Colombian peso",
+      "de": "Colombian peso"
+    },
+    "currency_code": "COP",
+    "flag_file": "co.svg"
+  },
+  {
+    "code": "COM",
+    "localized_name": {
+      "en": "Comoros",
+      "ru": "Коморы",
+      "de": "Komoren"
+    },
+    "capital": {
+      "en": "Moroni",
+      "ru": "Moroni",
+      "de": "Moroni"
+    },
+    "official_language": {
+      "en": "Arabic",
+      "ru": "Arabic",
+      "de": "Arabic"
+    },
+    "population": 919901,
+    "population_display": {
+      "ru": "1 млн",
+      "en": "1M",
+      "de": "1 Mio."
+    },
+    "currency_name": {
+      "en": "Comorian franc",
+      "ru": "Comorian franc",
+      "de": "Comorian franc"
+    },
+    "currency_code": "KMF",
+    "flag_file": "km.svg"
+  },
+  {
+    "code": "CRI",
+    "localized_name": {
+      "en": "Costa Rica",
+      "ru": "Коста-Рика",
+      "de": "Costa Rica"
+    },
+    "capital": {
+      "en": "San José",
+      "ru": "San José",
+      "de": "San José"
+    },
+    "official_language": {
+      "en": "Spanish",
+      "ru": "Spanish",
+      "de": "Spanish"
+    },
+    "population": 5309625,
+    "population_display": {
+      "ru": "5 млн",
+      "en": "5M",
+      "de": "5 Mio."
+    },
+    "currency_name": {
+      "en": "Costa Rican colón",
+      "ru": "Costa Rican colón",
+      "de": "Costa Rican colón"
+    },
+    "currency_code": "CRC",
+    "flag_file": "cr.svg"
+  },
+  {
+    "code": "HRV",
+    "localized_name": {
+      "en": "Croatia",
+      "ru": "Хорватия",
+      "de": "Kroatien"
+    },
+    "capital": {
+      "en": "Zagreb",
+      "ru": "Zagreb",
+      "de": "Zagreb"
+    },
+    "official_language": {
+      "en": "Croatian",
+      "ru": "Croatian",
+      "de": "Croatian"
+    },
+    "population": 3866233,
+    "population_display": {
+      "ru": "4 млн",
+      "en": "4M",
+      "de": "4 Mio."
+    },
+    "currency_name": {
+      "en": "euro",
+      "ru": "euro",
+      "de": "euro"
+    },
+    "currency_code": "EUR",
+    "flag_file": "hr.svg"
+  },
+  {
+    "code": "CUB",
+    "localized_name": {
+      "en": "Cuba",
+      "ru": "Куба",
+      "de": "Kuba"
+    },
+    "capital": {
+      "en": "Havana",
+      "ru": "Havana",
+      "de": "Havana"
+    },
+    "official_language": {
+      "en": "Spanish",
+      "ru": "Spanish",
+      "de": "Spanish"
+    },
+    "population": 9748007,
+    "population_display": {
+      "ru": "10 млн",
+      "en": "10M",
+      "de": "10 Mio."
+    },
+    "currency_name": {
+      "en": "Cuban convertible peso",
+      "ru": "Cuban convertible peso",
+      "de": "Cuban convertible peso"
+    },
+    "currency_code": "CUC",
+    "flag_file": "cu.svg"
+  },
+  {
+    "code": "CYP",
+    "localized_name": {
+      "en": "Cyprus",
+      "ru": "Кипр",
+      "de": "Zypern"
+    },
+    "capital": {
+      "en": "Nicosia",
+      "ru": "Nicosia",
+      "de": "Nicosia"
+    },
+    "official_language": {
+      "en": "Greek",
+      "ru": "Greek",
+      "de": "Greek"
+    },
+    "population": 1442614,
+    "population_display": {
+      "ru": "1 млн",
+      "en": "1M",
+      "de": "1 Mio."
+    },
+    "currency_name": {
+      "en": "euro",
+      "ru": "euro",
+      "de": "euro"
+    },
+    "currency_code": "EUR",
+    "flag_file": "cy.svg"
+  },
+  {
+    "code": "CZE",
+    "localized_name": {
+      "en": "Czechia",
+      "ru": "Чехия",
+      "de": "Tschechien"
+    },
+    "capital": {
+      "en": "Prague",
+      "ru": "Prague",
+      "de": "Prague"
+    },
+    "official_language": {
+      "en": "Czech",
+      "ru": "Czech",
+      "de": "Czech"
+    },
+    "population": 10882341,
+    "population_display": {
+      "ru": "11 млн",
+      "en": "11M",
+      "de": "11 Mio."
+    },
+    "currency_name": {
+      "en": "Czech koruna",
+      "ru": "Czech koruna",
+      "de": "Czech koruna"
+    },
+    "currency_code": "CZK",
+    "flag_file": "cz.svg"
+  },
+  {
+    "code": "COD",
+    "localized_name": {
+      "en": "DR Congo",
+      "ru": "Демократическая Республика Конго",
+      "de": "Kongo (Dem. Rep.)"
+    },
+    "capital": {
+      "en": "Kinshasa",
+      "ru": "Kinshasa",
+      "de": "Kinshasa"
+    },
+    "official_language": {
+      "en": "French",
+      "ru": "French",
+      "de": "French"
+    },
+    "population": 112832000,
+    "population_display": {
+      "ru": "113 млн",
+      "en": "113M",
+      "de": "113 Mio."
+    },
+    "currency_name": {
+      "en": "Congolese franc",
+      "ru": "Congolese franc",
+      "de": "Congolese franc"
+    },
+    "currency_code": "CDF",
+    "flag_file": "cd.svg"
+  },
+  {
+    "code": "DNK",
+    "localized_name": {
+      "en": "Denmark",
+      "ru": "Дания",
+      "de": "Dänemark"
+    },
+    "capital": {
+      "en": "Copenhagen",
+      "ru": "Copenhagen",
+      "de": "Copenhagen"
+    },
+    "official_language": {
+      "en": "Danish",
+      "ru": "Danish",
+      "de": "Danish"
+    },
+    "population": 6011488,
+    "population_display": {
+      "ru": "6 млн",
+      "en": "6M",
+      "de": "6 Mio."
+    },
+    "currency_name": {
+      "en": "Danish krone",
+      "ru": "Danish krone",
+      "de": "Danish krone"
+    },
+    "currency_code": "DKK",
+    "flag_file": "dk.svg"
+  },
+  {
+    "code": "DJI",
+    "localized_name": {
+      "en": "Djibouti",
+      "ru": "Джибути",
+      "de": "Dschibuti"
+    },
+    "capital": {
+      "en": "Djibouti",
+      "ru": "Djibouti",
+      "de": "Djibouti"
+    },
+    "official_language": {
+      "en": "Arabic",
+      "ru": "Arabic",
+      "de": "Arabic"
+    },
+    "population": 1066809,
+    "population_display": {
+      "ru": "1 млн",
+      "en": "1M",
+      "de": "1 Mio."
+    },
+    "currency_name": {
+      "en": "Djiboutian franc",
+      "ru": "Djiboutian franc",
+      "de": "Djiboutian franc"
+    },
+    "currency_code": "DJF",
+    "flag_file": "dj.svg"
+  },
+  {
+    "code": "DMA",
+    "localized_name": {
+      "en": "Dominica",
+      "ru": "Доминика",
+      "de": "Dominica"
+    },
+    "capital": {
+      "en": "Roseau",
+      "ru": "Roseau",
+      "de": "Roseau"
+    },
+    "official_language": {
+      "en": "English",
+      "ru": "English",
+      "de": "English"
+    },
+    "population": 67408,
+    "population_display": {
+      "ru": "0 млн",
+      "en": "0M",
+      "de": "0 Mio."
+    },
+    "currency_name": {
+      "en": "Eastern Caribbean dollar",
+      "ru": "Eastern Caribbean dollar",
+      "de": "Eastern Caribbean dollar"
+    },
+    "currency_code": "XCD",
+    "flag_file": "dm.svg"
+  },
+  {
+    "code": "DOM",
+    "localized_name": {
+      "en": "Dominican Republic",
+      "ru": "Доминиканская Республика",
+      "de": "Dominikanische Republik"
+    },
+    "capital": {
+      "en": "Santo Domingo",
+      "ru": "Santo Domingo",
+      "de": "Santo Domingo"
+    },
+    "official_language": {
+      "en": "Spanish",
+      "ru": "Spanish",
+      "de": "Spanish"
+    },
+    "population": 10771504,
+    "population_display": {
+      "ru": "11 млн",
+      "en": "11M",
+      "de": "11 Mio."
+    },
+    "currency_name": {
+      "en": "Dominican peso",
+      "ru": "Dominican peso",
+      "de": "Dominican peso"
+    },
+    "currency_code": "DOP",
+    "flag_file": "do.svg"
+  },
+  {
+    "code": "ECU",
+    "localized_name": {
+      "en": "Ecuador",
+      "ru": "Эквадор",
+      "de": "Ecuador"
+    },
+    "capital": {
+      "en": "Quito",
+      "ru": "Quito",
+      "de": "Quito"
+    },
+    "official_language": {
+      "en": "Spanish",
+      "ru": "Spanish",
+      "de": "Spanish"
+    },
+    "population": 18103660,
+    "population_display": {
+      "ru": "18 млн",
+      "en": "18M",
+      "de": "18 Mio."
+    },
+    "currency_name": {
+      "en": "United States dollar",
+      "ru": "United States dollar",
+      "de": "United States dollar"
+    },
+    "currency_code": "USD",
+    "flag_file": "ec.svg"
+  },
+  {
+    "code": "EGY",
+    "localized_name": {
+      "en": "Egypt",
+      "ru": "Египет",
+      "de": "Ägypten"
+    },
+    "capital": {
+      "en": "Cairo",
+      "ru": "Cairo",
+      "de": "Cairo"
+    },
+    "official_language": {
+      "en": "Arabic",
+      "ru": "Arabic",
+      "de": "Arabic"
+    },
+    "population": 107271260,
+    "population_display": {
+      "ru": "107 млн",
+      "en": "107M",
+      "de": "107 Mio."
+    },
+    "currency_name": {
+      "en": "Egyptian pound",
+      "ru": "Egyptian pound",
+      "de": "Egyptian pound"
+    },
+    "currency_code": "EGP",
+    "flag_file": "eg.svg"
+  },
+  {
+    "code": "SLV",
+    "localized_name": {
+      "en": "El Salvador",
+      "ru": "Сальвадор",
+      "de": "El Salvador"
+    },
+    "capital": {
+      "en": "San Salvador",
+      "ru": "San Salvador",
+      "de": "San Salvador"
+    },
+    "official_language": {
+      "en": "Spanish",
+      "ru": "Spanish",
+      "de": "Spanish"
+    },
+    "population": 6029976,
+    "population_display": {
+      "ru": "6 млн",
+      "en": "6M",
+      "de": "6 Mio."
+    },
+    "currency_name": {
+      "en": "United States dollar",
+      "ru": "United States dollar",
+      "de": "United States dollar"
+    },
+    "currency_code": "USD",
+    "flag_file": "sv.svg"
+  },
+  {
+    "code": "GNQ",
+    "localized_name": {
+      "en": "Equatorial Guinea",
+      "ru": "Экваториальная Гвинея",
+      "de": "Äquatorialguinea"
+    },
+    "capital": {
+      "en": "Ciudad de la Paz",
+      "ru": "Ciudad de la Paz",
+      "de": "Ciudad de la Paz"
+    },
+    "official_language": {
+      "en": "French",
+      "ru": "French",
+      "de": "French"
+    },
+    "population": 1668768,
+    "population_display": {
+      "ru": "2 млн",
+      "en": "2M",
+      "de": "2 Mio."
+    },
+    "currency_name": {
+      "en": "Central African CFA franc",
+      "ru": "Central African CFA franc",
+      "de": "Central African CFA franc"
+    },
+    "currency_code": "XAF",
+    "flag_file": "gq.svg"
+  },
+  {
+    "code": "ERI",
+    "localized_name": {
+      "en": "Eritrea",
+      "ru": "Эритрея",
+      "de": "Eritrea"
+    },
+    "capital": {
+      "en": "Asmara",
+      "ru": "Asmara",
+      "de": "Asmara"
+    },
+    "official_language": {
+      "en": "Arabic",
+      "ru": "Arabic",
+      "de": "Arabic"
+    },
+    "population": 3607000,
+    "population_display": {
+      "ru": "4 млн",
+      "en": "4M",
+      "de": "4 Mio."
+    },
+    "currency_name": {
+      "en": "Eritrean nakfa",
+      "ru": "Eritrean nakfa",
+      "de": "Eritrean nakfa"
+    },
+    "currency_code": "ERN",
+    "flag_file": "er.svg"
+  },
+  {
+    "code": "EST",
+    "localized_name": {
+      "en": "Estonia",
+      "ru": "Эстония",
+      "de": "Estland"
+    },
+    "capital": {
+      "en": "Tallinn",
+      "ru": "Tallinn",
+      "de": "Tallinn"
+    },
+    "official_language": {
+      "en": "Estonian",
+      "ru": "Estonian",
+      "de": "Estonian"
+    },
+    "population": 1369995,
+    "population_display": {
+      "ru": "1 млн",
+      "en": "1M",
+      "de": "1 Mio."
+    },
+    "currency_name": {
+      "en": "euro",
+      "ru": "euro",
+      "de": "euro"
+    },
+    "currency_code": "EUR",
+    "flag_file": "ee.svg"
+  },
+  {
+    "code": "SWZ",
+    "localized_name": {
+      "en": "Eswatini",
+      "ru": "Свазиленд",
+      "de": "Swasiland"
+    },
+    "capital": {
+      "en": "Mbabane",
+      "ru": "Mbabane",
+      "de": "Mbabane"
+    },
+    "official_language": {
+      "en": "English",
+      "ru": "English",
+      "de": "English"
+    },
+    "population": 1235549,
+    "population_display": {
+      "ru": "1 млн",
+      "en": "1M",
+      "de": "1 Mio."
+    },
+    "currency_name": {
+      "en": "Swazi lilangeni",
+      "ru": "Swazi lilangeni",
+      "de": "Swazi lilangeni"
+    },
+    "currency_code": "SZL",
+    "flag_file": "sz.svg"
+  },
+  {
+    "code": "ETH",
+    "localized_name": {
+      "en": "Ethiopia",
+      "ru": "Эфиопия",
+      "de": "Äthiopien"
+    },
+    "capital": {
+      "en": "Addis Ababa",
+      "ru": "Addis Ababa",
+      "de": "Addis Ababa"
+    },
+    "official_language": {
+      "en": "Amharic",
+      "ru": "Amharic",
+      "de": "Amharic"
+    },
+    "population": 111652998,
+    "population_display": {
+      "ru": "112 млн",
+      "en": "112M",
+      "de": "112 Mio."
+    },
+    "currency_name": {
+      "en": "Ethiopian birr",
+      "ru": "Ethiopian birr",
+      "de": "Ethiopian birr"
+    },
+    "currency_code": "ETB",
+    "flag_file": "et.svg"
+  },
+  {
+    "code": "FJI",
+    "localized_name": {
+      "en": "Fiji",
+      "ru": "Фиджи",
+      "de": "Fidschi"
+    },
+    "capital": {
+      "en": "Suva",
+      "ru": "Suva",
+      "de": "Suva"
+    },
+    "official_language": {
+      "en": "English",
+      "ru": "English",
+      "de": "English"
+    },
+    "population": 900869,
+    "population_display": {
+      "ru": "1 млн",
+      "en": "1M",
+      "de": "1 Mio."
+    },
+    "currency_name": {
+      "en": "Fijian dollar",
+      "ru": "Fijian dollar",
+      "de": "Fijian dollar"
+    },
+    "currency_code": "FJD",
+    "flag_file": "fj.svg"
+  },
+  {
+    "code": "FIN",
+    "localized_name": {
+      "en": "Finland",
+      "ru": "Финляндия",
+      "de": "Finnland"
+    },
+    "capital": {
+      "en": "Helsinki",
+      "ru": "Helsinki",
+      "de": "Helsinki"
+    },
+    "official_language": {
+      "en": "Finnish",
+      "ru": "Finnish",
+      "de": "Finnish"
+    },
+    "population": 5650325,
+    "population_display": {
+      "ru": "6 млн",
+      "en": "6M",
+      "de": "6 Mio."
+    },
+    "currency_name": {
+      "en": "euro",
+      "ru": "euro",
+      "de": "euro"
+    },
+    "currency_code": "EUR",
+    "flag_file": "fi.svg"
+  },
+  {
+    "code": "FRA",
+    "localized_name": {
+      "en": "France",
+      "ru": "Франция",
+      "de": "Frankreich"
+    },
+    "capital": {
+      "en": "Paris",
+      "ru": "Paris",
+      "de": "Paris"
+    },
+    "official_language": {
+      "en": "French",
+      "ru": "French",
+      "de": "French"
+    },
+    "population": 66351959,
+    "population_display": {
+      "ru": "66 млн",
+      "en": "66M",
+      "de": "66 Mio."
+    },
+    "currency_name": {
+      "en": "euro",
+      "ru": "euro",
+      "de": "euro"
+    },
+    "currency_code": "EUR",
+    "flag_file": "fr.svg"
+  },
+  {
+    "code": "GAB",
+    "localized_name": {
+      "en": "Gabon",
+      "ru": "Габон",
+      "de": "Gabun"
+    },
+    "capital": {
+      "en": "Libreville",
+      "ru": "Libreville",
+      "de": "Libreville"
+    },
+    "official_language": {
+      "en": "French",
+      "ru": "French",
+      "de": "French"
+    },
+    "population": 2469296,
+    "population_display": {
+      "ru": "2 млн",
+      "en": "2M",
+      "de": "2 Mio."
+    },
+    "currency_name": {
+      "en": "Central African CFA franc",
+      "ru": "Central African CFA franc",
+      "de": "Central African CFA franc"
+    },
+    "currency_code": "XAF",
+    "flag_file": "ga.svg"
+  },
+  {
+    "code": "GMB",
+    "localized_name": {
+      "en": "Gambia",
+      "ru": "Гамбия",
+      "de": "Gambia"
+    },
+    "capital": {
+      "en": "Banjul",
+      "ru": "Banjul",
+      "de": "Banjul"
+    },
+    "official_language": {
+      "en": "English",
+      "ru": "English",
+      "de": "English"
+    },
+    "population": 2422712,
+    "population_display": {
+      "ru": "2 млн",
+      "en": "2M",
+      "de": "2 Mio."
+    },
+    "currency_name": {
+      "en": "dalasi",
+      "ru": "dalasi",
+      "de": "dalasi"
+    },
+    "currency_code": "GMD",
+    "flag_file": "gm.svg"
+  },
+  {
+    "code": "GEO",
+    "localized_name": {
+      "en": "Georgia",
+      "ru": "Грузия",
+      "de": "Georgien"
+    },
+    "capital": {
+      "en": "Tbilisi",
+      "ru": "Tbilisi",
+      "de": "Tbilisi"
+    },
+    "official_language": {
+      "en": "Georgian",
+      "ru": "Georgian",
+      "de": "Georgian"
+    },
+    "population": 4000921,
+    "population_display": {
+      "ru": "4 млн",
+      "en": "4M",
+      "de": "4 Mio."
+    },
+    "currency_name": {
+      "en": "lari",
+      "ru": "lari",
+      "de": "lari"
+    },
+    "currency_code": "GEL",
+    "flag_file": "ge.svg"
+  },
+  {
+    "code": "DEU",
+    "localized_name": {
+      "en": "Germany",
+      "ru": "Германия",
+      "de": "Deutschland"
+    },
+    "capital": {
+      "en": "Berlin",
+      "ru": "Berlin",
+      "de": "Berlin"
+    },
+    "official_language": {
+      "en": "German",
+      "ru": "German",
+      "de": "German"
+    },
+    "population": 83491249,
+    "population_display": {
+      "ru": "83 млн",
+      "en": "83M",
+      "de": "83 Mio."
+    },
+    "currency_name": {
+      "en": "euro",
+      "ru": "euro",
+      "de": "euro"
+    },
+    "currency_code": "EUR",
+    "flag_file": "de.svg"
+  },
+  {
+    "code": "GHA",
+    "localized_name": {
+      "en": "Ghana",
+      "ru": "Гана",
+      "de": "Ghana"
+    },
+    "capital": {
+      "en": "Accra",
+      "ru": "Accra",
+      "de": "Accra"
+    },
+    "official_language": {
+      "en": "English",
+      "ru": "English",
+      "de": "English"
+    },
+    "population": 33742380,
+    "population_display": {
+      "ru": "34 млн",
+      "en": "34M",
+      "de": "34 Mio."
+    },
+    "currency_name": {
+      "en": "Ghanaian cedi",
+      "ru": "Ghanaian cedi",
+      "de": "Ghanaian cedi"
+    },
+    "currency_code": "GHS",
+    "flag_file": "gh.svg"
+  },
+  {
+    "code": "GRC",
+    "localized_name": {
+      "en": "Greece",
+      "ru": "Греция",
+      "de": "Griechenland"
+    },
+    "capital": {
+      "en": "Athens",
+      "ru": "Athens",
+      "de": "Athens"
+    },
+    "official_language": {
+      "en": "Greek",
+      "ru": "Greek",
+      "de": "Greek"
+    },
+    "population": 10400720,
+    "population_display": {
+      "ru": "10 млн",
+      "en": "10M",
+      "de": "10 Mio."
+    },
+    "currency_name": {
+      "en": "euro",
+      "ru": "euro",
+      "de": "euro"
+    },
+    "currency_code": "EUR",
+    "flag_file": "gr.svg"
+  },
+  {
+    "code": "GRD",
+    "localized_name": {
+      "en": "Grenada",
+      "ru": "Гренада",
+      "de": "Grenada"
+    },
+    "capital": {
+      "en": "St. George's",
+      "ru": "St. George's",
+      "de": "St. George's"
+    },
+    "official_language": {
+      "en": "English",
+      "ru": "English",
+      "de": "English"
+    },
+    "population": 109021,
+    "population_display": {
+      "ru": "0 млн",
+      "en": "0M",
+      "de": "0 Mio."
+    },
+    "currency_name": {
+      "en": "Eastern Caribbean dollar",
+      "ru": "Eastern Caribbean dollar",
+      "de": "Eastern Caribbean dollar"
+    },
+    "currency_code": "XCD",
+    "flag_file": "gd.svg"
+  },
+  {
+    "code": "GTM",
+    "localized_name": {
+      "en": "Guatemala",
+      "ru": "Гватемала",
+      "de": "Guatemala"
+    },
+    "capital": {
+      "en": "Guatemala City",
+      "ru": "Guatemala City",
+      "de": "Guatemala City"
+    },
+    "official_language": {
+      "en": "Spanish",
+      "ru": "Spanish",
+      "de": "Spanish"
+    },
+    "population": 18079810,
+    "population_display": {
+      "ru": "18 млн",
+      "en": "18M",
+      "de": "18 Mio."
+    },
+    "currency_name": {
+      "en": "Guatemalan quetzal",
+      "ru": "Guatemalan quetzal",
+      "de": "Guatemalan quetzal"
+    },
+    "currency_code": "GTQ",
+    "flag_file": "gt.svg"
+  },
+  {
+    "code": "GIN",
+    "localized_name": {
+      "en": "Guinea",
+      "ru": "Гвинея",
+      "de": "Guinea"
+    },
+    "capital": {
+      "en": "Conakry",
+      "ru": "Conakry",
+      "de": "Conakry"
+    },
+    "official_language": {
+      "en": "French",
+      "ru": "French",
+      "de": "French"
+    },
+    "population": 14363931,
+    "population_display": {
+      "ru": "14 млн",
+      "en": "14M",
+      "de": "14 Mio."
+    },
+    "currency_name": {
+      "en": "Guinean franc",
+      "ru": "Guinean franc",
+      "de": "Guinean franc"
+    },
+    "currency_code": "GNF",
+    "flag_file": "gn.svg"
+  },
+  {
+    "code": "GNB",
+    "localized_name": {
+      "en": "Guinea-Bissau",
+      "ru": "Гвинея-Бисау",
+      "de": "Guinea-Bissau"
+    },
+    "capital": {
+      "en": "Bissau",
+      "ru": "Bissau",
+      "de": "Bissau"
+    },
+    "official_language": {
+      "en": "Portuguese",
+      "ru": "Portuguese",
+      "de": "Portuguese"
+    },
+    "population": 1781308,
+    "population_display": {
+      "ru": "2 млн",
+      "en": "2M",
+      "de": "2 Mio."
+    },
+    "currency_name": {
+      "en": "West African CFA franc",
+      "ru": "West African CFA franc",
+      "de": "West African CFA franc"
+    },
+    "currency_code": "XOF",
+    "flag_file": "gw.svg"
+  },
+  {
+    "code": "GUY",
+    "localized_name": {
+      "en": "Guyana",
+      "ru": "Гайана",
+      "de": "Guyana"
+    },
+    "capital": {
+      "en": "Georgetown",
+      "ru": "Georgetown",
+      "de": "Georgetown"
+    },
+    "official_language": {
+      "en": "English",
+      "ru": "English",
+      "de": "English"
+    },
+    "population": 772975,
+    "population_display": {
+      "ru": "1 млн",
+      "en": "1M",
+      "de": "1 Mio."
+    },
+    "currency_name": {
+      "en": "Guyanese dollar",
+      "ru": "Guyanese dollar",
+      "de": "Guyanese dollar"
+    },
+    "currency_code": "GYD",
+    "flag_file": "gy.svg"
+  },
+  {
+    "code": "HTI",
+    "localized_name": {
+      "en": "Haiti",
+      "ru": "Гаити",
+      "de": "Haiti"
+    },
+    "capital": {
+      "en": "Port-au-Prince",
+      "ru": "Port-au-Prince",
+      "de": "Port-au-Prince"
+    },
+    "official_language": {
+      "en": "French",
+      "ru": "French",
+      "de": "French"
+    },
+    "population": 11867032,
+    "population_display": {
+      "ru": "12 млн",
+      "en": "12M",
+      "de": "12 Mio."
+    },
+    "currency_name": {
+      "en": "Haitian gourde",
+      "ru": "Haitian gourde",
+      "de": "Haitian gourde"
+    },
+    "currency_code": "HTG",
+    "flag_file": "ht.svg"
+  },
+  {
+    "code": "HND",
+    "localized_name": {
+      "en": "Honduras",
+      "ru": "Гондурас",
+      "de": "Honduras"
+    },
+    "capital": {
+      "en": "Tegucigalpa",
+      "ru": "Tegucigalpa",
+      "de": "Tegucigalpa"
+    },
+    "official_language": {
+      "en": "Spanish",
+      "ru": "Spanish",
+      "de": "Spanish"
+    },
+    "population": 9892632,
+    "population_display": {
+      "ru": "10 млн",
+      "en": "10M",
+      "de": "10 Mio."
+    },
+    "currency_name": {
+      "en": "Honduran lempira",
+      "ru": "Honduran lempira",
+      "de": "Honduran lempira"
+    },
+    "currency_code": "HNL",
+    "flag_file": "hn.svg"
+  },
+  {
+    "code": "HUN",
+    "localized_name": {
+      "en": "Hungary",
+      "ru": "Венгрия",
+      "de": "Ungarn"
+    },
+    "capital": {
+      "en": "Budapest",
+      "ru": "Budapest",
+      "de": "Budapest"
+    },
+    "official_language": {
+      "en": "Hungarian",
+      "ru": "Hungarian",
+      "de": "Hungarian"
+    },
+    "population": 9539502,
+    "population_display": {
+      "ru": "10 млн",
+      "en": "10M",
+      "de": "10 Mio."
+    },
+    "currency_name": {
+      "en": "Hungarian forint",
+      "ru": "Hungarian forint",
+      "de": "Hungarian forint"
+    },
+    "currency_code": "HUF",
+    "flag_file": "hu.svg"
+  },
+  {
+    "code": "ISL",
+    "localized_name": {
+      "en": "Iceland",
+      "ru": "Исландия",
+      "de": "Island"
+    },
+    "capital": {
+      "en": "Reykjavik",
+      "ru": "Reykjavik",
+      "de": "Reykjavik"
+    },
+    "official_language": {
+      "en": "Icelandic",
+      "ru": "Icelandic",
+      "de": "Icelandic"
+    },
+    "population": 391810,
+    "population_display": {
+      "ru": "0 млн",
+      "en": "0M",
+      "de": "0 Mio."
+    },
+    "currency_name": {
+      "en": "Icelandic króna",
+      "ru": "Icelandic króna",
+      "de": "Icelandic króna"
+    },
+    "currency_code": "ISK",
+    "flag_file": "is.svg"
+  },
+  {
+    "code": "IND",
+    "localized_name": {
+      "en": "India",
+      "ru": "Индия",
+      "de": "Indien"
+    },
+    "capital": {
+      "en": "New Delhi",
+      "ru": "New Delhi",
+      "de": "New Delhi"
+    },
+    "official_language": {
+      "en": "English",
+      "ru": "English",
+      "de": "English"
+    },
+    "population": 1417492000,
+    "population_display": {
+      "ru": "1417 млн",
+      "en": "1417M",
+      "de": "1417 Mio."
+    },
+    "currency_name": {
+      "en": "Indian rupee",
+      "ru": "Indian rupee",
+      "de": "Indian rupee"
+    },
+    "currency_code": "INR",
+    "flag_file": "in.svg"
+  },
+  {
+    "code": "IDN",
+    "localized_name": {
+      "en": "Indonesia",
+      "ru": "Индонезия",
+      "de": "Indonesien"
+    },
+    "capital": {
+      "en": "Jakarta",
+      "ru": "Jakarta",
+      "de": "Jakarta"
+    },
+    "official_language": {
+      "en": "Indonesian",
+      "ru": "Indonesian",
+      "de": "Indonesian"
+    },
+    "population": 284438782,
+    "population_display": {
+      "ru": "284 млн",
+      "en": "284M",
+      "de": "284 Mio."
+    },
+    "currency_name": {
+      "en": "Indonesian rupiah",
+      "ru": "Indonesian rupiah",
+      "de": "Indonesian rupiah"
+    },
+    "currency_code": "IDR",
+    "flag_file": "id.svg"
+  },
+  {
+    "code": "IRN",
+    "localized_name": {
+      "en": "Iran",
+      "ru": "Иран",
+      "de": "Iran"
+    },
+    "capital": {
+      "en": "Tehran",
+      "ru": "Tehran",
+      "de": "Tehran"
+    },
+    "official_language": {
+      "en": "Persian (Farsi)",
+      "ru": "Persian (Farsi)",
+      "de": "Persian (Farsi)"
+    },
+    "population": 85961000,
+    "population_display": {
+      "ru": "86 млн",
+      "en": "86M",
+      "de": "86 Mio."
+    },
+    "currency_name": {
+      "en": "Iranian rial",
+      "ru": "Iranian rial",
+      "de": "Iranian rial"
+    },
+    "currency_code": "IRR",
+    "flag_file": "ir.svg"
+  },
+  {
+    "code": "IRQ",
+    "localized_name": {
+      "en": "Iraq",
+      "ru": "Ирак",
+      "de": "Irak"
+    },
+    "capital": {
+      "en": "Baghdad",
+      "ru": "Baghdad",
+      "de": "Baghdad"
+    },
+    "official_language": {
+      "en": "Arabic",
+      "ru": "Arabic",
+      "de": "Arabic"
+    },
+    "population": 46118793,
+    "population_display": {
+      "ru": "46 млн",
+      "en": "46M",
+      "de": "46 Mio."
+    },
+    "currency_name": {
+      "en": "Iraqi dinar",
+      "ru": "Iraqi dinar",
+      "de": "Iraqi dinar"
+    },
+    "currency_code": "IQD",
+    "flag_file": "iq.svg"
+  },
+  {
+    "code": "IRL",
+    "localized_name": {
+      "en": "Ireland",
+      "ru": "Ирландия",
+      "de": "Irland"
+    },
+    "capital": {
+      "en": "Dublin",
+      "ru": "Dublin",
+      "de": "Dublin"
+    },
+    "official_language": {
+      "en": "English",
+      "ru": "English",
+      "de": "English"
+    },
+    "population": 5458600,
+    "population_display": {
+      "ru": "5 млн",
+      "en": "5M",
+      "de": "5 Mio."
+    },
+    "currency_name": {
+      "en": "euro",
+      "ru": "euro",
+      "de": "euro"
+    },
+    "currency_code": "EUR",
+    "flag_file": "ie.svg"
+  },
+  {
+    "code": "ISR",
+    "localized_name": {
+      "en": "Israel",
+      "ru": "Израиль",
+      "de": "Israel"
+    },
+    "capital": {
+      "en": "Jerusalem",
+      "ru": "Jerusalem",
+      "de": "Jerusalem"
+    },
+    "official_language": {
+      "en": "Arabic",
+      "ru": "Arabic",
+      "de": "Arabic"
+    },
+    "population": 10134800,
+    "population_display": {
+      "ru": "10 млн",
+      "en": "10M",
+      "de": "10 Mio."
+    },
+    "currency_name": {
+      "en": "Israeli new shekel",
+      "ru": "Israeli new shekel",
+      "de": "Israeli new shekel"
+    },
+    "currency_code": "ILS",
+    "flag_file": "il.svg"
+  },
+  {
+    "code": "ITA",
+    "localized_name": {
+      "en": "Italy",
+      "ru": "Италия",
+      "de": "Italien"
+    },
+    "capital": {
+      "en": "Rome",
+      "ru": "Rome",
+      "de": "Rome"
+    },
+    "official_language": {
+      "en": "Italian",
+      "ru": "Italian",
+      "de": "Italian"
+    },
+    "population": 58927633,
+    "population_display": {
+      "ru": "59 млн",
+      "en": "59M",
+      "de": "59 Mio."
+    },
+    "currency_name": {
+      "en": "euro",
+      "ru": "euro",
+      "de": "euro"
+    },
+    "currency_code": "EUR",
+    "flag_file": "it.svg"
+  },
+  {
+    "code": "CIV",
+    "localized_name": {
+      "en": "Ivory Coast",
+      "ru": "Кот-д’Ивуар",
+      "de": "Elfenbeinküste"
+    },
+    "capital": {
+      "en": "Yamoussoukro",
+      "ru": "Yamoussoukro",
+      "de": "Yamoussoukro"
+    },
+    "official_language": {
+      "en": "French",
+      "ru": "French",
+      "de": "French"
+    },
+    "population": 31719275,
+    "population_display": {
+      "ru": "32 млн",
+      "en": "32M",
+      "de": "32 Mio."
+    },
+    "currency_name": {
+      "en": "West African CFA franc",
+      "ru": "West African CFA franc",
+      "de": "West African CFA franc"
+    },
+    "currency_code": "XOF",
+    "flag_file": "ci.svg"
+  },
+  {
+    "code": "JAM",
+    "localized_name": {
+      "en": "Jamaica",
+      "ru": "Ямайка",
+      "de": "Jamaika"
+    },
+    "capital": {
+      "en": "Kingston",
+      "ru": "Kingston",
+      "de": "Kingston"
+    },
+    "official_language": {
+      "en": "English",
+      "ru": "English",
+      "de": "English"
+    },
+    "population": 2825544,
+    "population_display": {
+      "ru": "3 млн",
+      "en": "3M",
+      "de": "3 Mio."
+    },
+    "currency_name": {
+      "en": "Jamaican dollar",
+      "ru": "Jamaican dollar",
+      "de": "Jamaican dollar"
+    },
+    "currency_code": "JMD",
+    "flag_file": "jm.svg"
+  },
+  {
+    "code": "JPN",
+    "localized_name": {
+      "en": "Japan",
+      "ru": "Япония",
+      "de": "Japan"
+    },
+    "capital": {
+      "en": "Tokyo",
+      "ru": "Tokyo",
+      "de": "Tokyo"
+    },
+    "official_language": {
+      "en": "Japanese",
+      "ru": "Japanese",
+      "de": "Japanese"
+    },
+    "population": 123210000,
+    "population_display": {
+      "ru": "123 млн",
+      "en": "123M",
+      "de": "123 Mio."
+    },
+    "currency_name": {
+      "en": "Japanese yen",
+      "ru": "Japanese yen",
+      "de": "Japanese yen"
+    },
+    "currency_code": "JPY",
+    "flag_file": "jp.svg"
+  },
+  {
+    "code": "JOR",
+    "localized_name": {
+      "en": "Jordan",
+      "ru": "Иордания",
+      "de": "Jordanien"
+    },
+    "capital": {
+      "en": "Amman",
+      "ru": "Amman",
+      "de": "Amman"
+    },
+    "official_language": {
+      "en": "Arabic",
+      "ru": "Arabic",
+      "de": "Arabic"
+    },
+    "population": 11734000,
+    "population_display": {
+      "ru": "12 млн",
+      "en": "12M",
+      "de": "12 Mio."
+    },
+    "currency_name": {
+      "en": "Jordanian dinar",
+      "ru": "Jordanian dinar",
+      "de": "Jordanian dinar"
+    },
+    "currency_code": "JOD",
+    "flag_file": "jo.svg"
+  },
+  {
+    "code": "KAZ",
+    "localized_name": {
+      "en": "Kazakhstan",
+      "ru": "Казахстан",
+      "de": "Kasachstan"
+    },
+    "capital": {
+      "en": "Astana",
+      "ru": "Astana",
+      "de": "Astana"
+    },
+    "official_language": {
+      "en": "Kazakh",
+      "ru": "Kazakh",
+      "de": "Kazakh"
+    },
+    "population": 20426568,
+    "population_display": {
+      "ru": "20 млн",
+      "en": "20M",
+      "de": "20 Mio."
+    },
+    "currency_name": {
+      "en": "Kazakhstani tenge",
+      "ru": "Kazakhstani tenge",
+      "de": "Kazakhstani tenge"
+    },
+    "currency_code": "KZT",
+    "flag_file": "kz.svg"
+  },
+  {
+    "code": "KEN",
+    "localized_name": {
+      "en": "Kenya",
+      "ru": "Кения",
+      "de": "Kenia"
+    },
+    "capital": {
+      "en": "Nairobi",
+      "ru": "Nairobi",
+      "de": "Nairobi"
+    },
+    "official_language": {
+      "en": "English",
+      "ru": "English",
+      "de": "English"
+    },
+    "population": 53330978,
+    "population_display": {
+      "ru": "53 млн",
+      "en": "53M",
+      "de": "53 Mio."
+    },
+    "currency_name": {
+      "en": "Kenyan shilling",
+      "ru": "Kenyan shilling",
+      "de": "Kenyan shilling"
+    },
+    "currency_code": "KES",
+    "flag_file": "ke.svg"
+  },
+  {
+    "code": "KIR",
+    "localized_name": {
+      "en": "Kiribati",
+      "ru": "Кирибати",
+      "de": "Kiribati"
+    },
+    "capital": {
+      "en": "South Tarawa",
+      "ru": "South Tarawa",
+      "de": "South Tarawa"
+    },
+    "official_language": {
+      "en": "English",
+      "ru": "English",
+      "de": "English"
+    },
+    "population": 120740,
+    "population_display": {
+      "ru": "0 млн",
+      "en": "0M",
+      "de": "0 Mio."
+    },
+    "currency_name": {
+      "en": "Australian dollar",
+      "ru": "Australian dollar",
+      "de": "Australian dollar"
+    },
+    "currency_code": "AUD",
+    "flag_file": "ki.svg"
+  },
+  {
+    "code": "KWT",
+    "localized_name": {
+      "en": "Kuwait",
+      "ru": "Кувейт",
+      "de": "Kuwait"
+    },
+    "capital": {
+      "en": "Kuwait City",
+      "ru": "Kuwait City",
+      "de": "Kuwait City"
+    },
+    "official_language": {
+      "en": "Arabic",
+      "ru": "Arabic",
+      "de": "Arabic"
+    },
+    "population": 4881254,
+    "population_display": {
+      "ru": "5 млн",
+      "en": "5M",
+      "de": "5 Mio."
+    },
+    "currency_name": {
+      "en": "Kuwaiti dinar",
+      "ru": "Kuwaiti dinar",
+      "de": "Kuwaiti dinar"
+    },
+    "currency_code": "KWD",
+    "flag_file": "kw.svg"
+  },
+  {
+    "code": "KGZ",
+    "localized_name": {
+      "en": "Kyrgyzstan",
+      "ru": "Киргизия",
+      "de": "Kirgisistan"
+    },
+    "capital": {
+      "en": "Bishkek",
+      "ru": "Bishkek",
+      "de": "Bishkek"
+    },
+    "official_language": {
+      "en": "Kyrgyz",
+      "ru": "Kyrgyz",
+      "de": "Kyrgyz"
+    },
+    "population": 7281800,
+    "population_display": {
+      "ru": "7 млн",
+      "en": "7M",
+      "de": "7 Mio."
+    },
+    "currency_name": {
+      "en": "Kyrgyzstani som",
+      "ru": "Kyrgyzstani som",
+      "de": "Kyrgyzstani som"
+    },
+    "currency_code": "KGS",
+    "flag_file": "kg.svg"
+  },
+  {
+    "code": "LAO",
+    "localized_name": {
+      "en": "Laos",
+      "ru": "Лаос",
+      "de": "Laos"
+    },
+    "capital": {
+      "en": "Vientiane",
+      "ru": "Vientiane",
+      "de": "Vientiane"
+    },
+    "official_language": {
+      "en": "Lao",
+      "ru": "Lao",
+      "de": "Lao"
+    },
+    "population": 7647000,
+    "population_display": {
+      "ru": "8 млн",
+      "en": "8M",
+      "de": "8 Mio."
+    },
+    "currency_name": {
+      "en": "Lao kip",
+      "ru": "Lao kip",
+      "de": "Lao kip"
+    },
+    "currency_code": "LAK",
+    "flag_file": "la.svg"
+  },
+  {
+    "code": "LVA",
+    "localized_name": {
+      "en": "Latvia",
+      "ru": "Латвия",
+      "de": "Lettland"
+    },
+    "capital": {
+      "en": "Riga",
+      "ru": "Riga",
+      "de": "Riga"
+    },
+    "official_language": {
+      "en": "Latvian",
+      "ru": "Latvian",
+      "de": "Latvian"
+    },
+    "population": 1829000,
+    "population_display": {
+      "ru": "2 млн",
+      "en": "2M",
+      "de": "2 Mio."
+    },
+    "currency_name": {
+      "en": "euro",
+      "ru": "euro",
+      "de": "euro"
+    },
+    "currency_code": "EUR",
+    "flag_file": "lv.svg"
+  },
+  {
+    "code": "LBN",
+    "localized_name": {
+      "en": "Lebanon",
+      "ru": "Ливан",
+      "de": "Libanon"
+    },
+    "capital": {
+      "en": "Beirut",
+      "ru": "Beirut",
+      "de": "Beirut"
+    },
+    "official_language": {
+      "en": "Arabic",
+      "ru": "Arabic",
+      "de": "Arabic"
+    },
+    "population": 5490000,
+    "population_display": {
+      "ru": "5 млн",
+      "en": "5M",
+      "de": "5 Mio."
+    },
+    "currency_name": {
+      "en": "Lebanese pound",
+      "ru": "Lebanese pound",
+      "de": "Lebanese pound"
+    },
+    "currency_code": "LBP",
+    "flag_file": "lb.svg"
+  },
+  {
+    "code": "LSO",
+    "localized_name": {
+      "en": "Lesotho",
+      "ru": "Лесото",
+      "de": "Lesotho"
+    },
+    "capital": {
+      "en": "Maseru",
+      "ru": "Maseru",
+      "de": "Maseru"
+    },
+    "official_language": {
+      "en": "English",
+      "ru": "English",
+      "de": "English"
+    },
+    "population": 2116427,
+    "population_display": {
+      "ru": "2 млн",
+      "en": "2M",
+      "de": "2 Mio."
+    },
+    "currency_name": {
+      "en": "Lesotho loti",
+      "ru": "Lesotho loti",
+      "de": "Lesotho loti"
+    },
+    "currency_code": "LSL",
+    "flag_file": "ls.svg"
+  },
+  {
+    "code": "LBR",
+    "localized_name": {
+      "en": "Liberia",
+      "ru": "Либерия",
+      "de": "Liberia"
+    },
+    "capital": {
+      "en": "Monrovia",
+      "ru": "Monrovia",
+      "de": "Monrovia"
+    },
+    "official_language": {
+      "en": "English",
+      "ru": "English",
+      "de": "English"
+    },
+    "population": 5248621,
+    "population_display": {
+      "ru": "5 млн",
+      "en": "5M",
+      "de": "5 Mio."
+    },
+    "currency_name": {
+      "en": "Liberian dollar",
+      "ru": "Liberian dollar",
+      "de": "Liberian dollar"
+    },
+    "currency_code": "LRD",
+    "flag_file": "lr.svg"
+  },
+  {
+    "code": "LBY",
+    "localized_name": {
+      "en": "Libya",
+      "ru": "Ливия",
+      "de": "Libyen"
+    },
+    "capital": {
+      "en": "Tripoli",
+      "ru": "Tripoli",
+      "de": "Tripoli"
+    },
+    "official_language": {
+      "en": "Arabic",
+      "ru": "Arabic",
+      "de": "Arabic"
+    },
+    "population": 7459000,
+    "population_display": {
+      "ru": "7 млн",
+      "en": "7M",
+      "de": "7 Mio."
+    },
+    "currency_name": {
+      "en": "Libyan dinar",
+      "ru": "Libyan dinar",
+      "de": "Libyan dinar"
+    },
+    "currency_code": "LYD",
+    "flag_file": "ly.svg"
+  },
+  {
+    "code": "LIE",
+    "localized_name": {
+      "en": "Liechtenstein",
+      "ru": "Лихтенштейн",
+      "de": "Liechtenstein"
+    },
+    "capital": {
+      "en": "Vaduz",
+      "ru": "Vaduz",
+      "de": "Vaduz"
+    },
+    "official_language": {
+      "en": "German",
+      "ru": "German",
+      "de": "German"
+    },
+    "population": 40900,
+    "population_display": {
+      "ru": "0 млн",
+      "en": "0M",
+      "de": "0 Mio."
+    },
+    "currency_name": {
+      "en": "Swiss franc",
+      "ru": "Swiss franc",
+      "de": "Swiss franc"
+    },
+    "currency_code": "CHF",
+    "flag_file": "li.svg"
+  },
+  {
+    "code": "LTU",
+    "localized_name": {
+      "en": "Lithuania",
+      "ru": "Литва",
+      "de": "Litauen"
+    },
+    "capital": {
+      "en": "Vilnius",
+      "ru": "Vilnius",
+      "de": "Vilnius"
+    },
+    "official_language": {
+      "en": "Lithuanian",
+      "ru": "Lithuanian",
+      "de": "Lithuanian"
+    },
+    "population": 2894886,
+    "population_display": {
+      "ru": "3 млн",
+      "en": "3M",
+      "de": "3 Mio."
+    },
+    "currency_name": {
+      "en": "euro",
+      "ru": "euro",
+      "de": "euro"
+    },
+    "currency_code": "EUR",
+    "flag_file": "lt.svg"
+  },
+  {
+    "code": "LUX",
+    "localized_name": {
+      "en": "Luxembourg",
+      "ru": "Люксембург",
+      "de": "Luxemburg"
+    },
+    "capital": {
+      "en": "Luxembourg",
+      "ru": "Luxembourg",
+      "de": "Luxembourg"
+    },
+    "official_language": {
+      "en": "German",
+      "ru": "German",
+      "de": "German"
+    },
+    "population": 681973,
+    "population_display": {
+      "ru": "1 млн",
+      "en": "1M",
+      "de": "1 Mio."
+    },
+    "currency_name": {
+      "en": "euro",
+      "ru": "euro",
+      "de": "euro"
+    },
+    "currency_code": "EUR",
+    "flag_file": "lu.svg"
+  },
+  {
+    "code": "MDG",
+    "localized_name": {
+      "en": "Madagascar",
+      "ru": "Мадагаскар",
+      "de": "Madagaskar"
+    },
+    "capital": {
+      "en": "Antananarivo",
+      "ru": "Antananarivo",
+      "de": "Antananarivo"
+    },
+    "official_language": {
+      "en": "French",
+      "ru": "French",
+      "de": "French"
+    },
+    "population": 31727042,
+    "population_display": {
+      "ru": "32 млн",
+      "en": "32M",
+      "de": "32 Mio."
+    },
+    "currency_name": {
+      "en": "Malagasy ariary",
+      "ru": "Malagasy ariary",
+      "de": "Malagasy ariary"
+    },
+    "currency_code": "MGA",
+    "flag_file": "mg.svg"
+  },
+  {
+    "code": "MWI",
+    "localized_name": {
+      "en": "Malawi",
+      "ru": "Малави",
+      "de": "Malawi"
+    },
+    "capital": {
+      "en": "Lilongwe",
+      "ru": "Lilongwe",
+      "de": "Lilongwe"
+    },
+    "official_language": {
+      "en": "English",
+      "ru": "English",
+      "de": "English"
+    },
+    "population": 20734262,
+    "population_display": {
+      "ru": "21 млн",
+      "en": "21M",
+      "de": "21 Mio."
+    },
+    "currency_name": {
+      "en": "Malawian kwacha",
+      "ru": "Malawian kwacha",
+      "de": "Malawian kwacha"
+    },
+    "currency_code": "MWK",
+    "flag_file": "mw.svg"
+  },
+  {
+    "code": "MYS",
+    "localized_name": {
+      "en": "Malaysia",
+      "ru": "Малайзия",
+      "de": "Malaysia"
+    },
+    "capital": {
+      "en": "Kuala Lumpur",
+      "ru": "Kuala Lumpur",
+      "de": "Kuala Lumpur"
+    },
+    "official_language": {
+      "en": "English",
+      "ru": "English",
+      "de": "English"
+    },
+    "population": 34231700,
+    "population_display": {
+      "ru": "34 млн",
+      "en": "34M",
+      "de": "34 Mio."
+    },
+    "currency_name": {
+      "en": "Malaysian ringgit",
+      "ru": "Malaysian ringgit",
+      "de": "Malaysian ringgit"
+    },
+    "currency_code": "MYR",
+    "flag_file": "my.svg"
+  },
+  {
+    "code": "MDV",
+    "localized_name": {
+      "en": "Maldives",
+      "ru": "Мальдивы",
+      "de": "Malediven"
+    },
+    "capital": {
+      "en": "Malé",
+      "ru": "Malé",
+      "de": "Malé"
+    },
+    "official_language": {
+      "en": "Maldivian",
+      "ru": "Maldivian",
+      "de": "Maldivian"
+    },
+    "population": 515132,
+    "population_display": {
+      "ru": "1 млн",
+      "en": "1M",
+      "de": "1 Mio."
+    },
+    "currency_name": {
+      "en": "Maldivian rufiyaa",
+      "ru": "Maldivian rufiyaa",
+      "de": "Maldivian rufiyaa"
+    },
+    "currency_code": "MVR",
+    "flag_file": "mv.svg"
+  },
+  {
+    "code": "MLI",
+    "localized_name": {
+      "en": "Mali",
+      "ru": "Мали",
+      "de": "Mali"
+    },
+    "capital": {
+      "en": "Bamako",
+      "ru": "Bamako",
+      "de": "Bamako"
+    },
+    "official_language": {
+      "en": "French",
+      "ru": "French",
+      "de": "French"
+    },
+    "population": 22395489,
+    "population_display": {
+      "ru": "22 млн",
+      "en": "22M",
+      "de": "22 Mio."
+    },
+    "currency_name": {
+      "en": "West African CFA franc",
+      "ru": "West African CFA franc",
+      "de": "West African CFA franc"
+    },
+    "currency_code": "XOF",
+    "flag_file": "ml.svg"
+  },
+  {
+    "code": "MLT",
+    "localized_name": {
+      "en": "Malta",
+      "ru": "Мальта",
+      "de": "Malta"
+    },
+    "capital": {
+      "en": "Valletta",
+      "ru": "Valletta",
+      "de": "Valletta"
+    },
+    "official_language": {
+      "en": "English",
+      "ru": "English",
+      "de": "English"
+    },
+    "population": 574250,
+    "population_display": {
+      "ru": "1 млн",
+      "en": "1M",
+      "de": "1 Mio."
+    },
+    "currency_name": {
+      "en": "euro",
+      "ru": "euro",
+      "de": "euro"
+    },
+    "currency_code": "EUR",
+    "flag_file": "mt.svg"
+  },
+  {
+    "code": "MHL",
+    "localized_name": {
+      "en": "Marshall Islands",
+      "ru": "Маршалловы Острова",
+      "de": "Marshallinseln"
+    },
+    "capital": {
+      "en": "Majuro",
+      "ru": "Majuro",
+      "de": "Majuro"
+    },
+    "official_language": {
+      "en": "English",
+      "ru": "English",
+      "de": "English"
+    },
+    "population": 42418,
+    "population_display": {
+      "ru": "0 млн",
+      "en": "0M",
+      "de": "0 Mio."
+    },
+    "currency_name": {
+      "en": "United States dollar",
+      "ru": "United States dollar",
+      "de": "United States dollar"
+    },
+    "currency_code": "USD",
+    "flag_file": "mh.svg"
+  },
+  {
+    "code": "MRT",
+    "localized_name": {
+      "en": "Mauritania",
+      "ru": "Мавритания",
+      "de": "Mauretanien"
+    },
+    "capital": {
+      "en": "Nouakchott",
+      "ru": "Nouakchott",
+      "de": "Nouakchott"
+    },
+    "official_language": {
+      "en": "Arabic",
+      "ru": "Arabic",
+      "de": "Arabic"
+    },
+    "population": 4927532,
+    "population_display": {
+      "ru": "5 млн",
+      "en": "5M",
+      "de": "5 Mio."
+    },
+    "currency_name": {
+      "en": "Mauritanian ouguiya",
+      "ru": "Mauritanian ouguiya",
+      "de": "Mauritanian ouguiya"
+    },
+    "currency_code": "MRU",
+    "flag_file": "mr.svg"
+  },
+  {
+    "code": "MUS",
+    "localized_name": {
+      "en": "Mauritius",
+      "ru": "Маврикий",
+      "de": "Mauritius"
+    },
+    "capital": {
+      "en": "Port Louis",
+      "ru": "Port Louis",
+      "de": "Port Louis"
+    },
+    "official_language": {
+      "en": "English",
+      "ru": "English",
+      "de": "English"
+    },
+    "population": 1243741,
+    "population_display": {
+      "ru": "1 млн",
+      "en": "1M",
+      "de": "1 Mio."
+    },
+    "currency_name": {
+      "en": "Mauritian rupee",
+      "ru": "Mauritian rupee",
+      "de": "Mauritian rupee"
+    },
+    "currency_code": "MUR",
+    "flag_file": "mu.svg"
+  },
+  {
+    "code": "MEX",
+    "localized_name": {
+      "en": "Mexico",
+      "ru": "Мексика",
+      "de": "Mexiko"
+    },
+    "capital": {
+      "en": "Mexico City",
+      "ru": "Mexico City",
+      "de": "Mexico City"
+    },
+    "official_language": {
+      "en": "Spanish",
+      "ru": "Spanish",
+      "de": "Spanish"
+    },
+    "population": 130575786,
+    "population_display": {
+      "ru": "131 млн",
+      "en": "131M",
+      "de": "131 Mio."
+    },
+    "currency_name": {
+      "en": "Mexican peso",
+      "ru": "Mexican peso",
+      "de": "Mexican peso"
+    },
+    "currency_code": "MXN",
+    "flag_file": "mx.svg"
+  },
+  {
+    "code": "FSM",
+    "localized_name": {
+      "en": "Micronesia",
+      "ru": "Федеративные Штаты Микронезии",
+      "de": "Mikronesien"
+    },
+    "capital": {
+      "en": "Palikir",
+      "ru": "Palikir",
+      "de": "Palikir"
+    },
+    "official_language": {
+      "en": "English",
+      "ru": "English",
+      "de": "English"
+    },
+    "population": 105564,
+    "population_display": {
+      "ru": "0 млн",
+      "en": "0M",
+      "de": "0 Mio."
+    },
+    "currency_name": {
+      "en": "United States dollar",
+      "ru": "United States dollar",
+      "de": "United States dollar"
+    },
+    "currency_code": "USD",
+    "flag_file": "fm.svg"
+  },
+  {
+    "code": "MDA",
+    "localized_name": {
+      "en": "Moldova",
+      "ru": "Молдавия",
+      "de": "Moldawien"
+    },
+    "capital": {
+      "en": "Chișinău",
+      "ru": "Chișinău",
+      "de": "Chișinău"
+    },
+    "official_language": {
+      "en": "Romanian",
+      "ru": "Romanian",
+      "de": "Romanian"
+    },
+    "population": 2749076,
+    "population_display": {
+      "ru": "3 млн",
+      "en": "3M",
+      "de": "3 Mio."
+    },
+    "currency_name": {
+      "en": "Moldovan leu",
+      "ru": "Moldovan leu",
+      "de": "Moldovan leu"
+    },
+    "currency_code": "MDL",
+    "flag_file": "md.svg"
+  },
+  {
+    "code": "MCO",
+    "localized_name": {
+      "en": "Monaco",
+      "ru": "Монако",
+      "de": "Monaco"
+    },
+    "capital": {
+      "en": "Monaco",
+      "ru": "Monaco",
+      "de": "Monaco"
+    },
+    "official_language": {
+      "en": "French",
+      "ru": "French",
+      "de": "French"
+    },
+    "population": 38423,
+    "population_display": {
+      "ru": "0 млн",
+      "en": "0M",
+      "de": "0 Mio."
+    },
+    "currency_name": {
+      "en": "euro",
+      "ru": "euro",
+      "de": "euro"
+    },
+    "currency_code": "EUR",
+    "flag_file": "mc.svg"
+  },
+  {
+    "code": "MNG",
+    "localized_name": {
+      "en": "Mongolia",
+      "ru": "Монголия",
+      "de": "Mongolei"
+    },
+    "capital": {
+      "en": "Ulan Bator",
+      "ru": "Ulan Bator",
+      "de": "Ulan Bator"
+    },
+    "official_language": {
+      "en": "Mongolian",
+      "ru": "Mongolian",
+      "de": "Mongolian"
+    },
+    "population": 3544835,
+    "population_display": {
+      "ru": "4 млн",
+      "en": "4M",
+      "de": "4 Mio."
+    },
+    "currency_name": {
+      "en": "Mongolian tögrög",
+      "ru": "Mongolian tögrög",
+      "de": "Mongolian tögrög"
+    },
+    "currency_code": "MNT",
+    "flag_file": "mn.svg"
+  },
+  {
+    "code": "MNE",
+    "localized_name": {
+      "en": "Montenegro",
+      "ru": "Черногория",
+      "de": "Montenegro"
+    },
+    "capital": {
+      "en": "Podgorica",
+      "ru": "Podgorica",
+      "de": "Podgorica"
+    },
+    "official_language": {
+      "en": "Montenegrin",
+      "ru": "Montenegrin",
+      "de": "Montenegrin"
+    },
+    "population": 623327,
+    "population_display": {
+      "ru": "1 млн",
+      "en": "1M",
+      "de": "1 Mio."
+    },
+    "currency_name": {
+      "en": "euro",
+      "ru": "euro",
+      "de": "euro"
+    },
+    "currency_code": "EUR",
+    "flag_file": "me.svg"
+  },
+  {
+    "code": "MAR",
+    "localized_name": {
+      "en": "Morocco",
+      "ru": "Марокко",
+      "de": "Marokko"
+    },
+    "capital": {
+      "en": "Rabat",
+      "ru": "Rabat",
+      "de": "Rabat"
+    },
+    "official_language": {
+      "en": "Arabic",
+      "ru": "Arabic",
+      "de": "Arabic"
+    },
+    "population": 36828330,
+    "population_display": {
+      "ru": "37 млн",
+      "en": "37M",
+      "de": "37 Mio."
+    },
+    "currency_name": {
+      "en": "Moroccan dirham",
+      "ru": "Moroccan dirham",
+      "de": "Moroccan dirham"
+    },
+    "currency_code": "MAD",
+    "flag_file": "ma.svg"
+  },
+  {
+    "code": "MOZ",
+    "localized_name": {
+      "en": "Mozambique",
+      "ru": "Мозамбик",
+      "de": "Mosambik"
+    },
+    "capital": {
+      "en": "Maputo",
+      "ru": "Maputo",
+      "de": "Maputo"
+    },
+    "official_language": {
+      "en": "Portuguese",
+      "ru": "Portuguese",
+      "de": "Portuguese"
+    },
+    "population": 34090466,
+    "population_display": {
+      "ru": "34 млн",
+      "en": "34M",
+      "de": "34 Mio."
+    },
+    "currency_name": {
+      "en": "Mozambican metical",
+      "ru": "Mozambican metical",
+      "de": "Mozambican metical"
+    },
+    "currency_code": "MZN",
+    "flag_file": "mz.svg"
+  },
+  {
+    "code": "MMR",
+    "localized_name": {
+      "en": "Myanmar",
+      "ru": "Мьянма",
+      "de": "Myanmar"
+    },
+    "capital": {
+      "en": "Naypyidaw",
+      "ru": "Naypyidaw",
+      "de": "Naypyidaw"
+    },
+    "official_language": {
+      "en": "Burmese",
+      "ru": "Burmese",
+      "de": "Burmese"
+    },
+    "population": 51316756,
+    "population_display": {
+      "ru": "51 млн",
+      "en": "51M",
+      "de": "51 Mio."
+    },
+    "currency_name": {
+      "en": "Burmese kyat",
+      "ru": "Burmese kyat",
+      "de": "Burmese kyat"
+    },
+    "currency_code": "MMK",
+    "flag_file": "mm.svg"
+  },
+  {
+    "code": "NAM",
+    "localized_name": {
+      "en": "Namibia",
+      "ru": "Намибия",
+      "de": "Namibia"
+    },
+    "capital": {
+      "en": "Windhoek",
+      "ru": "Windhoek",
+      "de": "Windhoek"
+    },
+    "official_language": {
+      "en": "Afrikaans",
+      "ru": "Afrikaans",
+      "de": "Afrikaans"
+    },
+    "population": 3022401,
+    "population_display": {
+      "ru": "3 млн",
+      "en": "3M",
+      "de": "3 Mio."
+    },
+    "currency_name": {
+      "en": "Namibian dollar",
+      "ru": "Namibian dollar",
+      "de": "Namibian dollar"
+    },
+    "currency_code": "NAD",
+    "flag_file": "na.svg"
+  },
+  {
+    "code": "NRU",
+    "localized_name": {
+      "en": "Nauru",
+      "ru": "Науру",
+      "de": "Nauru"
+    },
+    "capital": {
+      "en": "Yaren",
+      "ru": "Yaren",
+      "de": "Yaren"
+    },
+    "official_language": {
+      "en": "English",
+      "ru": "English",
+      "de": "English"
+    },
+    "population": 11680,
+    "population_display": {
+      "ru": "0 млн",
+      "en": "0M",
+      "de": "0 Mio."
+    },
+    "currency_name": {
+      "en": "Australian dollar",
+      "ru": "Australian dollar",
+      "de": "Australian dollar"
+    },
+    "currency_code": "AUD",
+    "flag_file": "nr.svg"
+  },
+  {
+    "code": "NPL",
+    "localized_name": {
+      "en": "Nepal",
+      "ru": "Непал",
+      "de": "Nepal"
+    },
+    "capital": {
+      "en": "Kathmandu",
+      "ru": "Kathmandu",
+      "de": "Kathmandu"
+    },
+    "official_language": {
+      "en": "Nepali",
+      "ru": "Nepali",
+      "de": "Nepali"
+    },
+    "population": 29911840,
+    "population_display": {
+      "ru": "30 млн",
+      "en": "30M",
+      "de": "30 Mio."
+    },
+    "currency_name": {
+      "en": "Nepalese rupee",
+      "ru": "Nepalese rupee",
+      "de": "Nepalese rupee"
+    },
+    "currency_code": "NPR",
+    "flag_file": "np.svg"
+  },
+  {
+    "code": "NLD",
+    "localized_name": {
+      "en": "Netherlands",
+      "ru": "Нидерланды",
+      "de": "Niederlande"
+    },
+    "capital": {
+      "en": "Amsterdam",
+      "ru": "Amsterdam",
+      "de": "Amsterdam"
+    },
+    "official_language": {
+      "en": "Dutch",
+      "ru": "Dutch",
+      "de": "Dutch"
+    },
+    "population": 18100436,
+    "population_display": {
+      "ru": "18 млн",
+      "en": "18M",
+      "de": "18 Mio."
+    },
+    "currency_name": {
+      "en": "euro",
+      "ru": "euro",
+      "de": "euro"
+    },
+    "currency_code": "EUR",
+    "flag_file": "nl.svg"
+  },
+  {
+    "code": "NZL",
+    "localized_name": {
+      "en": "New Zealand",
+      "ru": "Новая Зеландия",
+      "de": "Neuseeland"
+    },
+    "capital": {
+      "en": "Wellington",
+      "ru": "Wellington",
+      "de": "Wellington"
+    },
+    "official_language": {
+      "en": "English",
+      "ru": "English",
+      "de": "English"
+    },
+    "population": 5324700,
+    "population_display": {
+      "ru": "5 млн",
+      "en": "5M",
+      "de": "5 Mio."
+    },
+    "currency_name": {
+      "en": "New Zealand dollar",
+      "ru": "New Zealand dollar",
+      "de": "New Zealand dollar"
+    },
+    "currency_code": "NZD",
+    "flag_file": "nz.svg"
+  },
+  {
+    "code": "NIC",
+    "localized_name": {
+      "en": "Nicaragua",
+      "ru": "Никарагуа",
+      "de": "Nicaragua"
+    },
+    "capital": {
+      "en": "Managua",
+      "ru": "Managua",
+      "de": "Managua"
+    },
+    "official_language": {
+      "en": "Spanish",
+      "ru": "Spanish",
+      "de": "Spanish"
+    },
+    "population": 6803886,
+    "population_display": {
+      "ru": "7 млн",
+      "en": "7M",
+      "de": "7 Mio."
+    },
+    "currency_name": {
+      "en": "Nicaraguan córdoba",
+      "ru": "Nicaraguan córdoba",
+      "de": "Nicaraguan córdoba"
+    },
+    "currency_code": "NIO",
+    "flag_file": "ni.svg"
+  },
+  {
+    "code": "NER",
+    "localized_name": {
+      "en": "Niger",
+      "ru": "Нигер",
+      "de": "Niger"
+    },
+    "capital": {
+      "en": "Niamey",
+      "ru": "Niamey",
+      "de": "Niamey"
+    },
+    "official_language": {
+      "en": "French",
+      "ru": "French",
+      "de": "French"
+    },
+    "population": 26312034,
+    "population_display": {
+      "ru": "26 млн",
+      "en": "26M",
+      "de": "26 Mio."
+    },
+    "currency_name": {
+      "en": "West African CFA franc",
+      "ru": "West African CFA franc",
+      "de": "West African CFA franc"
+    },
+    "currency_code": "XOF",
+    "flag_file": "ne.svg"
+  },
+  {
+    "code": "NGA",
+    "localized_name": {
+      "en": "Nigeria",
+      "ru": "Нигерия",
+      "de": "Nigeria"
+    },
+    "capital": {
+      "en": "Abuja",
+      "ru": "Abuja",
+      "de": "Abuja"
+    },
+    "official_language": {
+      "en": "English",
+      "ru": "English",
+      "de": "English"
+    },
+    "population": 223800000,
+    "population_display": {
+      "ru": "224 млн",
+      "en": "224M",
+      "de": "224 Mio."
+    },
+    "currency_name": {
+      "en": "Nigerian naira",
+      "ru": "Nigerian naira",
+      "de": "Nigerian naira"
+    },
+    "currency_code": "NGN",
+    "flag_file": "ng.svg"
+  },
+  {
+    "code": "PRK",
+    "localized_name": {
+      "en": "North Korea",
+      "ru": "Северная Корея",
+      "de": "Nordkorea"
+    },
+    "capital": {
+      "en": "Pyongyang",
+      "ru": "Pyongyang",
+      "de": "Pyongyang"
+    },
+    "official_language": {
+      "en": "Korean",
+      "ru": "Korean",
+      "de": "Korean"
+    },
+    "population": 25950000,
+    "population_display": {
+      "ru": "26 млн",
+      "en": "26M",
+      "de": "26 Mio."
+    },
+    "currency_name": {
+      "en": "North Korean won",
+      "ru": "North Korean won",
+      "de": "North Korean won"
+    },
+    "currency_code": "KPW",
+    "flag_file": "kp.svg"
+  },
+  {
+    "code": "MKD",
+    "localized_name": {
+      "en": "North Macedonia",
+      "ru": "Северная Македония",
+      "de": "Nordmazedonien"
+    },
+    "capital": {
+      "en": "Skopje",
+      "ru": "Skopje",
+      "de": "Skopje"
+    },
+    "official_language": {
+      "en": "Macedonian",
+      "ru": "Macedonian",
+      "de": "Macedonian"
+    },
+    "population": 1822612,
+    "population_display": {
+      "ru": "2 млн",
+      "en": "2M",
+      "de": "2 Mio."
+    },
+    "currency_name": {
+      "en": "denar",
+      "ru": "denar",
+      "de": "denar"
+    },
+    "currency_code": "MKD",
+    "flag_file": "mk.svg"
+  },
+  {
+    "code": "NOR",
+    "localized_name": {
+      "en": "Norway",
+      "ru": "Норвегия",
+      "de": "Norwegen"
+    },
+    "capital": {
+      "en": "Oslo",
+      "ru": "Oslo",
+      "de": "Oslo"
+    },
+    "official_language": {
+      "en": "Norwegian Nynorsk",
+      "ru": "Norwegian Nynorsk",
+      "de": "Norwegian Nynorsk"
+    },
+    "population": 5606944,
+    "population_display": {
+      "ru": "6 млн",
+      "en": "6M",
+      "de": "6 Mio."
+    },
+    "currency_name": {
+      "en": "Norwegian krone",
+      "ru": "Norwegian krone",
+      "de": "Norwegian krone"
+    },
+    "currency_code": "NOK",
+    "flag_file": "no.svg"
+  },
+  {
+    "code": "OMN",
+    "localized_name": {
+      "en": "Oman",
+      "ru": "Оман",
+      "de": "Oman"
+    },
+    "capital": {
+      "en": "Muscat",
+      "ru": "Muscat",
+      "de": "Muscat"
+    },
+    "official_language": {
+      "en": "Arabic",
+      "ru": "Arabic",
+      "de": "Arabic"
+    },
+    "population": 5343630,
+    "population_display": {
+      "ru": "5 млн",
+      "en": "5M",
+      "de": "5 Mio."
+    },
+    "currency_name": {
+      "en": "Omani rial",
+      "ru": "Omani rial",
+      "de": "Omani rial"
+    },
+    "currency_code": "OMR",
+    "flag_file": "om.svg"
+  },
+  {
+    "code": "PAK",
+    "localized_name": {
+      "en": "Pakistan",
+      "ru": "Пакистан",
+      "de": "Pakistan"
+    },
+    "capital": {
+      "en": "Islamabad",
+      "ru": "Islamabad",
+      "de": "Islamabad"
+    },
+    "official_language": {
+      "en": "English",
+      "ru": "English",
+      "de": "English"
+    },
+    "population": 241499431,
+    "population_display": {
+      "ru": "241 млн",
+      "en": "241M",
+      "de": "241 Mio."
+    },
+    "currency_name": {
+      "en": "Pakistani rupee",
+      "ru": "Pakistani rupee",
+      "de": "Pakistani rupee"
+    },
+    "currency_code": "PKR",
+    "flag_file": "pk.svg"
+  },
+  {
+    "code": "PLW",
+    "localized_name": {
+      "en": "Palau",
+      "ru": "Палау",
+      "de": "Palau"
+    },
+    "capital": {
+      "en": "Ngerulmud",
+      "ru": "Ngerulmud",
+      "de": "Ngerulmud"
+    },
+    "official_language": {
+      "en": "English",
+      "ru": "English",
+      "de": "English"
+    },
+    "population": 16733,
+    "population_display": {
+      "ru": "0 млн",
+      "en": "0M",
+      "de": "0 Mio."
+    },
+    "currency_name": {
+      "en": "United States dollar",
+      "ru": "United States dollar",
+      "de": "United States dollar"
+    },
+    "currency_code": "USD",
+    "flag_file": "pw.svg"
+  },
+  {
+    "code": "PAN",
+    "localized_name": {
+      "en": "Panama",
+      "ru": "Панама",
+      "de": "Panama"
+    },
+    "capital": {
+      "en": "Panama City",
+      "ru": "Panama City",
+      "de": "Panama City"
+    },
+    "official_language": {
+      "en": "Spanish",
+      "ru": "Spanish",
+      "de": "Spanish"
+    },
+    "population": 4064780,
+    "population_display": {
+      "ru": "4 млн",
+      "en": "4M",
+      "de": "4 Mio."
+    },
+    "currency_name": {
+      "en": "Panamanian balboa",
+      "ru": "Panamanian balboa",
+      "de": "Panamanian balboa"
+    },
+    "currency_code": "PAB",
+    "flag_file": "pa.svg"
+  },
+  {
+    "code": "PNG",
+    "localized_name": {
+      "en": "Papua New Guinea",
+      "ru": "Папуа — Новая Гвинея",
+      "de": "Papua-Neuguinea"
+    },
+    "capital": {
+      "en": "Port Moresby",
+      "ru": "Port Moresby",
+      "de": "Port Moresby"
+    },
+    "official_language": {
+      "en": "English",
+      "ru": "English",
+      "de": "English"
+    },
+    "population": 11781559,
+    "population_display": {
+      "ru": "12 млн",
+      "en": "12M",
+      "de": "12 Mio."
+    },
+    "currency_name": {
+      "en": "Papua New Guinean kina",
+      "ru": "Papua New Guinean kina",
+      "de": "Papua New Guinean kina"
+    },
+    "currency_code": "PGK",
+    "flag_file": "pg.svg"
+  },
+  {
+    "code": "PRY",
+    "localized_name": {
+      "en": "Paraguay",
+      "ru": "Парагвай",
+      "de": "Paraguay"
+    },
+    "capital": {
+      "en": "Asunción",
+      "ru": "Asunción",
+      "de": "Asunción"
+    },
+    "official_language": {
+      "en": "Guaraní",
+      "ru": "Guaraní",
+      "de": "Guaraní"
+    },
+    "population": 6109644,
+    "population_display": {
+      "ru": "6 млн",
+      "en": "6M",
+      "de": "6 Mio."
+    },
+    "currency_name": {
+      "en": "Paraguayan guaraní",
+      "ru": "Paraguayan guaraní",
+      "de": "Paraguayan guaraní"
+    },
+    "currency_code": "PYG",
+    "flag_file": "py.svg"
+  },
+  {
+    "code": "PER",
+    "localized_name": {
+      "en": "Peru",
+      "ru": "Перу",
+      "de": "Peru"
+    },
+    "capital": {
+      "en": "Lima",
+      "ru": "Lima",
+      "de": "Lima"
+    },
+    "official_language": {
+      "en": "Aymara",
+      "ru": "Aymara",
+      "de": "Aymara"
+    },
+    "population": 34350244,
+    "population_display": {
+      "ru": "34 млн",
+      "en": "34M",
+      "de": "34 Mio."
+    },
+    "currency_name": {
+      "en": "Peruvian sol",
+      "ru": "Peruvian sol",
+      "de": "Peruvian sol"
+    },
+    "currency_code": "PEN",
+    "flag_file": "pe.svg"
+  },
+  {
+    "code": "PHL",
+    "localized_name": {
+      "en": "Philippines",
+      "ru": "Филиппины",
+      "de": "Philippinen"
+    },
+    "capital": {
+      "en": "Manila",
+      "ru": "Manila",
+      "de": "Manila"
+    },
+    "official_language": {
+      "en": "English",
+      "ru": "English",
+      "de": "English"
+    },
+    "population": 114123600,
+    "population_display": {
+      "ru": "114 млн",
+      "en": "114M",
+      "de": "114 Mio."
+    },
+    "currency_name": {
+      "en": "Philippine peso",
+      "ru": "Philippine peso",
+      "de": "Philippine peso"
+    },
+    "currency_code": "PHP",
+    "flag_file": "ph.svg"
+  },
+  {
+    "code": "POL",
+    "localized_name": {
+      "en": "Poland",
+      "ru": "Польша",
+      "de": "Polen"
+    },
+    "capital": {
+      "en": "Warsaw",
+      "ru": "Warsaw",
+      "de": "Warsaw"
+    },
+    "official_language": {
+      "en": "Polish",
+      "ru": "Polish",
+      "de": "Polish"
+    },
+    "population": 37392000,
+    "population_display": {
+      "ru": "37 млн",
+      "en": "37M",
+      "de": "37 Mio."
+    },
+    "currency_name": {
+      "en": "Polish złoty",
+      "ru": "Polish złoty",
+      "de": "Polish złoty"
+    },
+    "currency_code": "PLN",
+    "flag_file": "pl.svg"
+  },
+  {
+    "code": "PRT",
+    "localized_name": {
+      "en": "Portugal",
+      "ru": "Португалия",
+      "de": "Portugal"
+    },
+    "capital": {
+      "en": "Lisbon",
+      "ru": "Lisbon",
+      "de": "Lisbon"
+    },
+    "official_language": {
+      "en": "Portuguese",
+      "ru": "Portuguese",
+      "de": "Portuguese"
+    },
+    "population": 10749635,
+    "population_display": {
+      "ru": "11 млн",
+      "en": "11M",
+      "de": "11 Mio."
+    },
+    "currency_name": {
+      "en": "euro",
+      "ru": "euro",
+      "de": "euro"
+    },
+    "currency_code": "EUR",
+    "flag_file": "pt.svg"
+  },
+  {
+    "code": "QAT",
+    "localized_name": {
+      "en": "Qatar",
+      "ru": "Катар",
+      "de": "Katar"
+    },
+    "capital": {
+      "en": "Doha",
+      "ru": "Doha",
+      "de": "Doha"
+    },
+    "official_language": {
+      "en": "Arabic",
+      "ru": "Arabic",
+      "de": "Arabic"
+    },
+    "population": 3173024,
+    "population_display": {
+      "ru": "3 млн",
+      "en": "3M",
+      "de": "3 Mio."
+    },
+    "currency_name": {
+      "en": "Qatari riyal",
+      "ru": "Qatari riyal",
+      "de": "Qatari riyal"
+    },
+    "currency_code": "QAR",
+    "flag_file": "qa.svg"
+  },
+  {
+    "code": "COG",
+    "localized_name": {
+      "en": "Republic of the Congo",
+      "ru": "Республика Конго",
+      "de": "Kongo"
+    },
+    "capital": {
+      "en": "Brazzaville",
+      "ru": "Brazzaville",
+      "de": "Brazzaville"
+    },
+    "official_language": {
+      "en": "French",
+      "ru": "French",
+      "de": "French"
+    },
+    "population": 6142180,
+    "population_display": {
+      "ru": "6 млн",
+      "en": "6M",
+      "de": "6 Mio."
+    },
+    "currency_name": {
+      "en": "Central African CFA franc",
+      "ru": "Central African CFA franc",
+      "de": "Central African CFA franc"
+    },
+    "currency_code": "XAF",
+    "flag_file": "cg.svg"
+  },
+  {
+    "code": "ROU",
+    "localized_name": {
+      "en": "Romania",
+      "ru": "Румыния",
+      "de": "Rumänien"
+    },
+    "capital": {
+      "en": "Bucharest",
+      "ru": "Bucharest",
+      "de": "Bucharest"
+    },
+    "official_language": {
+      "en": "Romanian",
+      "ru": "Romanian",
+      "de": "Romanian"
+    },
+    "population": 19036031,
+    "population_display": {
+      "ru": "19 млн",
+      "en": "19M",
+      "de": "19 Mio."
+    },
+    "currency_name": {
+      "en": "Romanian leu",
+      "ru": "Romanian leu",
+      "de": "Romanian leu"
+    },
+    "currency_code": "RON",
+    "flag_file": "ro.svg"
+  },
+  {
+    "code": "RUS",
+    "localized_name": {
+      "en": "Russia",
+      "ru": "Россия",
+      "de": "Russland"
+    },
+    "capital": {
+      "en": "Moscow",
+      "ru": "Moscow",
+      "de": "Moscow"
+    },
+    "official_language": {
+      "en": "Russian",
+      "ru": "Russian",
+      "de": "Russian"
+    },
+    "population": 146028325,
+    "population_display": {
+      "ru": "146 млн",
+      "en": "146M",
+      "de": "146 Mio."
+    },
+    "currency_name": {
+      "en": "Russian ruble",
+      "ru": "Russian ruble",
+      "de": "Russian ruble"
+    },
+    "currency_code": "RUB",
+    "flag_file": "ru.svg"
+  },
+  {
+    "code": "RWA",
+    "localized_name": {
+      "en": "Rwanda",
+      "ru": "Руанда",
+      "de": "Ruanda"
+    },
+    "capital": {
+      "en": "Kigali",
+      "ru": "Kigali",
+      "de": "Kigali"
+    },
+    "official_language": {
+      "en": "English",
+      "ru": "English",
+      "de": "English"
+    },
+    "population": 14104969,
+    "population_display": {
+      "ru": "14 млн",
+      "en": "14M",
+      "de": "14 Mio."
+    },
+    "currency_name": {
+      "en": "Rwandan franc",
+      "ru": "Rwandan franc",
+      "de": "Rwandan franc"
+    },
+    "currency_code": "RWF",
+    "flag_file": "rw.svg"
+  },
+  {
+    "code": "KNA",
+    "localized_name": {
+      "en": "Saint Kitts and Nevis",
+      "ru": "Сент-Китс и Невис",
+      "de": "St. Kitts und Nevis"
+    },
+    "capital": {
+      "en": "Basseterre",
+      "ru": "Basseterre",
+      "de": "Basseterre"
+    },
+    "official_language": {
+      "en": "English",
+      "ru": "English",
+      "de": "English"
+    },
+    "population": 51320,
+    "population_display": {
+      "ru": "0 млн",
+      "en": "0M",
+      "de": "0 Mio."
+    },
+    "currency_name": {
+      "en": "Eastern Caribbean dollar",
+      "ru": "Eastern Caribbean dollar",
+      "de": "Eastern Caribbean dollar"
+    },
+    "currency_code": "XCD",
+    "flag_file": "kn.svg"
+  },
+  {
+    "code": "LCA",
+    "localized_name": {
+      "en": "Saint Lucia",
+      "ru": "Сент-Люсия",
+      "de": "St. Lucia"
+    },
+    "capital": {
+      "en": "Castries",
+      "ru": "Castries",
+      "de": "Castries"
+    },
+    "official_language": {
+      "en": "English",
+      "ru": "English",
+      "de": "English"
+    },
+    "population": 184100,
+    "population_display": {
+      "ru": "0 млн",
+      "en": "0M",
+      "de": "0 Mio."
+    },
+    "currency_name": {
+      "en": "Eastern Caribbean dollar",
+      "ru": "Eastern Caribbean dollar",
+      "de": "Eastern Caribbean dollar"
+    },
+    "currency_code": "XCD",
+    "flag_file": "lc.svg"
+  },
+  {
+    "code": "VCT",
+    "localized_name": {
+      "en": "Saint Vincent and the Grenadines",
+      "ru": "Сент-Винсент и Гренадины",
+      "de": "St. Vincent und die Grenadinen"
+    },
+    "capital": {
+      "en": "Kingstown",
+      "ru": "Kingstown",
+      "de": "Kingstown"
+    },
+    "official_language": {
+      "en": "English",
+      "ru": "English",
+      "de": "English"
+    },
+    "population": 110872,
+    "population_display": {
+      "ru": "0 млн",
+      "en": "0M",
+      "de": "0 Mio."
+    },
+    "currency_name": {
+      "en": "Eastern Caribbean dollar",
+      "ru": "Eastern Caribbean dollar",
+      "de": "Eastern Caribbean dollar"
+    },
+    "currency_code": "XCD",
+    "flag_file": "vc.svg"
+  },
+  {
+    "code": "WSM",
+    "localized_name": {
+      "en": "Samoa",
+      "ru": "Самоа",
+      "de": "Samoa"
+    },
+    "capital": {
+      "en": "Apia",
+      "ru": "Apia",
+      "de": "Apia"
+    },
+    "official_language": {
+      "en": "English",
+      "ru": "English",
+      "de": "English"
+    },
+    "population": 205557,
+    "population_display": {
+      "ru": "0 млн",
+      "en": "0M",
+      "de": "0 Mio."
+    },
+    "currency_name": {
+      "en": "Samoan tālā",
+      "ru": "Samoan tālā",
+      "de": "Samoan tālā"
+    },
+    "currency_code": "WST",
+    "flag_file": "ws.svg"
+  },
+  {
+    "code": "SMR",
+    "localized_name": {
+      "en": "San Marino",
+      "ru": "Сан-Марино",
+      "de": "San Marino"
+    },
+    "capital": {
+      "en": "City of San Marino",
+      "ru": "City of San Marino",
+      "de": "City of San Marino"
+    },
+    "official_language": {
+      "en": "Italian",
+      "ru": "Italian",
+      "de": "Italian"
+    },
+    "population": 34132,
+    "population_display": {
+      "ru": "0 млн",
+      "en": "0M",
+      "de": "0 Mio."
+    },
+    "currency_name": {
+      "en": "euro",
+      "ru": "euro",
+      "de": "euro"
+    },
+    "currency_code": "EUR",
+    "flag_file": "sm.svg"
+  },
+  {
+    "code": "SAU",
+    "localized_name": {
+      "en": "Saudi Arabia",
+      "ru": "Саудовская Аравия",
+      "de": "Saudi-Arabien"
+    },
+    "capital": {
+      "en": "Riyadh",
+      "ru": "Riyadh",
+      "de": "Riyadh"
+    },
+    "official_language": {
+      "en": "Arabic",
+      "ru": "Arabic",
+      "de": "Arabic"
+    },
+    "population": 35300280,
+    "population_display": {
+      "ru": "35 млн",
+      "en": "35M",
+      "de": "35 Mio."
+    },
+    "currency_name": {
+      "en": "Saudi riyal",
+      "ru": "Saudi riyal",
+      "de": "Saudi riyal"
+    },
+    "currency_code": "SAR",
+    "flag_file": "sa.svg"
+  },
+  {
+    "code": "SEN",
+    "localized_name": {
+      "en": "Senegal",
+      "ru": "Сенегал",
+      "de": "Senegal"
+    },
+    "capital": {
+      "en": "Dakar",
+      "ru": "Dakar",
+      "de": "Dakar"
+    },
+    "official_language": {
+      "en": "French",
+      "ru": "French",
+      "de": "French"
+    },
+    "population": 18593258,
+    "population_display": {
+      "ru": "19 млн",
+      "en": "19M",
+      "de": "19 Mio."
+    },
+    "currency_name": {
+      "en": "West African CFA franc",
+      "ru": "West African CFA franc",
+      "de": "West African CFA franc"
+    },
+    "currency_code": "XOF",
+    "flag_file": "sn.svg"
+  },
+  {
+    "code": "SRB",
+    "localized_name": {
+      "en": "Serbia",
+      "ru": "Сербия",
+      "de": "Serbien"
+    },
+    "capital": {
+      "en": "Belgrade",
+      "ru": "Belgrade",
+      "de": "Belgrade"
+    },
+    "official_language": {
+      "en": "Serbian",
+      "ru": "Serbian",
+      "de": "Serbian"
+    },
+    "population": 6567783,
+    "population_display": {
+      "ru": "7 млн",
+      "en": "7M",
+      "de": "7 Mio."
+    },
+    "currency_name": {
+      "en": "Serbian dinar",
+      "ru": "Serbian dinar",
+      "de": "Serbian dinar"
+    },
+    "currency_code": "RSD",
+    "flag_file": "rs.svg"
+  },
+  {
+    "code": "SYC",
+    "localized_name": {
+      "en": "Seychelles",
+      "ru": "Сейшельские Острова",
+      "de": "Seychellen"
+    },
+    "capital": {
+      "en": "Victoria",
+      "ru": "Victoria",
+      "de": "Victoria"
+    },
+    "official_language": {
+      "en": "Seychellois Creole",
+      "ru": "Seychellois Creole",
+      "de": "Seychellois Creole"
+    },
+    "population": 122729,
+    "population_display": {
+      "ru": "0 млн",
+      "en": "0M",
+      "de": "0 Mio."
+    },
+    "currency_name": {
+      "en": "Seychellois rupee",
+      "ru": "Seychellois rupee",
+      "de": "Seychellois rupee"
+    },
+    "currency_code": "SCR",
+    "flag_file": "sc.svg"
+  },
+  {
+    "code": "SLE",
+    "localized_name": {
+      "en": "Sierra Leone",
+      "ru": "Сьерра-Леоне",
+      "de": "Sierra Leone"
+    },
+    "capital": {
+      "en": "Freetown",
+      "ru": "Freetown",
+      "de": "Freetown"
+    },
+    "official_language": {
+      "en": "English",
+      "ru": "English",
+      "de": "English"
+    },
+    "population": 9077691,
+    "population_display": {
+      "ru": "9 млн",
+      "en": "9M",
+      "de": "9 Mio."
+    },
+    "currency_name": {
+      "en": "Leone",
+      "ru": "Leone",
+      "de": "Leone"
+    },
+    "currency_code": "SLE",
+    "flag_file": "sl.svg"
+  },
+  {
+    "code": "SGP",
+    "localized_name": {
+      "en": "Singapore",
+      "ru": "Сингапур",
+      "de": "Singapur"
+    },
+    "capital": {
+      "en": "Singapore",
+      "ru": "Singapore",
+      "de": "Singapore"
+    },
+    "official_language": {
+      "en": "English",
+      "ru": "English",
+      "de": "English"
+    },
+    "population": 6110200,
+    "population_display": {
+      "ru": "6 млн",
+      "en": "6M",
+      "de": "6 Mio."
+    },
+    "currency_name": {
+      "en": "Singapore dollar",
+      "ru": "Singapore dollar",
+      "de": "Singapore dollar"
+    },
+    "currency_code": "SGD",
+    "flag_file": "sg.svg"
+  },
+  {
+    "code": "SVK",
+    "localized_name": {
+      "en": "Slovakia",
+      "ru": "Словакия",
+      "de": "Slowakei"
+    },
+    "capital": {
+      "en": "Bratislava",
+      "ru": "Bratislava",
+      "de": "Bratislava"
+    },
+    "official_language": {
+      "en": "Slovak",
+      "ru": "Slovak",
+      "de": "Slovak"
+    },
+    "population": 5413813,
+    "population_display": {
+      "ru": "5 млн",
+      "en": "5M",
+      "de": "5 Mio."
+    },
+    "currency_name": {
+      "en": "euro",
+      "ru": "euro",
+      "de": "euro"
+    },
+    "currency_code": "EUR",
+    "flag_file": "sk.svg"
+  },
+  {
+    "code": "SVN",
+    "localized_name": {
+      "en": "Slovenia",
+      "ru": "Словения",
+      "de": "Slowenien"
+    },
+    "capital": {
+      "en": "Ljubljana",
+      "ru": "Ljubljana",
+      "de": "Ljubljana"
+    },
+    "official_language": {
+      "en": "Slovene",
+      "ru": "Slovene",
+      "de": "Slovene"
+    },
+    "population": 2130638,
+    "population_display": {
+      "ru": "2 млн",
+      "en": "2M",
+      "de": "2 Mio."
+    },
+    "currency_name": {
+      "en": "euro",
+      "ru": "euro",
+      "de": "euro"
+    },
+    "currency_code": "EUR",
+    "flag_file": "si.svg"
+  },
+  {
+    "code": "SLB",
+    "localized_name": {
+      "en": "Solomon Islands",
+      "ru": "Соломоновы Острова",
+      "de": "Salomonen"
+    },
+    "capital": {
+      "en": "Honiara",
+      "ru": "Honiara",
+      "de": "Honiara"
+    },
+    "official_language": {
+      "en": "English",
+      "ru": "English",
+      "de": "English"
+    },
+    "population": 750325,
+    "population_display": {
+      "ru": "1 млн",
+      "en": "1M",
+      "de": "1 Mio."
+    },
+    "currency_name": {
+      "en": "Solomon Islands dollar",
+      "ru": "Solomon Islands dollar",
+      "de": "Solomon Islands dollar"
+    },
+    "currency_code": "SBD",
+    "flag_file": "sb.svg"
+  },
+  {
+    "code": "SOM",
+    "localized_name": {
+      "en": "Somalia",
+      "ru": "Сомали",
+      "de": "Somalia"
+    },
+    "capital": {
+      "en": "Mogadishu",
+      "ru": "Mogadishu",
+      "de": "Mogadishu"
+    },
+    "official_language": {
+      "en": "Arabic",
+      "ru": "Arabic",
+      "de": "Arabic"
+    },
+    "population": 19655000,
+    "population_display": {
+      "ru": "20 млн",
+      "en": "20M",
+      "de": "20 Mio."
+    },
+    "currency_name": {
+      "en": "Somali shilling",
+      "ru": "Somali shilling",
+      "de": "Somali shilling"
+    },
+    "currency_code": "SOS",
+    "flag_file": "so.svg"
+  },
+  {
+    "code": "ZAF",
+    "localized_name": {
+      "en": "South Africa",
+      "ru": "Южная Африка",
+      "de": "Südafrika"
+    },
+    "capital": {
+      "en": "Pretoria",
+      "ru": "Pretoria",
+      "de": "Pretoria"
+    },
+    "official_language": {
+      "en": "Afrikaans",
+      "ru": "Afrikaans",
+      "de": "Afrikaans"
+    },
+    "population": 63100945,
+    "population_display": {
+      "ru": "63 млн",
+      "en": "63M",
+      "de": "63 Mio."
+    },
+    "currency_name": {
+      "en": "South African rand",
+      "ru": "South African rand",
+      "de": "South African rand"
+    },
+    "currency_code": "ZAR",
+    "flag_file": "za.svg"
+  },
+  {
+    "code": "KOR",
+    "localized_name": {
+      "en": "South Korea",
+      "ru": "Южная Корея",
+      "de": "Südkorea"
+    },
+    "capital": {
+      "en": "Seoul",
+      "ru": "Seoul",
+      "de": "Seoul"
+    },
+    "official_language": {
+      "en": "Korean",
+      "ru": "Korean",
+      "de": "Korean"
+    },
+    "population": 51159889,
+    "population_display": {
+      "ru": "51 млн",
+      "en": "51M",
+      "de": "51 Mio."
+    },
+    "currency_name": {
+      "en": "South Korean won",
+      "ru": "South Korean won",
+      "de": "South Korean won"
+    },
+    "currency_code": "KRW",
+    "flag_file": "kr.svg"
+  },
+  {
+    "code": "SSD",
+    "localized_name": {
+      "en": "South Sudan",
+      "ru": "Южный Судан",
+      "de": "Südsudan"
+    },
+    "capital": {
+      "en": "Juba",
+      "ru": "Juba",
+      "de": "Juba"
+    },
+    "official_language": {
+      "en": "English",
+      "ru": "English",
+      "de": "English"
+    },
+    "population": 15786898,
+    "population_display": {
+      "ru": "16 млн",
+      "en": "16M",
+      "de": "16 Mio."
+    },
+    "currency_name": {
+      "en": "South Sudanese pound",
+      "ru": "South Sudanese pound",
+      "de": "South Sudanese pound"
+    },
+    "currency_code": "SSP",
+    "flag_file": "ss.svg"
+  },
+  {
+    "code": "ESP",
+    "localized_name": {
+      "en": "Spain",
+      "ru": "Испания",
+      "de": "Spanien"
+    },
+    "capital": {
+      "en": "Madrid",
+      "ru": "Madrid",
+      "de": "Madrid"
+    },
+    "official_language": {
+      "en": "Spanish",
+      "ru": "Spanish",
+      "de": "Spanish"
+    },
+    "population": 49315949,
+    "population_display": {
+      "ru": "49 млн",
+      "en": "49M",
+      "de": "49 Mio."
+    },
+    "currency_name": {
+      "en": "euro",
+      "ru": "euro",
+      "de": "euro"
+    },
+    "currency_code": "EUR",
+    "flag_file": "es.svg"
+  },
+  {
+    "code": "LKA",
+    "localized_name": {
+      "en": "Sri Lanka",
+      "ru": "Шри-Ланка",
+      "de": "Sri Lanka"
+    },
+    "capital": {
+      "en": "Sri Jayawardenepura Kotte",
+      "ru": "Sri Jayawardenepura Kotte",
+      "de": "Sri Jayawardenepura Kotte"
+    },
+    "official_language": {
+      "en": "Sinhala",
+      "ru": "Sinhala",
+      "de": "Sinhala"
+    },
+    "population": 21763170,
+    "population_display": {
+      "ru": "22 млн",
+      "en": "22M",
+      "de": "22 Mio."
+    },
+    "currency_name": {
+      "en": "Sri Lankan rupee",
+      "ru": "Sri Lankan rupee",
+      "de": "Sri Lankan rupee"
+    },
+    "currency_code": "LKR",
+    "flag_file": "lk.svg"
+  },
+  {
+    "code": "SDN",
+    "localized_name": {
+      "en": "Sudan",
+      "ru": "Судан",
+      "de": "Sudan"
+    },
+    "capital": {
+      "en": "Khartoum",
+      "ru": "Khartoum",
+      "de": "Khartoum"
+    },
+    "official_language": {
+      "en": "Arabic",
+      "ru": "Arabic",
+      "de": "Arabic"
+    },
+    "population": 51662000,
+    "population_display": {
+      "ru": "52 млн",
+      "en": "52M",
+      "de": "52 Mio."
+    },
+    "currency_name": {
+      "en": "Sudanese pound",
+      "ru": "Sudanese pound",
+      "de": "Sudanese pound"
+    },
+    "currency_code": "SDG",
+    "flag_file": "sd.svg"
+  },
+  {
+    "code": "SUR",
+    "localized_name": {
+      "en": "Suriname",
+      "ru": "Суринам",
+      "de": "Suriname"
+    },
+    "capital": {
+      "en": "Paramaribo",
+      "ru": "Paramaribo",
+      "de": "Paramaribo"
+    },
+    "official_language": {
+      "en": "Dutch",
+      "ru": "Dutch",
+      "de": "Dutch"
+    },
+    "population": 616500,
+    "population_display": {
+      "ru": "1 млн",
+      "en": "1M",
+      "de": "1 Mio."
+    },
+    "currency_name": {
+      "en": "Surinamese dollar",
+      "ru": "Surinamese dollar",
+      "de": "Surinamese dollar"
+    },
+    "currency_code": "SRD",
+    "flag_file": "sr.svg"
+  },
+  {
+    "code": "SWE",
+    "localized_name": {
+      "en": "Sweden",
+      "ru": "Швеция",
+      "de": "Schweden"
+    },
+    "capital": {
+      "en": "Stockholm",
+      "ru": "Stockholm",
+      "de": "Stockholm"
+    },
+    "official_language": {
+      "en": "Swedish",
+      "ru": "Swedish",
+      "de": "Swedish"
+    },
+    "population": 10605098,
+    "population_display": {
+      "ru": "11 млн",
+      "en": "11M",
+      "de": "11 Mio."
+    },
+    "currency_name": {
+      "en": "Swedish krona",
+      "ru": "Swedish krona",
+      "de": "Swedish krona"
+    },
+    "currency_code": "SEK",
+    "flag_file": "se.svg"
+  },
+  {
+    "code": "CHE",
+    "localized_name": {
+      "en": "Switzerland",
+      "ru": "Швейцария",
+      "de": "Schweiz"
+    },
+    "capital": {
+      "en": "Bern",
+      "ru": "Bern",
+      "de": "Bern"
+    },
+    "official_language": {
+      "en": "French",
+      "ru": "French",
+      "de": "French"
+    },
+    "population": 9082848,
+    "population_display": {
+      "ru": "9 млн",
+      "en": "9M",
+      "de": "9 Mio."
+    },
+    "currency_name": {
+      "en": "Swiss franc",
+      "ru": "Swiss franc",
+      "de": "Swiss franc"
+    },
+    "currency_code": "CHF",
+    "flag_file": "ch.svg"
+  },
+  {
+    "code": "SYR",
+    "localized_name": {
+      "en": "Syria",
+      "ru": "Сирия",
+      "de": "Syrien"
+    },
+    "capital": {
+      "en": "Damascus",
+      "ru": "Damascus",
+      "de": "Damascus"
+    },
+    "official_language": {
+      "en": "Arabic",
+      "ru": "Arabic",
+      "de": "Arabic"
+    },
+    "population": 25620000,
+    "population_display": {
+      "ru": "26 млн",
+      "en": "26M",
+      "de": "26 Mio."
+    },
+    "currency_name": {
+      "en": "Syrian pound",
+      "ru": "Syrian pound",
+      "de": "Syrian pound"
+    },
+    "currency_code": "SYP",
+    "flag_file": "sy.svg"
+  },
+  {
+    "code": "STP",
+    "localized_name": {
+      "en": "São Tomé and Príncipe",
+      "ru": "Сан-Томе и Принсипи",
+      "de": "São Tomé und Príncipe"
+    },
+    "capital": {
+      "en": "São Tomé",
+      "ru": "São Tomé",
+      "de": "São Tomé"
+    },
+    "official_language": {
+      "en": "Portuguese",
+      "ru": "Portuguese",
+      "de": "Portuguese"
+    },
+    "population": 209607,
+    "population_display": {
+      "ru": "0 млн",
+      "en": "0M",
+      "de": "0 Mio."
+    },
+    "currency_name": {
+      "en": "São Tomé and Príncipe dobra",
+      "ru": "São Tomé and Príncipe dobra",
+      "de": "São Tomé and Príncipe dobra"
+    },
+    "currency_code": "STN",
+    "flag_file": "st.svg"
+  },
+  {
+    "code": "TJK",
+    "localized_name": {
+      "en": "Tajikistan",
+      "ru": "Таджикистан",
+      "de": "Tadschikistan"
+    },
+    "capital": {
+      "en": "Dushanbe",
+      "ru": "Dushanbe",
+      "de": "Dushanbe"
+    },
+    "official_language": {
+      "en": "Russian",
+      "ru": "Russian",
+      "de": "Russian"
+    },
+    "population": 10499000,
+    "population_display": {
+      "ru": "10 млн",
+      "en": "10M",
+      "de": "10 Mio."
+    },
+    "currency_name": {
+      "en": "Tajikistani somoni",
+      "ru": "Tajikistani somoni",
+      "de": "Tajikistani somoni"
+    },
+    "currency_code": "TJS",
+    "flag_file": "tj.svg"
+  },
+  {
+    "code": "TZA",
+    "localized_name": {
+      "en": "Tanzania",
+      "ru": "Танзания",
+      "de": "Tansania"
+    },
+    "capital": {
+      "en": "Dodoma",
+      "ru": "Dodoma",
+      "de": "Dodoma"
+    },
+    "official_language": {
+      "en": "English",
+      "ru": "English",
+      "de": "English"
+    },
+    "population": 68153004,
+    "population_display": {
+      "ru": "68 млн",
+      "en": "68M",
+      "de": "68 Mio."
+    },
+    "currency_name": {
+      "en": "Tanzanian shilling",
+      "ru": "Tanzanian shilling",
+      "de": "Tanzanian shilling"
+    },
+    "currency_code": "TZS",
+    "flag_file": "tz.svg"
+  },
+  {
+    "code": "THA",
+    "localized_name": {
+      "en": "Thailand",
+      "ru": "Таиланд",
+      "de": "Thailand"
+    },
+    "capital": {
+      "en": "Bangkok",
+      "ru": "Bangkok",
+      "de": "Bangkok"
+    },
+    "official_language": {
+      "en": "Thai",
+      "ru": "Thai",
+      "de": "Thai"
+    },
+    "population": 65859640,
+    "population_display": {
+      "ru": "66 млн",
+      "en": "66M",
+      "de": "66 Mio."
+    },
+    "currency_name": {
+      "en": "Thai baht",
+      "ru": "Thai baht",
+      "de": "Thai baht"
+    },
+    "currency_code": "THB",
+    "flag_file": "th.svg"
+  },
+  {
+    "code": "TLS",
+    "localized_name": {
+      "en": "Timor-Leste",
+      "ru": "Восточный Тимор",
+      "de": "Osttimor"
+    },
+    "capital": {
+      "en": "Dili",
+      "ru": "Dili",
+      "de": "Dili"
+    },
+    "official_language": {
+      "en": "Portuguese",
+      "ru": "Portuguese",
+      "de": "Portuguese"
+    },
+    "population": 1391221,
+    "population_display": {
+      "ru": "1 млн",
+      "en": "1M",
+      "de": "1 Mio."
+    },
+    "currency_name": {
+      "en": "United States dollar",
+      "ru": "United States dollar",
+      "de": "United States dollar"
+    },
+    "currency_code": "USD",
+    "flag_file": "tl.svg"
+  },
+  {
+    "code": "TGO",
+    "localized_name": {
+      "en": "Togo",
+      "ru": "Того",
+      "de": "Togo"
+    },
+    "capital": {
+      "en": "Lomé",
+      "ru": "Lomé",
+      "de": "Lomé"
+    },
+    "official_language": {
+      "en": "French",
+      "ru": "French",
+      "de": "French"
+    },
+    "population": 8095498,
+    "population_display": {
+      "ru": "8 млн",
+      "en": "8M",
+      "de": "8 Mio."
+    },
+    "currency_name": {
+      "en": "West African CFA franc",
+      "ru": "West African CFA franc",
+      "de": "West African CFA franc"
+    },
+    "currency_code": "XOF",
+    "flag_file": "tg.svg"
+  },
+  {
+    "code": "TON",
+    "localized_name": {
+      "en": "Tonga",
+      "ru": "Тонга",
+      "de": "Tonga"
+    },
+    "capital": {
+      "en": "Nuku'alofa",
+      "ru": "Nuku'alofa",
+      "de": "Nuku'alofa"
+    },
+    "official_language": {
+      "en": "English",
+      "ru": "English",
+      "de": "English"
+    },
+    "population": 100179,
+    "population_display": {
+      "ru": "0 млн",
+      "en": "0M",
+      "de": "0 Mio."
+    },
+    "currency_name": {
+      "en": "Tongan paʻanga",
+      "ru": "Tongan paʻanga",
+      "de": "Tongan paʻanga"
+    },
+    "currency_code": "TOP",
+    "flag_file": "to.svg"
+  },
+  {
+    "code": "TTO",
+    "localized_name": {
+      "en": "Trinidad and Tobago",
+      "ru": "Тринидад и Тобаго",
+      "de": "Trinidad und Tobago"
+    },
+    "capital": {
+      "en": "Port of Spain",
+      "ru": "Port of Spain",
+      "de": "Port of Spain"
+    },
+    "official_language": {
+      "en": "English",
+      "ru": "English",
+      "de": "English"
+    },
+    "population": 1367764,
+    "population_display": {
+      "ru": "1 млн",
+      "en": "1M",
+      "de": "1 Mio."
+    },
+    "currency_name": {
+      "en": "Trinidad and Tobago dollar",
+      "ru": "Trinidad and Tobago dollar",
+      "de": "Trinidad and Tobago dollar"
+    },
+    "currency_code": "TTD",
+    "flag_file": "tt.svg"
+  },
+  {
+    "code": "TUN",
+    "localized_name": {
+      "en": "Tunisia",
+      "ru": "Тунис",
+      "de": "Tunesien"
+    },
+    "capital": {
+      "en": "Tunis",
+      "ru": "Tunis",
+      "de": "Tunis"
+    },
+    "official_language": {
+      "en": "Arabic",
+      "ru": "Arabic",
+      "de": "Arabic"
+    },
+    "population": 11972169,
+    "population_display": {
+      "ru": "12 млн",
+      "en": "12M",
+      "de": "12 Mio."
+    },
+    "currency_name": {
+      "en": "Tunisian dinar",
+      "ru": "Tunisian dinar",
+      "de": "Tunisian dinar"
+    },
+    "currency_code": "TND",
+    "flag_file": "tn.svg"
+  },
+  {
+    "code": "TUR",
+    "localized_name": {
+      "en": "Turkey",
+      "ru": "Турция",
+      "de": "Türkei"
+    },
+    "capital": {
+      "en": "Ankara",
+      "ru": "Ankara",
+      "de": "Ankara"
+    },
+    "official_language": {
+      "en": "Turkish",
+      "ru": "Turkish",
+      "de": "Turkish"
+    },
+    "population": 85664944,
+    "population_display": {
+      "ru": "86 млн",
+      "en": "86M",
+      "de": "86 Mio."
+    },
+    "currency_name": {
+      "en": "Turkish lira",
+      "ru": "Turkish lira",
+      "de": "Turkish lira"
+    },
+    "currency_code": "TRY",
+    "flag_file": "tr.svg"
+  },
+  {
+    "code": "TKM",
+    "localized_name": {
+      "en": "Turkmenistan",
+      "ru": "Туркмения",
+      "de": "Turkmenistan"
+    },
+    "capital": {
+      "en": "Ashgabat",
+      "ru": "Ashgabat",
+      "de": "Ashgabat"
+    },
+    "official_language": {
+      "en": "Russian",
+      "ru": "Russian",
+      "de": "Russian"
+    },
+    "population": 7057841,
+    "population_display": {
+      "ru": "7 млн",
+      "en": "7M",
+      "de": "7 Mio."
+    },
+    "currency_name": {
+      "en": "Turkmenistan manat",
+      "ru": "Turkmenistan manat",
+      "de": "Turkmenistan manat"
+    },
+    "currency_code": "TMT",
+    "flag_file": "tm.svg"
+  },
+  {
+    "code": "TUV",
+    "localized_name": {
+      "en": "Tuvalu",
+      "ru": "Тувалу",
+      "de": "Tuvalu"
+    },
+    "capital": {
+      "en": "Funafuti",
+      "ru": "Funafuti",
+      "de": "Funafuti"
+    },
+    "official_language": {
+      "en": "English",
+      "ru": "English",
+      "de": "English"
+    },
+    "population": 10643,
+    "population_display": {
+      "ru": "0 млн",
+      "en": "0M",
+      "de": "0 Mio."
+    },
+    "currency_name": {
+      "en": "Australian dollar",
+      "ru": "Australian dollar",
+      "de": "Australian dollar"
+    },
+    "currency_code": "AUD",
+    "flag_file": "tv.svg"
+  },
+  {
+    "code": "UGA",
+    "localized_name": {
+      "en": "Uganda",
+      "ru": "Уганда",
+      "de": "Uganda"
+    },
+    "capital": {
+      "en": "Kampala",
+      "ru": "Kampala",
+      "de": "Kampala"
+    },
+    "official_language": {
+      "en": "English",
+      "ru": "English",
+      "de": "English"
+    },
+    "population": 45905417,
+    "population_display": {
+      "ru": "46 млн",
+      "en": "46M",
+      "de": "46 Mio."
+    },
+    "currency_name": {
+      "en": "Ugandan shilling",
+      "ru": "Ugandan shilling",
+      "de": "Ugandan shilling"
+    },
+    "currency_code": "UGX",
+    "flag_file": "ug.svg"
+  },
+  {
+    "code": "UKR",
+    "localized_name": {
+      "en": "Ukraine",
+      "ru": "Украина",
+      "de": "Ukraine"
+    },
+    "capital": {
+      "en": "Kyiv",
+      "ru": "Kyiv",
+      "de": "Kyiv"
+    },
+    "official_language": {
+      "en": "Ukrainian",
+      "ru": "Ukrainian",
+      "de": "Ukrainian"
+    },
+    "population": 32862000,
+    "population_display": {
+      "ru": "33 млн",
+      "en": "33M",
+      "de": "33 Mio."
+    },
+    "currency_name": {
+      "en": "Ukrainian hryvnia",
+      "ru": "Ukrainian hryvnia",
+      "de": "Ukrainian hryvnia"
+    },
+    "currency_code": "UAH",
+    "flag_file": "ua.svg"
+  },
+  {
+    "code": "ARE",
+    "localized_name": {
+      "en": "United Arab Emirates",
+      "ru": "Объединённые Арабские Эмираты",
+      "de": "Vereinigte Arabische Emirate"
+    },
+    "capital": {
+      "en": "Abu Dhabi",
+      "ru": "Abu Dhabi",
+      "de": "Abu Dhabi"
+    },
+    "official_language": {
+      "en": "Arabic",
+      "ru": "Arabic",
+      "de": "Arabic"
+    },
+    "population": 11294243,
+    "population_display": {
+      "ru": "11 млн",
+      "en": "11M",
+      "de": "11 Mio."
+    },
+    "currency_name": {
+      "en": "United Arab Emirates dirham",
+      "ru": "United Arab Emirates dirham",
+      "de": "United Arab Emirates dirham"
+    },
+    "currency_code": "AED",
+    "flag_file": "ae.svg"
+  },
+  {
+    "code": "GBR",
+    "localized_name": {
+      "en": "United Kingdom",
+      "ru": "Великобритания",
+      "de": "Vereinigtes Königreich"
+    },
+    "capital": {
+      "en": "London",
+      "ru": "London",
+      "de": "London"
+    },
+    "official_language": {
+      "en": "English",
+      "ru": "English",
+      "de": "English"
+    },
+    "population": 69281437,
+    "population_display": {
+      "ru": "69 млн",
+      "en": "69M",
+      "de": "69 Mio."
+    },
+    "currency_name": {
+      "en": "British pound",
+      "ru": "British pound",
+      "de": "British pound"
+    },
+    "currency_code": "GBP",
+    "flag_file": "gb.svg"
+  },
+  {
+    "code": "USA",
+    "localized_name": {
+      "en": "United States",
+      "ru": "Соединённые Штаты Америки",
+      "de": "Vereinigte Staaten"
+    },
+    "capital": {
+      "en": "Washington, D.C.",
+      "ru": "Washington, D.C.",
+      "de": "Washington, D.C."
+    },
+    "official_language": {
+      "en": "English",
+      "ru": "English",
+      "de": "English"
+    },
+    "population": 340110988,
+    "population_display": {
+      "ru": "340 млн",
+      "en": "340M",
+      "de": "340 Mio."
+    },
+    "currency_name": {
+      "en": "United States dollar",
+      "ru": "United States dollar",
+      "de": "United States dollar"
+    },
+    "currency_code": "USD",
+    "flag_file": "us.svg"
+  },
+  {
+    "code": "URY",
+    "localized_name": {
+      "en": "Uruguay",
+      "ru": "Уругвай",
+      "de": "Uruguay"
+    },
+    "capital": {
+      "en": "Montevideo",
+      "ru": "Montevideo",
+      "de": "Montevideo"
+    },
+    "official_language": {
+      "en": "Spanish",
+      "ru": "Spanish",
+      "de": "Spanish"
+    },
+    "population": 3499451,
+    "population_display": {
+      "ru": "3 млн",
+      "en": "3M",
+      "de": "3 Mio."
+    },
+    "currency_name": {
+      "en": "Uruguayan peso",
+      "ru": "Uruguayan peso",
+      "de": "Uruguayan peso"
+    },
+    "currency_code": "UYU",
+    "flag_file": "uy.svg"
+  },
+  {
+    "code": "UZB",
+    "localized_name": {
+      "en": "Uzbekistan",
+      "ru": "Узбекистан",
+      "de": "Usbekistan"
+    },
+    "capital": {
+      "en": "Tashkent",
+      "ru": "Tashkent",
+      "de": "Tashkent"
+    },
+    "official_language": {
+      "en": "Russian",
+      "ru": "Russian",
+      "de": "Russian"
+    },
+    "population": 37859698,
+    "population_display": {
+      "ru": "38 млн",
+      "en": "38M",
+      "de": "38 Mio."
+    },
+    "currency_name": {
+      "en": "Uzbekistani soʻm",
+      "ru": "Uzbekistani soʻm",
+      "de": "Uzbekistani soʻm"
+    },
+    "currency_code": "UZS",
+    "flag_file": "uz.svg"
+  },
+  {
+    "code": "VUT",
+    "localized_name": {
+      "en": "Vanuatu",
+      "ru": "Вануату",
+      "de": "Vanuatu"
+    },
+    "capital": {
+      "en": "Port Vila",
+      "ru": "Port Vila",
+      "de": "Port Vila"
+    },
+    "official_language": {
+      "en": "Bislama",
+      "ru": "Bislama",
+      "de": "Bislama"
+    },
+    "population": 321409,
+    "population_display": {
+      "ru": "0 млн",
+      "en": "0M",
+      "de": "0 Mio."
+    },
+    "currency_name": {
+      "en": "Vanuatu vatu",
+      "ru": "Vanuatu vatu",
+      "de": "Vanuatu vatu"
+    },
+    "currency_code": "VUV",
+    "flag_file": "vu.svg"
+  },
+  {
+    "code": "VEN",
+    "localized_name": {
+      "en": "Venezuela",
+      "ru": "Венесуэла",
+      "de": "Venezuela"
+    },
+    "capital": {
+      "en": "Caracas",
+      "ru": "Caracas",
+      "de": "Caracas"
+    },
+    "official_language": {
+      "en": "Spanish",
+      "ru": "Spanish",
+      "de": "Spanish"
+    },
+    "population": 28517000,
+    "population_display": {
+      "ru": "29 млн",
+      "en": "29M",
+      "de": "29 Mio."
+    },
+    "currency_name": {
+      "en": "Venezuelan bolívar soberano",
+      "ru": "Venezuelan bolívar soberano",
+      "de": "Venezuelan bolívar soberano"
+    },
+    "currency_code": "VES",
+    "flag_file": "ve.svg"
+  },
+  {
+    "code": "VNM",
+    "localized_name": {
+      "en": "Vietnam",
+      "ru": "Вьетнам",
+      "de": "Vietnam"
+    },
+    "capital": {
+      "en": "Hanoi",
+      "ru": "Hanoi",
+      "de": "Hanoi"
+    },
+    "official_language": {
+      "en": "Vietnamese",
+      "ru": "Vietnamese",
+      "de": "Vietnamese"
+    },
+    "population": 101343800,
+    "population_display": {
+      "ru": "101 млн",
+      "en": "101M",
+      "de": "101 Mio."
+    },
+    "currency_name": {
+      "en": "Vietnamese đồng",
+      "ru": "Vietnamese đồng",
+      "de": "Vietnamese đồng"
+    },
+    "currency_code": "VND",
+    "flag_file": "vn.svg"
+  },
+  {
+    "code": "YEM",
+    "localized_name": {
+      "en": "Yemen",
+      "ru": "Йемен",
+      "de": "Jemen"
+    },
+    "capital": {
+      "en": "Sana'a",
+      "ru": "Sana'a",
+      "de": "Sana'a"
+    },
+    "official_language": {
+      "en": "Arabic",
+      "ru": "Arabic",
+      "de": "Arabic"
+    },
+    "population": 32684503,
+    "population_display": {
+      "ru": "33 млн",
+      "en": "33M",
+      "de": "33 Mio."
+    },
+    "currency_name": {
+      "en": "Yemeni rial",
+      "ru": "Yemeni rial",
+      "de": "Yemeni rial"
+    },
+    "currency_code": "YER",
+    "flag_file": "ye.svg"
+  },
+  {
+    "code": "ZMB",
+    "localized_name": {
+      "en": "Zambia",
+      "ru": "Замбия",
+      "de": "Sambia"
+    },
+    "capital": {
+      "en": "Lusaka",
+      "ru": "Lusaka",
+      "de": "Lusaka"
+    },
+    "official_language": {
+      "en": "English",
+      "ru": "English",
+      "de": "English"
+    },
+    "population": 19693423,
+    "population_display": {
+      "ru": "20 млн",
+      "en": "20M",
+      "de": "20 Mio."
+    },
+    "currency_name": {
+      "en": "Zambian kwacha",
+      "ru": "Zambian kwacha",
+      "de": "Zambian kwacha"
+    },
+    "currency_code": "ZMW",
+    "flag_file": "zm.svg"
+  },
+  {
+    "code": "ZWE",
+    "localized_name": {
+      "en": "Zimbabwe",
+      "ru": "Зимбабве",
+      "de": "Simbabwe"
+    },
+    "capital": {
+      "en": "Harare",
+      "ru": "Harare",
+      "de": "Harare"
+    },
+    "official_language": {
+      "en": "Chibarwe",
+      "ru": "Chibarwe",
+      "de": "Chibarwe"
+    },
+    "population": 17073087,
+    "population_display": {
+      "ru": "17 млн",
+      "en": "17M",
+      "de": "17 Mio."
+    },
+    "currency_name": {
+      "en": "Zimbabwean dollar",
+      "ru": "Zimbabwean dollar",
+      "de": "Zimbabwean dollar"
+    },
+    "currency_code": "ZWL",
+    "flag_file": "zw.svg"
+  }
+]
