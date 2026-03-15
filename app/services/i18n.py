@@ -36,6 +36,80 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "en": "Statistics",
         "de": "Statistik",
     },
+    "admin_denied": {
+        "ru": "Доступ запрещен.",
+        "en": "Access denied.",
+        "de": "Zugriff verweigert.",
+    },
+    "admin_overview_title": {
+        "ru": "<b>Админ-обзор</b>",
+        "en": "<b>Admin overview</b>",
+        "de": "<b>Admin-Ubersicht</b>",
+    },
+    "admin_overview_text": {
+        "ru": (
+            "{title}\n\n"
+            "Пользователи: <b>{users}</b>\n"
+            "Квизы: <b>{quiz_runs}</b>\n"
+            "Завершено: <b>{completed}</b>\n"
+            "В процессе: <b>{in_progress}</b>\n"
+            "Карточек в прогрессе: <b>{tracked}</b>\n"
+            "Готово к повтору: <b>{due}</b>"
+        ),
+        "en": (
+            "{title}\n\n"
+            "Users: <b>{users}</b>\n"
+            "Quiz runs: <b>{quiz_runs}</b>\n"
+            "Completed: <b>{completed}</b>\n"
+            "In progress: <b>{in_progress}</b>\n"
+            "Tracked items: <b>{tracked}</b>\n"
+            "Due for review: <b>{due}</b>"
+        ),
+        "de": (
+            "{title}\n\n"
+            "Nutzer: <b>{users}</b>\n"
+            "Quiz-Laufe: <b>{quiz_runs}</b>\n"
+            "Abgeschlossen: <b>{completed}</b>\n"
+            "In Bearbeitung: <b>{in_progress}</b>\n"
+            "Verfolgte Karten: <b>{tracked}</b>\n"
+            "Fallig zur Wiederholung: <b>{due}</b>"
+        ),
+    },
+    "admin_weakest_title": {
+        "ru": "<b>Слабые страны</b>",
+        "en": "<b>Weak countries</b>",
+        "de": "<b>Schwache Lander</b>",
+    },
+    "admin_strongest_title": {
+        "ru": "<b>Сильные страны</b>",
+        "en": "<b>Strong countries</b>",
+        "de": "<b>Starke Lander</b>",
+    },
+    "admin_empty_progress": {
+        "ru": "Пока нет данных о прогрессе.",
+        "en": "No progress data yet.",
+        "de": "Noch keine Fortschrittsdaten.",
+    },
+    "admin_refresh": {
+        "ru": "Обновить",
+        "en": "Refresh",
+        "de": "Aktualisieren",
+    },
+    "admin_weakest_button": {
+        "ru": "Слабые",
+        "en": "Weakest",
+        "de": "Schwach",
+    },
+    "admin_strongest_button": {
+        "ru": "Сильные",
+        "en": "Strongest",
+        "de": "Stark",
+    },
+    "admin_back": {
+        "ru": "Назад",
+        "en": "Back",
+        "de": "Zuruck",
+    },
     "stats_empty": {
         "ru": "Пока нет завершенных данных. Сыграйте первый квиз.",
         "en": "No completed data yet. Play your first quiz.",

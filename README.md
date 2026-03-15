@@ -24,6 +24,7 @@ Telegram-бот для изучения флагов, столиц, языков
 ## Быстрый старт
 
 1. Скопируйте `.env.example` в `.env` и заполните `BOT_TOKEN`.
+   Если нужен доступ к встроенной read-only админке бота, добавьте `ADMIN_IDS`, например `123456789,987654321`.
 2. Подготовьте локальные данные:
 
 ```bash
@@ -37,7 +38,11 @@ python scripts/validate_countries_data.py
 python scripts/sync_countries_to_db.py
 python scripts/country_catalog_summary.py
 python scripts/check_country_catalog.py
+python scripts/admin_overview.py
+python scripts/admin_progress_report.py
 ```
+
+В боте для админов доступна команда `/admin`.
 
 4. Запустите через Docker:
 
@@ -83,6 +88,7 @@ python scripts/run_bot.py
 - data pipeline отделен от рантайма бота: данные можно обновлять вручную или отдельным job
 - каталог `countries` в PostgreSQL синхронизируется из локального `countries.json` отдельной командой
 - есть отдельные dev/admin-утилиты для summary и health-check согласованности между `countries.json`, флагами и таблицей `countries`
+- есть read-only admin-утилиты по пользователям и учебному прогрессу
 - контейнер бота валидирует локальный датасет перед стартом и падает рано, если `countries.json` или флаги отсутствуют
 
 ## Что дальше легко нарастить

@@ -1,11 +1,13 @@
 from aiogram import F, Router
-from aiogram.filters import CommandStart
+from aiogram.filters import Command, CommandStart
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.bot.keyboards.common import language_keyboard, main_menu_keyboard
+from app.bot.keyboards.common import admin_keyboard, language_keyboard, main_menu_keyboard
+from app.config import Settings
 from app.constants import SupportedLanguage
+from app.repositories.admin import AdminRepository, format_progress_country_stat
 from app.repositories.quiz_runs import QuizRunRepository
 from app.repositories.users import UserRepository
 from app.services.i18n import I18nService
@@ -58,6 +60,44 @@ def _format_stats(
     )
 
 
+def _format_admin_overview(
+    users_count: int,
+    quiz_runs_count: int,
+    completed_quiz_runs_count: int,
+    in_progress_quiz_runs_count: int,
+    tracked_progress_items: int,
+    due_progress_items: int,
+    language: SupportedLanguage,
+    i18n: I18nService,
+) -> str:
+    return i18n.text(
+        "admin_overview_text",
+        language,
+        title=i18n.text("admin_overview_title", language),
+        users=str(users_count),
+        quiz_runs=str(quiz_runs_count),
+        completed=str(completed_quiz_runs_count),
+        in_progress=str(in_progress_quiz_runs_count),
+        tracked=str(tracked_progress_items),
+        due=str(due_progress_items),
+    )
+
+
+def _format_admin_progress_list(
+    items: list[str],
+    title: str,
+    language: SupportedLanguage,
+    i18n: I18nService,
+) -> str:
+    if not items:
+        return f"{title}\n\n{i18n.text('admin_empty_progress', language)}"
+    return f"{title}\n\n" + "\n".join(f"- {item}" for item in items)
+
+
+def _is_admin(user_id: int, settings: Settings) -> bool:
+    return user_id in settings.admin_ids
+
+
 @router.message(CommandStart())
 async def start_command(message: Message, session: AsyncSession, i18n: I18nService) -> None:
     users = UserRepository(session)
@@ -92,6 +132,40 @@ async def change_language(
         reply_markup=language_keyboard(),
     )
     await callback.answer()
+
+
+@router.message(Command("admin"))
+async def admin_panel(
+    message: Message,
+    session: AsyncSession,
+    settings: Settings,
+    i18n: I18nService,
+) -> None:
+    if not _is_admin(message.from_user.id, settings):
+        await message.answer(i18n.text("admin_denied", SupportedLanguage.EN))
+        return
+
+    users = UserRepository(session)
+    user = await users.get_or_create(
+        telegram_id=message.from_user.id,
+        username=message.from_user.username,
+        first_name=message.from_user.first_name,
+    )
+    language = SupportedLanguage(user.language or SupportedLanguage.EN.value)
+    overview = await AdminRepository(session).overview()
+    await message.answer(
+        _format_admin_overview(
+            overview.users_count,
+            overview.quiz_runs_count,
+            overview.completed_quiz_runs_count,
+            overview.in_progress_quiz_runs_count,
+            overview.tracked_progress_items,
+            overview.due_progress_items,
+            language,
+            i18n,
+        ),
+        reply_markup=admin_keyboard(language, i18n),
+    )
 
 
 @router.callback_query(F.data.startswith("lang:"))
@@ -144,4 +218,66 @@ async def stats(callback: CallbackQuery, session: AsyncSession, i18n: I18nServic
         _format_stats(summary, language, i18n),
         reply_markup=main_menu_keyboard(language, i18n),
     )
+    await callback.answer()
+
+
+@router.callback_query(F.data.startswith("admin:"))
+async def admin_actions(
+    callback: CallbackQuery,
+    session: AsyncSession,
+    settings: Settings,
+    i18n: I18nService,
+) -> None:
+    if not _is_admin(callback.from_user.id, settings):
+        await callback.answer(i18n.text("admin_denied", SupportedLanguage.EN), show_alert=True)
+        return
+
+    users = UserRepository(session)
+    user = await users.get_or_create(
+        telegram_id=callback.from_user.id,
+        username=callback.from_user.username,
+        first_name=callback.from_user.first_name,
+    )
+    language = SupportedLanguage(user.language or SupportedLanguage.EN.value)
+    action = callback.data.split(":")[1]
+    repository = AdminRepository(session)
+
+    if action == "back":
+        await callback.message.edit_text(
+            i18n.text("main_menu", language),
+            reply_markup=main_menu_keyboard(language, i18n),
+        )
+        await callback.answer()
+        return
+
+    if action == "overview":
+        overview = await repository.overview()
+        text = _format_admin_overview(
+            overview.users_count,
+            overview.quiz_runs_count,
+            overview.completed_quiz_runs_count,
+            overview.in_progress_quiz_runs_count,
+            overview.tracked_progress_items,
+            overview.due_progress_items,
+            language,
+            i18n,
+        )
+    elif action == "weakest":
+        weakest = await repository.weakest_countries()
+        text = _format_admin_progress_list(
+            [format_progress_country_stat(item) for item in weakest],
+            i18n.text("admin_weakest_title", language),
+            language,
+            i18n,
+        )
+    else:
+        strongest = await repository.strongest_countries()
+        text = _format_admin_progress_list(
+            [format_progress_country_stat(item) for item in strongest],
+            i18n.text("admin_strongest_title", language),
+            language,
+            i18n,
+        )
+
+    await callback.message.edit_text(text, reply_markup=admin_keyboard(language, i18n))
     await callback.answer()
