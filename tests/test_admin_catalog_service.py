@@ -1,3 +1,4 @@
+from datetime import UTC
 from pathlib import Path
 
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
@@ -223,3 +224,31 @@ async def test_admin_catalog_service_dashboard_aggregates_valid_state(tmp_path: 
     assert dashboard.health is not None
     assert dashboard.preview is not None
     assert dashboard.preview.to_create == ["ESP", "ITA", "POL", "UKR"]
+    assert dashboard.checked_at is not None
+    assert dashboard.dataset_updated_at is not None
+    assert dashboard.dataset_updated_at.tzinfo == UTC
+
+
+async def test_admin_catalog_service_dashboard_includes_db_updated_at(tmp_path: Path) -> None:
+    engine = create_async_engine("sqlite+aiosqlite:///:memory:")
+    async with engine.begin() as connection:
+        await connection.run_sync(Base.metadata.create_all)
+
+    session_factory = async_sessionmaker(engine, expire_on_commit=False)
+    settings = _settings(tmp_path)
+
+    async with session_factory() as session:
+        repository = CountryCatalogRepository(session)
+        store = CountryStore.from_path(
+            Path("tests/fixtures/countries.json"),
+            Path("tests/fixtures"),
+        )
+        await repository.upsert_many(store.countries[:1])
+        await session.commit()
+
+        service = AdminCatalogService(session, settings)
+        dashboard = await service.dashboard()
+
+    await engine.dispose()
+
+    assert dashboard.db_updated_at is not None

@@ -202,6 +202,9 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
     "admin_catalog_dashboard_text": {
         "ru": (
             "{title}\n\n"
+            "Проверено: <b>{checked_at}</b>\n"
+            "Dataset обновлён: <b>{dataset_updated_at}</b>\n"
+            "DB catalog обновлён: <b>{db_updated_at}</b>\n"
             "Dataset: <b>{validation_status}</b>\n"
             "Стран в dataset: <b>{countries}</b>\n"
             "Health-check: <b>{health_status}</b>\n"
@@ -211,6 +214,9 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         ),
         "en": (
             "{title}\n\n"
+            "Checked at: <b>{checked_at}</b>\n"
+            "Dataset updated: <b>{dataset_updated_at}</b>\n"
+            "DB catalog updated: <b>{db_updated_at}</b>\n"
             "Dataset: <b>{validation_status}</b>\n"
             "Dataset countries: <b>{countries}</b>\n"
             "Health check: <b>{health_status}</b>\n"
@@ -220,6 +226,9 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         ),
         "de": (
             "{title}\n\n"
+            "Gepruft um: <b>{checked_at}</b>\n"
+            "Datensatz aktualisiert: <b>{dataset_updated_at}</b>\n"
+            "DB-Katalog aktualisiert: <b>{db_updated_at}</b>\n"
             "Datensatz: <b>{validation_status}</b>\n"
             "Datensatz-Lander: <b>{countries}</b>\n"
             "Health-Check: <b>{health_status}</b>\n"
@@ -231,18 +240,27 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
     "admin_catalog_dashboard_invalid": {
         "ru": (
             "{title}\n\n"
+            "Проверено: <b>{checked_at}</b>\n"
+            "Dataset обновлён: <b>{dataset_updated_at}</b>\n"
+            "DB catalog обновлён: <b>{db_updated_at}</b>\n"
             "Dataset: <b>{validation_status}</b>\n"
             "Ошибка: <b>{error}</b>\n"
             "Health-check и sync preview недоступны, пока dataset не исправлен."
         ),
         "en": (
             "{title}\n\n"
+            "Checked at: <b>{checked_at}</b>\n"
+            "Dataset updated: <b>{dataset_updated_at}</b>\n"
+            "DB catalog updated: <b>{db_updated_at}</b>\n"
             "Dataset: <b>{validation_status}</b>\n"
             "Error: <b>{error}</b>\n"
             "Health check and sync preview are unavailable until the dataset is fixed."
         ),
         "de": (
             "{title}\n\n"
+            "Gepruft um: <b>{checked_at}</b>\n"
+            "Datensatz aktualisiert: <b>{dataset_updated_at}</b>\n"
+            "DB-Katalog aktualisiert: <b>{db_updated_at}</b>\n"
             "Datensatz: <b>{validation_status}</b>\n"
             "Fehler: <b>{error}</b>\n"
             "Health-Check und Sync-Vorschau sind erst nach einer Korrektur verfugbar."

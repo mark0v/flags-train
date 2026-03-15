@@ -33,6 +33,12 @@ from app.services.statistics import (
 router = Router()
 
 
+def _format_optional_datetime(value) -> str:
+    if value is None:
+        return "-"
+    return value.astimezone().strftime("%Y-%m-%d %H:%M")
+
+
 async def _show_menu(
     target: Message | CallbackQuery,
     language: SupportedLanguage,
@@ -279,6 +285,9 @@ def _format_admin_catalog_dashboard(
             title=title,
             validation_status=validation_status,
             error=dashboard.validation.error or "-",
+            checked_at=_format_optional_datetime(dashboard.checked_at),
+            dataset_updated_at=_format_optional_datetime(dashboard.dataset_updated_at),
+            db_updated_at=_format_optional_datetime(dashboard.db_updated_at),
         )
 
     assert dashboard.health is not None
@@ -301,6 +310,9 @@ def _format_admin_catalog_dashboard(
             else "admin_catalog_sync_pending_no",
             language,
         ),
+        checked_at=_format_optional_datetime(dashboard.checked_at),
+        dataset_updated_at=_format_optional_datetime(dashboard.dataset_updated_at),
+        db_updated_at=_format_optional_datetime(dashboard.db_updated_at),
     )
 
 

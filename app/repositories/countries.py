@@ -1,4 +1,6 @@
-from sqlalchemy import delete, select
+from datetime import datetime
+
+from sqlalchemy import delete, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.models import CountryCatalog
@@ -50,3 +52,7 @@ class CountryCatalogRepository:
     async def summary(self) -> dict[str, int]:
         count = await self.count()
         return {"countries_count": count}
+
+    async def latest_updated_at(self) -> datetime | None:
+        result = await self._session.execute(select(func.max(CountryCatalog.updated_at)))
+        return result.scalar_one_or_none()

@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from datetime import UTC, datetime
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -22,6 +23,9 @@ class AdminCatalogDashboard:
     validation: DatasetValidationReport
     health: CatalogHealthReport | None = None
     preview: CatalogSyncPreview | None = None
+    checked_at: datetime | None = None
+    dataset_updated_at: datetime | None = None
+    db_updated_at: datetime | None = None
 
 
 class AdminCatalogService:
@@ -36,6 +40,12 @@ class AdminCatalogService:
     def _flags_dir(self):
         return self._settings.resolve_path(self._settings.flags_dir)
 
+    def _dataset_updated_at(self) -> datetime | None:
+        dataset_path = self._dataset_path()
+        if not dataset_path.exists():
+            return None
+        return datetime.fromtimestamp(dataset_path.stat().st_mtime, tz=UTC)
+
     def _load_store(self) -> CountryStore:
         return CountryStore.from_path(self._dataset_path(), self._flags_dir())
 
@@ -49,9 +59,17 @@ class AdminCatalogService:
         return validate_local_dataset(self._dataset_path(), self._flags_dir())
 
     async def dashboard(self) -> AdminCatalogDashboard:
+        checked_at = datetime.now(UTC)
+        dataset_updated_at = self._dataset_updated_at()
+        db_updated_at = await self._repository.latest_updated_at()
         validation = await self.dataset_validation()
         if not validation.is_valid:
-            return AdminCatalogDashboard(validation=validation)
+            return AdminCatalogDashboard(
+                validation=validation,
+                checked_at=checked_at,
+                dataset_updated_at=dataset_updated_at,
+                db_updated_at=db_updated_at,
+            )
 
         store = self._load_store()
         health = build_catalog_health_report(
@@ -64,6 +82,9 @@ class AdminCatalogService:
             validation=validation,
             health=health,
             preview=preview,
+            checked_at=checked_at,
+            dataset_updated_at=dataset_updated_at,
+            db_updated_at=db_updated_at,
         )
 
     async def catalog_health(self) -> CatalogHealthReport:

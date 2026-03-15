@@ -1,3 +1,5 @@
+from datetime import UTC, datetime
+
 from app.bot.handlers.menu import (
     _format_admin_catalog_dashboard,
     _format_admin_catalog_health,
@@ -48,6 +50,9 @@ def test_format_admin_catalog_health_marks_issue_and_truncates_lists() -> None:
 
 
 def test_format_admin_catalog_dashboard_for_valid_state() -> None:
+    checked_at = datetime(2026, 3, 15, 12, 0, tzinfo=UTC)
+    dataset_updated_at = datetime(2026, 3, 15, 11, 30, tzinfo=UTC)
+    db_updated_at = datetime(2026, 3, 15, 11, 45, tzinfo=UTC)
     text = _format_admin_catalog_dashboard(
         AdminCatalogDashboard(
             validation=DatasetValidationReport(
@@ -70,28 +75,40 @@ def test_format_admin_catalog_dashboard_for_valid_state() -> None:
                 to_update=[],
                 to_delete=["OLD"],
             ),
+            checked_at=checked_at,
+            dataset_updated_at=dataset_updated_at,
+            db_updated_at=db_updated_at,
         ),
         SupportedLanguage.EN,
         I18nService(),
     )
 
+    assert f"Checked at: <b>{checked_at.astimezone().strftime('%Y-%m-%d %H:%M')}</b>" in text
+    assert (
+        f"Dataset updated: <b>{dataset_updated_at.astimezone().strftime('%Y-%m-%d %H:%M')}</b>"
+        in text
+    )
+    assert f"DB catalog updated: <b>{db_updated_at.astimezone().strftime('%Y-%m-%d %H:%M')}</b>" in text
     assert "Dataset: <b>Dataset is valid</b>" in text
     assert "Health check: <b>Issues found</b>" in text
     assert "Pending sync: <b>yes</b>" in text
 
 
 def test_format_admin_catalog_dashboard_for_invalid_state() -> None:
+    checked_at = datetime(2026, 3, 15, 12, 0, tzinfo=UTC)
     text = _format_admin_catalog_dashboard(
         AdminCatalogDashboard(
             validation=DatasetValidationReport(
                 is_valid=False,
                 error="Dataset is empty.",
             ),
+            checked_at=checked_at,
         ),
         SupportedLanguage.EN,
         I18nService(),
     )
 
+    assert f"Checked at: <b>{checked_at.astimezone().strftime('%Y-%m-%d %H:%M')}</b>" in text
     assert "Dataset: <b>Dataset is invalid</b>" in text
     assert "Error: <b>Dataset is empty.</b>" in text
 
