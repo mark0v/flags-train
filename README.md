@@ -15,6 +15,7 @@ Telegram-бот для изучения флагов, столиц, языков
 - SRS-приоритизация на базе `proficiency_score`, `current_streak`, `next_review_at`
 - встроенный `/admin` с безопасными catalog actions
 - runtime preflight перед запуском
+- startup logging и явный preflight report
 - Dockerfile, `docker-compose.yml`, `.env.example`
 - тесты и `ruff`
 
@@ -61,6 +62,15 @@ python scripts/sync_countries_to_db.py
 python scripts/runtime_preflight.py
 ```
 
+Пример ожидаемого вывода:
+
+```text
+Overall: READY
+Dataset: OK (countries=193, range=AFG-ZWE)
+Database: OK (revision=...)
+Migrations: OK (current=..., expected=...)
+```
+
 7. Запустите бота:
 
 ```bash
@@ -101,6 +111,14 @@ docker compose up --build bot
 
 `bot` больше не делает миграции автоматически при старте. Это сделано специально, чтобы запуск runtime был предсказуемым и безопаснее для production-like окружения.
 
+`run_bot.py` теперь логирует:
+
+- `APP_ENV`
+- путь к локальному dataset
+- путь к каталогу флагов
+- количество admin IDs
+- итоговый runtime preflight report
+
 ## Data Pipeline
 
 Скрипт `scripts/fetch_countries_data.py`:
@@ -133,6 +151,12 @@ python scripts/validate_countries_data.py
 - sync preview
 - confirmable catalog sync
 
+Catalog dashboard в `/admin` теперь дополнительно показывает:
+
+- когда был собран текущий dashboard
+- время последнего изменения локального `countries.json`
+- время последнего обновления DB catalog
+
 CLI-утилиты:
 
 ```bash
@@ -162,6 +186,15 @@ ruff check app tests scripts
 4. `python scripts/runtime_preflight.py`
 5. `pytest`
 6. `ruff check app tests scripts`
+
+Рекомендуемые env-поля для runtime:
+
+- `APP_ENV`
+- `DATABASE_URL`
+- `COUNTRIES_DATA_PATH`
+- `FLAGS_DIR`
+- `LOG_LEVEL`
+- `ADMIN_IDS`
 
 Для Docker-потока те же шаги можно выполнить через `data`, `migrate`, `sync`, `preflight`.
 

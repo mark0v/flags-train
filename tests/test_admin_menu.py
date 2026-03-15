@@ -88,7 +88,10 @@ def test_format_admin_catalog_dashboard_for_valid_state() -> None:
         f"Dataset updated: <b>{dataset_updated_at.astimezone().strftime('%Y-%m-%d %H:%M')}</b>"
         in text
     )
-    assert f"DB catalog updated: <b>{db_updated_at.astimezone().strftime('%Y-%m-%d %H:%M')}</b>" in text
+    assert (
+        f"DB catalog updated: <b>{db_updated_at.astimezone().strftime('%Y-%m-%d %H:%M')}</b>"
+        in text
+    )
     assert "Dataset: <b>Dataset is valid</b>" in text
     assert "Health check: <b>Issues found</b>" in text
     assert "Pending sync: <b>yes</b>" in text
