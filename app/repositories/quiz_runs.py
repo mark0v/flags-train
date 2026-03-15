@@ -104,6 +104,7 @@ class QuizRunRepository:
         progress_repo = LearningProgressRepository(self._session)
         tracked_items, mastered_items = await progress_repo.get_progress_counters(user_id)
         due_items = await progress_repo.get_due_items_count(user_id)
+        due_countries = await progress_repo.get_due_country_count(user_id)
         category_breakdown = await progress_repo.get_category_breakdown(user_id)
         return UserStatsSummary(
             quizzes_started=row[0] or 0,
@@ -116,5 +117,6 @@ class QuizRunRepository:
             tracked_items=tracked_items,
             mastered_items=mastered_items,
             due_items=due_items,
+            due_countries=due_countries,
             category_breakdown=category_breakdown,
         )

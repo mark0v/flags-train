@@ -10,7 +10,7 @@ from app.bot.handlers import menu as menu_handlers
 from app.bot.handlers import quiz as quiz_handlers
 from app.bot.states import QuizStates
 from app.config import Settings
-from app.constants import QuizMode, SupportedLanguage
+from app.constants import QuizCategory, QuizMode, SupportedLanguage
 from app.db.base import Base
 from app.repositories.users import UserRepository
 from app.services.admin_catalog import AdminCatalogDashboard
@@ -18,6 +18,7 @@ from app.services.catalog_health import CatalogHealthReport
 from app.services.catalog_sync_preview import CatalogSyncPreview
 from app.services.dataset_validation import DatasetValidationReport
 from app.services.i18n import I18nService
+from app.services.statistics import CategoryProgressStat, UserStatsSummary
 
 
 def _build_callback(user_id: int = 42, username: str = "tester", first_name: str = "Test"):
@@ -239,3 +240,52 @@ async def test_exit_yes_sends_abandoned_quiz_message() -> None:
     assert "Quiz ended early." in rendered_text
     assert "Main menu" in rendered_text
     callback.answer.assert_awaited()
+
+
+async def test_stats_review_setup_preconfigures_review_mode(monkeypatch) -> None:
+    engine = create_async_engine("sqlite+aiosqlite:///:memory:")
+    async with engine.begin() as connection:
+        await connection.run_sync(Base.metadata.create_all)
+
+    session_factory = async_sessionmaker(engine, expire_on_commit=False)
+    callback = _build_callback()
+    callback.data = "stats:review_setup"
+    state = _build_state()
+    i18n = I18nService()
+    render_setup = AsyncMock()
+
+    class FakeQuizRunRepository:
+        def __init__(self, session) -> None:
+            self.session = session
+
+        async def get_user_summary(self, user_id: int) -> UserStatsSummary:
+            return UserStatsSummary(
+                quizzes_started=5,
+                quizzes_completed=4,
+                due_countries=12,
+                category_breakdown=[
+                    CategoryProgressStat(category=QuizCategory.FLAG, due_items=4),
+                    CategoryProgressStat(category=QuizCategory.CAPITAL, due_items=8),
+                    CategoryProgressStat(category=QuizCategory.LANGUAGE, due_items=0),
+                ],
+            )
+
+    monkeypatch.setattr(menu_handlers, "QuizRunRepository", FakeQuizRunRepository)
+    monkeypatch.setattr(menu_handlers, "render_quiz_setup", render_setup)
+
+    async with session_factory() as session:
+        user = await UserRepository(session).get_or_create(42, "tester", "Test")
+        user.language = SupportedLanguage.EN.value
+        await session.commit()
+
+        await menu_handlers.stats_review_setup(callback, state, session, i18n)
+
+        data = await state.get_data()
+
+    await engine.dispose()
+
+    assert await state.get_state() == QuizStates.setup.state
+    assert data["selected_count"] == 10
+    assert data["selected_mode"] == menu_handlers.QuizMode.REVIEW.value
+    assert data["selected_categories"] == ["flag", "capital"]
+    render_setup.assert_awaited_once()

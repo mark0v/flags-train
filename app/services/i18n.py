@@ -41,6 +41,11 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "en": "Statistics",
         "de": "Statistik",
     },
+    "stats_back": {
+        "ru": "Назад в меню",
+        "en": "Back to menu",
+        "de": "Zurück zum Menü",
+    },
     "admin_denied": {
         "ru": "Доступ запрещен.",
         "en": "Access denied.",
@@ -501,6 +506,45 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "ru": "Сейчас стоит повторить: <b>{category}</b>",
         "en": "Best focus right now: <b>{category}</b>",
         "de": "Aktueller Fokus: <b>{category}</b>",
+    },
+    "stats_review_readiness": {
+        "ru": (
+            "Готово стран для review mode: <b>{due_countries}</b>\n"
+            "Review-ready: <b>{status}</b>"
+        ),
+        "en": (
+            "Countries ready for review mode: <b>{due_countries}</b>\n"
+            "Review-ready: <b>{status}</b>"
+        ),
+        "de": (
+            "Für den Review-Modus bereit: <b>{due_countries}</b> Länder\n"
+            "Review-bereit: <b>{status}</b>"
+        ),
+    },
+    "stats_review_ready_yes": {
+        "ru": "да",
+        "en": "yes",
+        "de": "ja",
+    },
+    "stats_review_ready_no": {
+        "ru": "пока нет",
+        "en": "not yet",
+        "de": "noch nicht",
+    },
+    "stats_review_hint": {
+        "ru": "Быстрый review станет доступен, когда накопится хотя бы 10 due-стран.",
+        "en": "Quick review becomes available once you have at least 10 due countries.",
+        "de": "Schnell-Review wird verfügbar, sobald mindestens 10 fällige Länder vorhanden sind.",
+    },
+    "stats_review_cta": {
+        "ru": "Начать review",
+        "en": "Start review",
+        "de": "Review starten",
+    },
+    "stats_review_unavailable": {
+        "ru": "Для review mode пока недостаточно due-стран.",
+        "en": "There are not enough due countries for review mode yet.",
+        "de": "Für den Review-Modus gibt es noch nicht genug fällige Länder.",
     },
     "quiz_setup_title": {
         "ru": "Настройка квиза",

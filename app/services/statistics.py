@@ -31,6 +31,7 @@ class UserStatsSummary:
     tracked_items: int = 0
     mastered_items: int = 0
     due_items: int = 0
+    due_countries: int = 0
     last_completed_at: datetime | None = None
     category_breakdown: list[CategoryProgressStat] | None = None
 

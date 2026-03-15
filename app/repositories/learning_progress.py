@@ -1,6 +1,6 @@
 from datetime import UTC, datetime
 
-from sqlalchemy import case, func, select
+from sqlalchemy import case, distinct, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.constants import QUESTION_ORDER, QuizAnswerOutcome, QuizCategory
@@ -183,6 +183,21 @@ class LearningProgressRepository:
     ) -> int:
         current_time = now or datetime.now(UTC)
         stmt = select(func.count(UserLearningProgress.id)).where(
+            UserLearningProgress.user_id == user_id,
+            UserLearningProgress.next_review_at.is_not(None),
+            UserLearningProgress.next_review_at <= current_time,
+        )
+        result = await self._session.execute(stmt)
+        return int(result.scalar() or 0)
+
+    async def get_due_country_count(
+        self,
+        user_id: int,
+        *,
+        now: datetime | None = None,
+    ) -> int:
+        current_time = now or datetime.now(UTC)
+        stmt = select(func.count(distinct(UserLearningProgress.country_code))).where(
             UserLearningProgress.user_id == user_id,
             UserLearningProgress.next_review_at.is_not(None),
             UserLearningProgress.next_review_at <= current_time,

@@ -27,6 +27,23 @@ def main_menu_keyboard(language: SupportedLanguage, i18n: I18nService) -> Inline
     return builder.as_markup()
 
 
+def stats_keyboard(
+    language: SupportedLanguage,
+    i18n: I18nService,
+    *,
+    review_ready: bool,
+) -> InlineKeyboardMarkup:
+    builder = InlineKeyboardBuilder()
+    if review_ready:
+        builder.button(
+            text=i18n.text("stats_review_cta", language),
+            callback_data="stats:review_setup",
+        )
+    builder.button(text=i18n.text("stats_back", language), callback_data="menu:back")
+    builder.adjust(1)
+    return builder.as_markup()
+
+
 def quiz_setup_keyboard(
     language: SupportedLanguage,
     i18n: I18nService,

@@ -4,14 +4,17 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.bot.handlers.quiz import _render_quiz_setup as render_quiz_setup
 from app.bot.keyboards.common import (
     admin_keyboard,
     admin_sync_confirmation_keyboard,
     language_keyboard,
     main_menu_keyboard,
+    stats_keyboard,
 )
+from app.bot.states import QuizStates
 from app.config import Settings
-from app.constants import SupportedLanguage
+from app.constants import QUIZ_SIZES, QuizMode, SupportedLanguage
 from app.repositories.admin import AdminRepository, format_progress_country_stat
 from app.repositories.quiz_runs import QuizRunRepository
 from app.repositories.users import UserRepository
@@ -68,9 +71,56 @@ def _format_stats(
         last_completed=last_completed,
     )
     category_section = _format_stats_category_breakdown(summary, language, i18n)
-    if not category_section:
-        return stats_text
-    return f"{stats_text}\n\n{category_section}"
+    review_section = _format_stats_review_readiness(summary, language, i18n)
+    sections = [stats_text]
+    if category_section:
+        sections.append(category_section)
+    if review_section:
+        sections.append(review_section)
+    return "\n\n".join(sections)
+
+
+def _format_stats_review_readiness(
+    summary: UserStatsSummary,
+    language: SupportedLanguage,
+    i18n: I18nService,
+) -> str:
+    review_size = _recommended_review_size(summary.due_countries)
+    readiness_text = i18n.text(
+        "stats_review_readiness",
+        language,
+        due_countries=str(summary.due_countries),
+        status=i18n.text(
+            "stats_review_ready_yes" if review_size is not None else "stats_review_ready_no",
+            language,
+        ),
+    )
+    if review_size is not None:
+        return readiness_text
+    return f"{readiness_text}\n{i18n.text('stats_review_hint', language)}"
+
+
+def _recommended_review_size(due_countries: int) -> int | None:
+    for size in reversed(QUIZ_SIZES):
+        if due_countries >= size:
+            return size
+    return None
+
+
+def _due_review_categories(summary: UserStatsSummary) -> list[str]:
+    return [
+        item.category.value
+        for item in summary.category_breakdown or []
+        if item.due_items > 0
+    ]
+
+
+def _stats_reply_markup(summary: UserStatsSummary, language: SupportedLanguage, i18n: I18nService):
+    return stats_keyboard(
+        language,
+        i18n,
+        review_ready=_recommended_review_size(summary.due_countries) is not None,
+    )
 
 
 def _format_stats_category_breakdown(
@@ -432,6 +482,17 @@ async def settings(callback: CallbackQuery, session: AsyncSession, i18n: I18nSer
     await callback.answer()
 
 
+@router.callback_query(F.data == "menu:back")
+async def menu_back(callback: CallbackQuery, session: AsyncSession, i18n: I18nService) -> None:
+    users = UserRepository(session)
+    user = await users.get_or_create(
+        telegram_id=callback.from_user.id,
+        username=callback.from_user.username,
+        first_name=callback.from_user.first_name,
+    )
+    await _show_menu(callback, SupportedLanguage(user.language), i18n)
+
+
 @router.callback_query(F.data == "menu:stats")
 async def stats(callback: CallbackQuery, session: AsyncSession, i18n: I18nService) -> None:
     users = UserRepository(session)
@@ -444,9 +505,40 @@ async def stats(callback: CallbackQuery, session: AsyncSession, i18n: I18nServic
     summary = await QuizRunRepository(session).get_user_summary(user.id)
     await callback.message.edit_text(
         _format_stats(summary, language, i18n),
-        reply_markup=main_menu_keyboard(language, i18n),
+        reply_markup=_stats_reply_markup(summary, language, i18n),
     )
     await callback.answer()
+
+
+@router.callback_query(F.data == "stats:review_setup")
+async def stats_review_setup(
+    callback: CallbackQuery,
+    state: FSMContext,
+    session: AsyncSession,
+    i18n: I18nService,
+) -> None:
+    users = UserRepository(session)
+    user = await users.get_or_create(
+        telegram_id=callback.from_user.id,
+        username=callback.from_user.username,
+        first_name=callback.from_user.first_name,
+    )
+    language = SupportedLanguage(user.language)
+    summary = await QuizRunRepository(session).get_user_summary(user.id)
+    review_size = _recommended_review_size(summary.due_countries)
+    due_categories = _due_review_categories(summary)
+    if review_size is None or not due_categories:
+        await callback.answer(i18n.text("stats_review_unavailable", language), show_alert=True)
+        return
+
+    await state.set_state(QuizStates.setup)
+    await state.update_data(
+        selected_count=review_size,
+        selected_mode=QuizMode.REVIEW.value,
+        selected_categories=due_categories,
+        language=language.value,
+    )
+    await render_quiz_setup(callback, state, language, i18n)
 
 
 @router.callback_query(F.data.startswith("admin:"))
