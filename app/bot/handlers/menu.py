@@ -6,8 +6,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.bot.keyboards.common import language_keyboard, main_menu_keyboard
 from app.constants import SupportedLanguage
+from app.repositories.quiz_runs import QuizRunRepository
 from app.repositories.users import UserRepository
 from app.services.i18n import I18nService
+from app.services.statistics import UserStatsSummary
 
 router = Router()
 
@@ -24,6 +26,33 @@ async def _show_menu(
         return
     await target.message.edit_text(text, reply_markup=markup)
     await target.answer()
+
+
+def _format_stats(
+    summary: UserStatsSummary,
+    language: SupportedLanguage,
+    i18n: I18nService,
+) -> str:
+    if not summary.has_data:
+        return i18n.text("stats_empty", language)
+
+    last_completed = (
+        summary.last_completed_at.astimezone().strftime("%Y-%m-%d %H:%M")
+        if summary.last_completed_at
+        else "-"
+    )
+    return i18n.text(
+        "stats_text",
+        language,
+        started=str(summary.quizzes_started),
+        completed=str(summary.quizzes_completed),
+        resolved=str(summary.resolved_questions),
+        correct=str(summary.correct_answers),
+        skipped=str(summary.skipped_answers),
+        mistakes=str(summary.wrong_attempts),
+        accuracy=str(summary.accuracy_percent),
+        last_completed=last_completed,
+    )
 
 
 @router.message(CommandStart())
@@ -107,8 +136,9 @@ async def stats(callback: CallbackQuery, session: AsyncSession, i18n: I18nServic
         first_name=callback.from_user.first_name,
     )
     language = SupportedLanguage(user.language)
+    summary = await QuizRunRepository(session).get_user_summary(user.id)
     await callback.message.edit_text(
-        i18n.text("stats_stub", language),
+        _format_stats(summary, language, i18n),
         reply_markup=main_menu_keyboard(language, i18n),
     )
     await callback.answer()

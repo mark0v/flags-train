@@ -15,7 +15,9 @@ from app.bot.keyboards.common import (
 )
 from app.bot.states import QuizStates
 from app.config import Settings
-from app.constants import QuizCategory, SupportedLanguage
+from app.constants import QuizAnswerOutcome, QuizCategory, QuizRunStatus, SupportedLanguage
+from app.db.models import User
+from app.repositories.quiz_runs import QuizRunRepository
 from app.repositories.users import UserRepository
 from app.services.country_store import CountryStore
 from app.services.i18n import I18nService
@@ -24,13 +26,17 @@ from app.services.quiz.engine import Question, QuizEngine, QuizSession
 router = Router()
 
 
-async def _user_language(session: AsyncSession, callback: CallbackQuery) -> SupportedLanguage:
+async def _get_user(session: AsyncSession, callback: CallbackQuery) -> User:
     users = UserRepository(session)
-    user = await users.get_or_create(
+    return await users.get_or_create(
         telegram_id=callback.from_user.id,
         username=callback.from_user.username,
         first_name=callback.from_user.first_name,
     )
+
+
+async def _user_language(session: AsyncSession, callback: CallbackQuery) -> SupportedLanguage:
+    user = await _get_user(session, callback)
     return SupportedLanguage(user.language)
 
 
@@ -70,7 +76,13 @@ async def _show_question(
         data = await state.get_data()
         language = SupportedLanguage(data["language"])
         await callback.message.answer(
-            i18n.text("quiz_complete", language),
+            i18n.text(
+                "quiz_complete_stats",
+                language,
+                correct=str(session_obj.correct_answers),
+                skipped=str(session_obj.skipped_answers),
+                mistakes=str(session_obj.mistakes),
+            ),
             reply_markup=main_menu_keyboard(language, i18n),
         )
         await state.clear()
@@ -85,11 +97,11 @@ async def _show_question(
             caption=caption,
             reply_markup=answer_keyboard(question.options, session_obj.language, i18n),
         )
-    else:
-        await callback.message.answer(
-            caption,
-            reply_markup=answer_keyboard(question.options, session_obj.language, i18n),
-        )
+        return
+    await callback.message.answer(
+        caption,
+        reply_markup=answer_keyboard(question.options, session_obj.language, i18n),
+    )
 
 
 async def _show_retry_question(
@@ -109,6 +121,57 @@ async def _show_retry_question(
         question.prompt,
         reply_markup=answer_keyboard(question.options, language, i18n),
     )
+
+
+async def _persist_resolution(
+    session: AsyncSession,
+    quiz_run_id: int,
+    quiz_session: QuizSession,
+    question: Question,
+    selected_option: str | None,
+    outcome: QuizAnswerOutcome,
+) -> None:
+    await QuizRunRepository(session).save_question_result(
+        quiz_run_id=quiz_run_id,
+        question=question,
+        selected_option=selected_option,
+        outcome=outcome,
+        wrong_attempts=quiz_session.wrong_attempts(question.id),
+    )
+
+
+async def _finalize_run(
+    session: AsyncSession,
+    state: FSMContext,
+    quiz_session: QuizSession,
+    status: QuizRunStatus,
+) -> None:
+    data = await state.get_data()
+    quiz_run_id = data.get("quiz_run_id")
+    if quiz_run_id is None:
+        return
+    await QuizRunRepository(session).finish_run(
+        quiz_run_id=quiz_run_id,
+        status=status,
+        resolved_questions=quiz_session.resolved_questions,
+        correct_answers=quiz_session.correct_answers,
+        skipped_answers=quiz_session.skipped_answers,
+        wrong_attempts=quiz_session.mistakes,
+    )
+
+
+async def _finalize_run_if_complete(
+    callback: CallbackQuery,
+    state: FSMContext,
+    session: AsyncSession,
+    quiz_session: QuizSession,
+    i18n: I18nService,
+) -> bool:
+    if quiz_session.current_question() is not None:
+        return False
+    await _finalize_run(session, state, quiz_session, QuizRunStatus.COMPLETED)
+    await _show_question(callback.bot, callback, state, quiz_session, i18n)
+    return True
 
 
 @router.callback_query(F.data == "menu:start_quiz")
@@ -169,12 +232,14 @@ async def begin_quiz(
     i18n: I18nService,
     country_store: CountryStore,
 ) -> None:
-    language = await _user_language(session, callback)
+    user = await _get_user(session, callback)
+    language = SupportedLanguage(user.language)
     data = await state.get_data()
     categories = [QuizCategory(value) for value in data.get("selected_categories", [])]
     if not categories:
         await callback.answer(i18n.text("not_enough_categories", language), show_alert=True)
         return
+
     engine = QuizEngine(country_store)
     try:
         quiz_session = engine.create_session(
@@ -186,10 +251,19 @@ async def begin_quiz(
         await callback.answer(i18n.text("dataset_too_small", language), show_alert=True)
         return
 
+    quiz_run = await QuizRunRepository(session).create_run(
+        user_id=user.id,
+        language=language,
+        countries_count=data["selected_count"],
+        categories=categories,
+        total_questions=quiz_session.total_questions,
+    )
+
     await state.set_state(QuizStates.in_progress)
     await state.update_data(
         language=language.value,
         quiz_session=quiz_session,
+        quiz_run_id=quiz_run.id,
         selected_categories=[item.value for item in categories],
     )
     await callback.message.edit_text(" ")
@@ -218,6 +292,7 @@ async def answer_question(
     callback: CallbackQuery,
     bot: Bot,
     state: FSMContext,
+    session: AsyncSession,
     settings: Settings,
     i18n: I18nService,
 ) -> None:
@@ -228,6 +303,7 @@ async def answer_question(
     data = await state.get_data()
     language = SupportedLanguage(data["language"])
     quiz_session: QuizSession = data["quiz_session"]
+    quiz_run_id: int = data["quiz_run_id"]
     question = quiz_session.current_question()
     if question is None:
         await callback.answer()
@@ -244,9 +320,20 @@ async def answer_question(
     )
 
     if selected_option == question.correct_option:
-        quiz_session.on_correct()
+        resolution = quiz_session.on_correct(selected_option)
+        if resolution.resolved:
+            await _persist_resolution(
+                session,
+                quiz_run_id,
+                quiz_session,
+                resolution.question,
+                selected_option,
+                QuizAnswerOutcome.CORRECT,
+            )
         await state.update_data(quiz_session=quiz_session)
         await callback.answer("✅")
+        if await _finalize_run_if_complete(callback, state, session, quiz_session, i18n):
+            return
         await asyncio.sleep(settings.quiz_autonext_seconds)
         await _show_question(bot, callback, state, quiz_session, i18n)
         return
@@ -265,12 +352,14 @@ async def answer_action(
     callback: CallbackQuery,
     bot: Bot,
     state: FSMContext,
+    session: AsyncSession,
     i18n: I18nService,
 ) -> None:
     data = await state.get_data()
     language = SupportedLanguage(data["language"])
     quiz_session: QuizSession = data["quiz_session"]
     question: Question = data["wrong_question"]
+    quiz_run_id: int = data["quiz_run_id"]
     action = callback.data.split(":")[1]
 
     if action == "show":
@@ -286,9 +375,20 @@ async def answer_action(
         await callback.answer()
         return
 
-    quiz_session.skip_current()
+    resolution = quiz_session.skip_current()
+    if resolution.resolved:
+        await _persist_resolution(
+            session,
+            quiz_run_id,
+            quiz_session,
+            resolution.question,
+            None,
+            QuizAnswerOutcome.SKIPPED,
+        )
     await state.update_data(quiz_session=quiz_session)
     await callback.answer()
+    if await _finalize_run_if_complete(callback, state, session, quiz_session, i18n):
+        return
     await _show_question(bot, callback, state, quiz_session, i18n)
 
 
@@ -329,6 +429,10 @@ async def exit_yes(
     i18n: I18nService,
 ) -> None:
     language = await _user_language(session, callback)
+    data = await state.get_data()
+    quiz_session: QuizSession | None = data.get("quiz_session")
+    if quiz_session is not None:
+        await _finalize_run(session, state, quiz_session, QuizRunStatus.ABANDONED)
     await state.clear()
     await callback.message.answer(
         i18n.text("main_menu", language),

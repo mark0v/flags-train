@@ -15,6 +15,17 @@ class QuizCategory(StrEnum):
     CURRENCY = "currency"
 
 
+class QuizRunStatus(StrEnum):
+    IN_PROGRESS = "in_progress"
+    COMPLETED = "completed"
+    ABANDONED = "abandoned"
+
+
+class QuizAnswerOutcome(StrEnum):
+    CORRECT = "correct"
+    SKIPPED = "skipped"
+
+
 QUESTION_ORDER = [
     QuizCategory.FLAG,
     QuizCategory.CAPITAL,

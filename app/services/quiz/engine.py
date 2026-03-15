@@ -1,6 +1,6 @@
 import random
 from collections import deque
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from pathlib import Path
 
 from app.constants import QUESTION_ORDER, QuizCategory, SupportedLanguage
@@ -17,6 +17,15 @@ class Question:
     correct_option: str
     answer_context: str
     flag_path: Path | None = None
+    is_retry: bool = False
+
+
+@dataclass(slots=True)
+class QuestionResolution:
+    question: Question
+    resolved: bool
+    outcome: str | None = None
+    selected_option: str | None = None
 
 
 @dataclass(slots=True)
@@ -25,9 +34,13 @@ class QuizSession:
     countries_count: int
     categories: list[QuizCategory]
     questions: deque[Question]
+    total_questions: int
     retry_queue: deque[Question] = field(default_factory=deque)
     repeat_later_ids: set[str] = field(default_factory=set)
-    answered: int = 0
+    wrong_attempts_by_question: dict[str, int] = field(default_factory=dict)
+    resolved_questions: int = 0
+    correct_answers: int = 0
+    skipped_answers: int = 0
     mistakes: int = 0
 
     def current_question(self) -> Question | None:
@@ -39,31 +52,62 @@ class QuizSession:
             return self.questions[0]
         return None
 
-    def on_correct(self) -> None:
-        if self.questions:
-            question = self.questions.popleft()
-            if question.id in self.repeat_later_ids:
-                self.retry_queue.append(question)
-                self.repeat_later_ids.remove(question.id)
-            self.answered += 1
+    def on_correct(self, selected_option: str) -> QuestionResolution:
+        question = self.questions.popleft()
+        if question.is_retry:
+            self.repeat_later_ids.discard(question.id)
+            self.resolved_questions += 1
+            self.correct_answers += 1
+            return QuestionResolution(
+                question,
+                resolved=True,
+                outcome="correct",
+                selected_option=selected_option,
+            )
+        if question.id in self.repeat_later_ids:
+            return QuestionResolution(
+                question,
+                resolved=False,
+                selected_option=selected_option,
+            )
+        self.resolved_questions += 1
+        self.correct_answers += 1
+        return QuestionResolution(
+            question,
+            resolved=True,
+            outcome="correct",
+            selected_option=selected_option,
+        )
 
     def on_wrong(self) -> None:
-        if self.questions:
-            self.mistakes += 1
-            self.repeat_later_ids.add(self.questions[0].id)
+        question = self.questions[0]
+        self.mistakes += 1
+        self.wrong_attempts_by_question[question.id] = (
+            self.wrong_attempts_by_question.get(question.id, 0) + 1
+        )
+        if question.id not in self.repeat_later_ids:
+            self.repeat_later_ids.add(question.id)
+            self.retry_queue.append(replace(question, is_retry=True))
 
-    def skip_current(self) -> None:
-        if self.questions:
-            question = self.questions.popleft()
-            if question.id in self.repeat_later_ids or question not in self.retry_queue:
-                self.retry_queue.append(question)
-                self.repeat_later_ids.discard(question.id)
-            self.answered += 1
+    def skip_current(self) -> QuestionResolution:
+        question = self.questions.popleft()
+        if question.is_retry:
+            self.repeat_later_ids.discard(question.id)
+            self.resolved_questions += 1
+            self.skipped_answers += 1
+            return QuestionResolution(question, resolved=True, outcome="skipped")
+        if question.id in self.repeat_later_ids:
+            return QuestionResolution(question, resolved=False)
+        self.resolved_questions += 1
+        self.skipped_answers += 1
+        return QuestionResolution(question, resolved=True, outcome="skipped")
 
     def progress_text(self) -> str:
-        total = self.countries_count * len(self.categories)
-        completed = min(self.answered, total)
-        return f"{completed}/{total}"
+        completed = min(self.resolved_questions, self.total_questions)
+        return f"{completed}/{self.total_questions}"
+
+    def wrong_attempts(self, question_id: str) -> int:
+        return self.wrong_attempts_by_question.get(question_id, 0)
 
 
 class QuizEngine:
@@ -89,6 +133,7 @@ class QuizEngine:
             language=language,
             countries_count=countries_count,
             categories=categories,
+            total_questions=len(questions),
             questions=deque(questions),
         )
 

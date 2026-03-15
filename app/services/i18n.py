@@ -41,6 +41,46 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "en": "Statistics are coming soon.",
         "de": "Statistiken kommen bald.",
     },
+    "stats_empty": {
+        "ru": "Пока нет завершенных данных. Сыграйте первый квиз.",
+        "en": "No completed data yet. Play your first quiz.",
+        "de": "Noch keine abgeschlossenen Daten. Spielen Sie zuerst ein Quiz.",
+    },
+    "stats_text": {
+        "ru": (
+            "<b>Статистика</b>\n\n"
+            "Запусков: <b>{started}</b>\n"
+            "Завершено: <b>{completed}</b>\n"
+            "Завершенных вопросов: <b>{resolved}</b>\n"
+            "Правильно: <b>{correct}</b>\n"
+            "Пропущено: <b>{skipped}</b>\n"
+            "Ошибок: <b>{mistakes}</b>\n"
+            "Точность: <b>{accuracy}%</b>\n"
+            "Последний завершенный квиз: <b>{last_completed}</b>"
+        ),
+        "en": (
+            "<b>Statistics</b>\n\n"
+            "Started: <b>{started}</b>\n"
+            "Completed: <b>{completed}</b>\n"
+            "Resolved questions: <b>{resolved}</b>\n"
+            "Correct: <b>{correct}</b>\n"
+            "Skipped: <b>{skipped}</b>\n"
+            "Mistakes: <b>{mistakes}</b>\n"
+            "Accuracy: <b>{accuracy}%</b>\n"
+            "Last completed quiz: <b>{last_completed}</b>"
+        ),
+        "de": (
+            "<b>Statistik</b>\n\n"
+            "Gestartet: <b>{started}</b>\n"
+            "Abgeschlossen: <b>{completed}</b>\n"
+            "Abgeschlossene Fragen: <b>{resolved}</b>\n"
+            "Richtig: <b>{correct}</b>\n"
+            "Ubersprungen: <b>{skipped}</b>\n"
+            "Fehler: <b>{mistakes}</b>\n"
+            "Genauigkeit: <b>{accuracy}%</b>\n"
+            "Letztes abgeschlossenes Quiz: <b>{last_completed}</b>"
+        ),
+    },
     "quiz_setup_title": {
         "ru": "Настройка квиза",
         "en": "Quiz setup",
@@ -100,6 +140,26 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "ru": "Квиз завершен. Верну вас в меню.",
         "en": "Quiz complete. Returning to menu.",
         "de": "Quiz abgeschlossen. Zuruck zum Menu.",
+    },
+    "quiz_complete_stats": {
+        "ru": (
+            "Квиз завершен.\n\n"
+            "Правильно: <b>{correct}</b>\n"
+            "Пропущено: <b>{skipped}</b>\n"
+            "Ошибок: <b>{mistakes}</b>"
+        ),
+        "en": (
+            "Quiz complete.\n\n"
+            "Correct: <b>{correct}</b>\n"
+            "Skipped: <b>{skipped}</b>\n"
+            "Mistakes: <b>{mistakes}</b>"
+        ),
+        "de": (
+            "Quiz abgeschlossen.\n\n"
+            "Richtig: <b>{correct}</b>\n"
+            "Ubersprungen: <b>{skipped}</b>\n"
+            "Fehler: <b>{mistakes}</b>"
+        ),
     },
     "not_enough_categories": {
         "ru": "Выберите хотя бы одну категорию.",

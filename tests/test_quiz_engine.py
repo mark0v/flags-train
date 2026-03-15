@@ -42,9 +42,36 @@ def test_wrong_answer_keeps_question_active_until_skip() -> None:
     session.on_wrong()
     assert session.current_question().id == first.id
 
-    session.on_correct()
+    resolution = session.on_correct(first.correct_option)
+    assert resolution.resolved is False
     assert any(item.id == first.id for item in session.retry_queue)
 
-    session.current_question()
-    session.skip_current()
-    assert any(item.id == first.id for item in session.retry_queue)
+    while session.current_question() and session.current_question().id != first.id:
+        next_question = session.current_question()
+        session.on_correct(next_question.correct_option)
+
+    retry_question = session.current_question()
+    assert retry_question.id == first.id
+    retry_resolution = session.skip_current()
+
+    assert retry_resolution.resolved is True
+    assert session.skipped_answers == 1
+
+
+def test_progress_counts_only_resolved_questions() -> None:
+    store = CountryStore.from_path(
+        Path("tests/fixtures/countries.json"),
+        Path("tests/fixtures"),
+    )
+    engine = QuizEngine(store, random.Random(5))
+    session = engine.create_session(
+        language=SupportedLanguage.EN,
+        countries_count=3,
+        categories=[QuizCategory.CAPITAL],
+    )
+
+    first = session.current_question()
+    session.on_wrong()
+    session.on_correct(first.correct_option)
+
+    assert session.progress_text() == "0/3"
