@@ -1,0 +1,68 @@
+[
+  {
+    "code": "DEU",
+    "localized_name": {"ru": "Германия", "en": "Germany", "de": "Deutschland"},
+    "capital": {"ru": "Берлин", "en": "Berlin", "de": "Berlin"},
+    "official_language": {"ru": "Немецкий", "en": "German", "de": "Deutsch"},
+    "population": 84000000,
+    "population_display": {"ru": "84 млн", "en": "84M", "de": "84 Mio."},
+    "currency_name": {"ru": "Евро", "en": "Euro", "de": "Euro"},
+    "currency_code": "EUR",
+    "flag_file": "de.svg"
+  },
+  {
+    "code": "FRA",
+    "localized_name": {"ru": "Франция", "en": "France", "de": "Frankreich"},
+    "capital": {"ru": "Париж", "en": "Paris", "de": "Paris"},
+    "official_language": {"ru": "Французский", "en": "French", "de": "Franzosisch"},
+    "population": 68000000,
+    "population_display": {"ru": "68 млн", "en": "68M", "de": "68 Mio."},
+    "currency_name": {"ru": "Евро", "en": "Euro", "de": "Euro"},
+    "currency_code": "EUR",
+    "flag_file": "fr.svg"
+  },
+  {
+    "code": "ESP",
+    "localized_name": {"ru": "Испания", "en": "Spain", "de": "Spanien"},
+    "capital": {"ru": "Мадрид", "en": "Madrid", "de": "Madrid"},
+    "official_language": {"ru": "Испанский", "en": "Spanish", "de": "Spanisch"},
+    "population": 48000000,
+    "population_display": {"ru": "48 млн", "en": "48M", "de": "48 Mio."},
+    "currency_name": {"ru": "Евро", "en": "Euro", "de": "Euro"},
+    "currency_code": "EUR",
+    "flag_file": "es.svg"
+  },
+  {
+    "code": "ITA",
+    "localized_name": {"ru": "Италия", "en": "Italy", "de": "Italien"},
+    "capital": {"ru": "Рим", "en": "Rome", "de": "Rom"},
+    "official_language": {"ru": "Итальянский", "en": "Italian", "de": "Italienisch"},
+    "population": 59000000,
+    "population_display": {"ru": "59 млн", "en": "59M", "de": "59 Mio."},
+    "currency_name": {"ru": "Евро", "en": "Euro", "de": "Euro"},
+    "currency_code": "EUR",
+    "flag_file": "it.svg"
+  },
+  {
+    "code": "POL",
+    "localized_name": {"ru": "Польша", "en": "Poland", "de": "Polen"},
+    "capital": {"ru": "Варшава", "en": "Warsaw", "de": "Warschau"},
+    "official_language": {"ru": "Польский", "en": "Polish", "de": "Polnisch"},
+    "population": 38000000,
+    "population_display": {"ru": "38 млн", "en": "38M", "de": "38 Mio."},
+    "currency_name": {"ru": "Злотый", "en": "Zloty", "de": "Zloty"},
+    "currency_code": "PLN",
+    "flag_file": "pl.svg"
+  },
+  {
+    "code": "UKR",
+    "localized_name": {"ru": "Украина", "en": "Ukraine", "de": "Ukraine"},
+    "capital": {"ru": "Киев", "en": "Kyiv", "de": "Kyjiw"},
+    "official_language": {"ru": "Украинский", "en": "Ukrainian", "de": "Ukrainisch"},
+    "population": 36000000,
+    "population_display": {"ru": "36 млн", "en": "36M", "de": "36 Mio."},
+    "currency_name": {"ru": "Гривна", "en": "Hryvnia", "de": "Hrywnja"},
+    "currency_code": "UAH",
+    "flag_file": "ua.svg"
+  }
+]
