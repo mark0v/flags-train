@@ -12,6 +12,10 @@ class CatalogSyncPreview:
     to_update: list[str]
     to_delete: list[str]
 
+    @property
+    def has_changes(self) -> bool:
+        return bool(self.to_create or self.to_update or self.to_delete)
+
 
 def build_catalog_sync_preview(
     store: CountryStore,

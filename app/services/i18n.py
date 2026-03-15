@@ -299,6 +299,31 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
             "Entfernt: <b>{delete_count}</b>"
         ),
     },
+    "admin_sync_no_changes_title": {
+        "ru": "<b>Sync не требуется</b>",
+        "en": "<b>No sync needed</b>",
+        "de": "<b>Kein Sync erforderlich</b>",
+    },
+    "admin_sync_no_changes_text": {
+        "ru": (
+            "{title}\n\n"
+            "Каталог уже синхронизирован.\n"
+            "В dataset: <b>{dataset}</b>\n"
+            "В DB: <b>{db}</b>"
+        ),
+        "en": (
+            "{title}\n\n"
+            "The catalog is already in sync.\n"
+            "Dataset countries: <b>{dataset}</b>\n"
+            "DB countries: <b>{db}</b>"
+        ),
+        "de": (
+            "{title}\n\n"
+            "Der Katalog ist bereits synchronisiert.\n"
+            "Datensatz-Lander: <b>{dataset}</b>\n"
+            "DB-Lander: <b>{db}</b>"
+        ),
+    },
     "admin_sync_error": {
         "ru": "Не удалось выполнить sync каталога. Проверьте dataset, БД и логи.",
         "en": "Failed to sync the catalog. Verify dataset, database, and logs.",
@@ -306,6 +331,11 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
             "Der Katalog konnte nicht synchronisiert werden. "
             "Bitte Datensatz, DB und Logs prufen."
         ),
+    },
+    "admin_sync_error_text": {
+        "ru": "{title}\n\nОшибка: <b>{error}</b>",
+        "en": "{title}\n\nError: <b>{error}</b>",
+        "de": "{title}\n\nFehler: <b>{error}</b>",
     },
     "admin_weakest_button": {
         "ru": "Слабые",

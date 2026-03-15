@@ -208,6 +208,33 @@ def _format_admin_sync_result(
     )
 
 
+def _format_admin_sync_no_changes(
+    preview: CatalogSyncPreview,
+    language: SupportedLanguage,
+    i18n: I18nService,
+) -> str:
+    return i18n.text(
+        "admin_sync_no_changes_text",
+        language,
+        title=i18n.text("admin_sync_no_changes_title", language),
+        dataset=str(preview.dataset_count),
+        db=str(preview.db_count),
+    )
+
+
+def _format_admin_sync_error(
+    error: str,
+    language: SupportedLanguage,
+    i18n: I18nService,
+) -> str:
+    return i18n.text(
+        "admin_sync_error_text",
+        language,
+        title=i18n.text("admin_sync_button", language),
+        error=error,
+    )
+
+
 def _is_admin(user_id: int, settings: Settings) -> bool:
     return user_id in settings.admin_ids
 
@@ -397,12 +424,24 @@ async def admin_actions(
     elif action == "sync_preview":
         try:
             preview = await catalog_service.sync_preview()
-            text = _format_admin_sync_preview(preview, language, i18n)
-        except Exception:
-            text = i18n.text("admin_sync_preview_error", language)
+            text = (
+                _format_admin_sync_preview(preview, language, i18n)
+                if preview.has_changes
+                else _format_admin_sync_no_changes(preview, language, i18n)
+            )
+        except Exception as exc:
+            text = _format_admin_sync_error(str(exc), language, i18n)
     elif action == "sync_prepare":
         try:
             preview = await catalog_service.sync_preview()
+            if not preview.has_changes:
+                text = _format_admin_sync_no_changes(preview, language, i18n)
+                await callback.message.edit_text(
+                    text,
+                    reply_markup=admin_keyboard(language, i18n),
+                )
+                await callback.answer()
+                return
             text = _format_admin_sync_confirmation(preview, language, i18n)
             await callback.message.edit_text(
                 text,
@@ -410,19 +449,23 @@ async def admin_actions(
             )
             await callback.answer()
             return
-        except Exception:
-            text = i18n.text("admin_sync_error", language)
+        except Exception as exc:
+            text = _format_admin_sync_error(str(exc), language, i18n)
     elif action == "sync_apply":
         try:
             result = await catalog_service.apply_sync()
-            text = _format_admin_sync_result(
-                result.preview,
-                result.synced_count,
-                language,
-                i18n,
+            text = (
+                _format_admin_sync_result(
+                    result.preview,
+                    result.synced_count,
+                    language,
+                    i18n,
+                )
+                if result.preview.has_changes
+                else _format_admin_sync_no_changes(result.preview, language, i18n)
             )
-        except Exception:
-            text = i18n.text("admin_sync_error", language)
+        except Exception as exc:
+            text = _format_admin_sync_error(str(exc), language, i18n)
     elif action == "weakest":
         weakest = await repository.weakest_countries()
         text = _format_admin_progress_list(

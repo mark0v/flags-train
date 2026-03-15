@@ -104,3 +104,63 @@ async def test_admin_catalog_service_preview_detects_updates_and_deletes(tmp_pat
 
     assert preview.to_update == ["DEU"]
     assert preview.to_delete == ["ZZZ"]
+
+
+async def test_admin_catalog_service_apply_sync_is_noop_when_catalog_is_current(
+    tmp_path: Path,
+) -> None:
+    engine = create_async_engine("sqlite+aiosqlite:///:memory:")
+    async with engine.begin() as connection:
+        await connection.run_sync(Base.metadata.create_all)
+
+    session_factory = async_sessionmaker(engine, expire_on_commit=False)
+    settings = _settings(tmp_path)
+
+    async with session_factory() as session:
+        repository = CountryCatalogRepository(session)
+        store = CountryStore.from_path(
+            Path("tests/fixtures/countries.json"),
+            settings.flags_dir,
+        )
+        await repository.upsert_many(store.countries)
+        await session.commit()
+
+        service = AdminCatalogService(session, settings)
+        result = await service.apply_sync()
+
+    await engine.dispose()
+
+    assert result.synced_count == 6
+    assert result.preview.has_changes is False
+
+
+async def test_admin_catalog_service_sync_preview_requires_valid_dataset(tmp_path: Path) -> None:
+    engine = create_async_engine("sqlite+aiosqlite:///:memory:")
+    async with engine.begin() as connection:
+        await connection.run_sync(Base.metadata.create_all)
+
+    session_factory = async_sessionmaker(engine, expire_on_commit=False)
+    settings = Settings.model_construct(
+        bot_token="token",
+        app_env="test",
+        database_url="sqlite+aiosqlite:///:memory:",
+        countries_data_path=tmp_path / "countries.json",
+        flags_dir=tmp_path / "flags",
+        quiz_autonext_seconds=1.2,
+        admin_ids_raw="",
+    )
+    settings.flags_dir.mkdir()
+    settings.countries_data_path.write_text("[]", encoding="utf-8")
+
+    async with session_factory() as session:
+        service = AdminCatalogService(session, settings)
+        try:
+            await service.sync_preview()
+        except ValueError as exc:
+            error = str(exc)
+        else:
+            error = ""
+
+    await engine.dispose()
+
+    assert error == "Dataset is empty."

@@ -2,6 +2,8 @@ from app.bot.handlers.menu import (
     _format_admin_catalog_health,
     _format_admin_dataset_validation,
     _format_admin_sync_confirmation,
+    _format_admin_sync_error,
+    _format_admin_sync_no_changes,
     _format_admin_sync_preview,
     _format_admin_sync_result,
 )
@@ -126,3 +128,30 @@ def test_format_admin_sync_result_reports_completed_counts() -> None:
     assert "Created: <b>1</b>" in text
     assert "Updated: <b>1</b>" in text
     assert "Deleted: <b>1</b>" in text
+
+
+def test_format_admin_sync_no_changes_reports_up_to_date_state() -> None:
+    text = _format_admin_sync_no_changes(
+        CatalogSyncPreview(
+            dataset_count=193,
+            db_count=193,
+            to_create=[],
+            to_update=[],
+            to_delete=[],
+        ),
+        SupportedLanguage.EN,
+        I18nService(),
+    )
+
+    assert "The catalog is already in sync." in text
+    assert "Dataset countries: <b>193</b>" in text
+
+
+def test_format_admin_sync_error_shows_specific_reason() -> None:
+    text = _format_admin_sync_error(
+        "Dataset is empty.",
+        SupportedLanguage.EN,
+        I18nService(),
+    )
+
+    assert "Error: <b>Dataset is empty.</b>" in text

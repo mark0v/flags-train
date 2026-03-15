@@ -32,6 +32,12 @@ class AdminCatalogService:
     def _load_store(self) -> CountryStore:
         return CountryStore.from_path(self._dataset_path(), self._flags_dir())
 
+    async def _validated_store(self) -> CountryStore:
+        report = await self.dataset_validation()
+        if not report.is_valid:
+            raise ValueError(report.error or "Dataset validation failed.")
+        return self._load_store()
+
     async def dataset_validation(self) -> DatasetValidationReport:
         return validate_local_dataset(self._dataset_path(), self._flags_dir())
 
@@ -44,12 +50,14 @@ class AdminCatalogService:
         )
 
     async def sync_preview(self) -> CatalogSyncPreview:
-        store = self._load_store()
+        store = await self._validated_store()
         return build_catalog_sync_preview(store, await self._repository.list_countries())
 
     async def apply_sync(self) -> AdminCatalogSyncResult:
-        store = self._load_store()
+        store = await self._validated_store()
         preview = build_catalog_sync_preview(store, await self._repository.list_countries())
+        if not preview.has_changes:
+            return AdminCatalogSyncResult(preview=preview, synced_count=preview.db_count)
         synced_count = await sync_country_catalog(self._repository, store)
         await self._session.commit()
         return AdminCatalogSyncResult(preview=preview, synced_count=synced_count)
