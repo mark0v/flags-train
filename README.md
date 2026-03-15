@@ -1,68 +1,68 @@
 # Flags Train
 
-Telegram-бот для изучения флагов, столиц, языков, населения и валют стран ООН в формате Anki-подобного квиза.
+Telegram bot for learning the flags, capitals, languages, populations, and currencies of UN member states in an Anki-like quiz format.
 
-## Что уже есть
+## Current Features
 
-- `aiogram 3` и inline-first UX
+- `aiogram 3` with inline-first UX
 - `PostgreSQL + SQLAlchemy + Alembic`
-- локализация `ru / en / de`
-- локальный офлайн dataset: `data/normalized/countries.json`
-- локальные SVG-флаги в `data/flags/`
+- localization for `ru / en / de`
+- local offline dataset: `data/normalized/countries.json`
+- local SVG and PNG flags in `data/flags/`
 - quiz modes: `mixed / review / new`
-- межсессионный learning progress
-- базовая статистика пользователя
-- SRS-приоритизация на базе `proficiency_score`, `current_streak`, `next_review_at`
-- встроенный `/admin` с безопасными catalog actions
-- runtime preflight перед запуском
-- startup logging и явный preflight report
+- cross-session learning progress
+- user statistics
+- SRS prioritization based on `proficiency_score`, `current_streak`, and `next_review_at`
+- built-in `/admin` with safe catalog actions
+- runtime preflight before startup
+- startup logging with an explicit preflight report
 - Dockerfile, `docker-compose.yml`, `.env.example`
-- тесты и `ruff`
+- tests and `ruff`
 
-## Структура проекта
+## Project Structure
 
-- `app/` - бот, сервисы, БД, локализация, доменная логика
-- `alembic/` - миграции БД
-- `data/normalized/` - локальный dataset стран
-- `data/flags/` - локальные флаги
-- `scripts/` - data pipeline, sync, preflight и dev/admin CLI
-- `tests/` - unit и integration tests
+- `app/` - bot, services, database, localization, and domain logic
+- `alembic/` - database migrations
+- `data/normalized/` - local country dataset
+- `data/flags/` - local flag assets
+- `scripts/` - data pipeline, sync, preflight, and dev/admin CLI tools
+- `tests/` - unit and integration tests
 
-## Быстрый старт
+## Quick Start
 
-1. Создайте `.env` из `.env.example` и заполните `BOT_TOKEN`.
+1. Create `.env` from `.env.example` and fill in `BOT_TOKEN`.
 
-2. Установите зависимости:
+2. Install dependencies:
 
 ```bash
 pip install -e .[dev]
 ```
 
-3. Проверьте локальный dataset:
+3. Validate the local dataset:
 
 ```bash
 python scripts/validate_countries_data.py
 ```
 
-4. Примените миграции:
+4. Apply migrations:
 
 ```bash
 alembic upgrade head
 ```
 
-5. Синхронизируйте каталог стран в БД:
+5. Sync the country catalog into the database:
 
 ```bash
 python scripts/sync_countries_to_db.py
 ```
 
-6. Выполните preflight:
+6. Run the preflight check:
 
 ```bash
 python scripts/runtime_preflight.py
 ```
 
-Пример ожидаемого вывода:
+Expected output example:
 
 ```text
 Overall: READY
@@ -71,7 +71,7 @@ Database: OK (revision=...)
 Migrations: OK (current=..., expected=...)
 ```
 
-7. Запустите бота:
+7. Start the bot:
 
 ```bash
 python scripts/run_bot.py
@@ -79,13 +79,13 @@ python scripts/run_bot.py
 
 ## Docker Compose
 
-Основной runtime:
+Primary runtime:
 
 ```bash
 docker compose up --build db bot
 ```
 
-Подготовка локальных данных внутри Docker:
+Prepare local data inside Docker:
 
 ```bash
 docker compose --profile setup run --rm data
@@ -99,7 +99,7 @@ docker compose --profile ops run --rm sync
 docker compose --profile ops run --rm preflight
 ```
 
-Рекомендуемый порядок для первого запуска через Docker:
+Recommended order for the first Docker-based launch:
 
 ```bash
 docker compose up -d db
@@ -109,55 +109,55 @@ docker compose --profile ops run --rm preflight
 docker compose up --build bot
 ```
 
-`bot` больше не делает миграции автоматически при старте. Это сделано специально, чтобы запуск runtime был предсказуемым и безопаснее для production-like окружения.
+`bot` no longer runs migrations automatically on startup. This is intentional so runtime startup remains predictable and safer for production-like environments.
 
-`run_bot.py` теперь логирует:
+`run_bot.py` now logs:
 
 - `APP_ENV`
-- путь к локальному dataset
-- путь к каталогу флагов
-- количество admin IDs
-- итоговый runtime preflight report
+- local dataset path
+- flags directory path
+- number of admin IDs
+- final runtime preflight report
 
 ## Data Pipeline
 
-Скрипт `scripts/fetch_countries_data.py`:
+The `scripts/fetch_countries_data.py` script:
 
-- загружает страны из открытого источника `restcountries`
-- оставляет только государства-члены ООН
-- нормализует поля под нужды бота
-- сохраняет локальные SVG-флаги в `data/flags/`
-- сохраняет итоговый dataset в `data/normalized/countries.json`
+- downloads country data from the public `restcountries` source
+- keeps only UN member states
+- normalizes fields for the bot's needs
+- saves local SVG and PNG flags into `data/flags/`
+- writes the final dataset to `data/normalized/countries.json`
 
-Проверка dataset:
+Validate the dataset:
 
 ```bash
 python scripts/validate_countries_data.py
 ```
 
-Рантайм бота не использует внешние API. Сеть нужна только на этапе подготовки локальных данных.
+The bot runtime does not use external APIs. Network access is only required during local data preparation.
 
-## Admin и ops
+## Admin and Ops
 
-В боте для разрешённых `ADMIN_IDS` доступна команда `/admin`.
+The bot exposes `/admin` for users listed in `ADMIN_IDS`.
 
-Сейчас через бота доступны:
+Currently available inside the bot:
 
 - admin overview
 - weakest / strongest progress
 - catalog dashboard
 - catalog health-check
-- dataset revalidate
+- dataset revalidation
 - sync preview
 - confirmable catalog sync
 
-Catalog dashboard в `/admin` теперь дополнительно показывает:
+The catalog dashboard in `/admin` also shows:
 
-- когда был собран текущий dashboard
-- время последнего изменения локального `countries.json`
-- время последнего обновления DB catalog
+- when the current dashboard snapshot was generated
+- last modification time of local `countries.json`
+- last update time of the database catalog
 
-CLI-утилиты:
+CLI tools:
 
 ```bash
 python scripts/country_catalog_summary.py
@@ -167,18 +167,18 @@ python scripts/admin_progress_report.py
 python scripts/runtime_preflight.py
 ```
 
-## Проверки
+## Checks
 
-Полный прогон:
+Full validation run:
 
 ```bash
 pytest
 ruff check app tests scripts
 ```
 
-## Deploy checklist
+## Deploy Checklist
 
-Перед выкладкой стоит пройти этот минимум:
+Before deployment, run at least this minimum set:
 
 1. `python scripts/validate_countries_data.py`
 2. `alembic upgrade head`
@@ -187,7 +187,7 @@ ruff check app tests scripts
 5. `pytest`
 6. `ruff check app tests scripts`
 
-Рекомендуемые env-поля для runtime:
+Recommended runtime environment variables:
 
 - `APP_ENV`
 - `DATABASE_URL`
@@ -196,12 +196,12 @@ ruff check app tests scripts
 - `LOG_LEVEL`
 - `ADMIN_IDS`
 
-Для Docker-потока те же шаги можно выполнить через `data`, `migrate`, `sync`, `preflight`.
+For the Docker workflow, the same steps can be executed through `data`, `migrate`, `sync`, and `preflight`.
 
-## Что дальше легко нарастить
+## Easy Next Extensions
 
-- более продвинутый review dashboard
-- richer user stats screens
-- более гибкие SRS-правила
-- расширенную admin panel
-- web-клиент поверх того же domain-слоя
+- a more advanced review dashboard
+- richer user statistics screens
+- more flexible SRS rules
+- an expanded admin panel
+- a web client on top of the same domain layer
