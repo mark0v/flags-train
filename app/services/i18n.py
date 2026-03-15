@@ -105,6 +105,11 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "en": "Catalog health",
         "de": "Katalogcheck",
     },
+    "admin_revalidate_button": {
+        "ru": "Проверить dataset",
+        "en": "Revalidate dataset",
+        "de": "Datensatz prufen",
+    },
     "admin_health_ok": {
         "ru": "OK",
         "en": "OK",
@@ -148,6 +153,46 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "ru": "Не удалось проверить каталог. Проверьте локальные данные и логи.",
         "en": "Failed to check the catalog. Verify local data and logs.",
         "de": "Der Katalog konnte nicht gepruft werden. Bitte lokale Daten und Logs prufen.",
+    },
+    "admin_revalidate_title": {
+        "ru": "<b>Проверка dataset</b>",
+        "en": "<b>Dataset validation</b>",
+        "de": "<b>Datensatzvalidierung</b>",
+    },
+    "admin_revalidate_ok": {
+        "ru": "Dataset валиден",
+        "en": "Dataset is valid",
+        "de": "Datensatz ist gultig",
+    },
+    "admin_revalidate_error": {
+        "ru": "Dataset невалиден",
+        "en": "Dataset is invalid",
+        "de": "Datensatz ist ungueltig",
+    },
+    "admin_revalidate_text": {
+        "ru": (
+            "{title}\n\n"
+            "Статус: <b>{status}</b>\n"
+            "Стран: <b>{countries}</b>\n"
+            "Диапазон кодов: <b>{first_code} - {last_code}</b>"
+        ),
+        "en": (
+            "{title}\n\n"
+            "Status: <b>{status}</b>\n"
+            "Countries: <b>{countries}</b>\n"
+            "Code range: <b>{first_code} - {last_code}</b>"
+        ),
+        "de": (
+            "{title}\n\n"
+            "Status: <b>{status}</b>\n"
+            "Lander: <b>{countries}</b>\n"
+            "Code-Bereich: <b>{first_code} - {last_code}</b>"
+        ),
+    },
+    "admin_revalidate_error_text": {
+        "ru": "{title}\n\nСтатус: <b>{status}</b>\nОшибка: <b>{error}</b>",
+        "en": "{title}\n\nStatus: <b>{status}</b>\nError: <b>{error}</b>",
+        "de": "{title}\n\nStatus: <b>{status}</b>\nFehler: <b>{error}</b>",
     },
     "admin_weakest_button": {
         "ru": "Слабые",

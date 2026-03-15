@@ -13,6 +13,7 @@ from app.repositories.quiz_runs import QuizRunRepository
 from app.repositories.users import UserRepository
 from app.services.catalog_health import build_catalog_health_report, format_code_list
 from app.services.country_store import CountryStore
+from app.services.dataset_validation import DatasetValidationReport, validate_local_dataset
 from app.services.i18n import I18nService
 from app.services.statistics import UserStatsSummary
 
@@ -119,6 +120,31 @@ def _format_admin_catalog_health(
         missing_in_db=format_code_list(missing_in_db),
         stale_in_db=format_code_list(stale_in_db),
         missing_flags=format_code_list(missing_flag_files),
+    )
+
+
+def _format_admin_dataset_validation(
+    report: DatasetValidationReport,
+    language: SupportedLanguage,
+    i18n: I18nService,
+) -> str:
+    title = i18n.text("admin_revalidate_title", language)
+    if report.is_valid:
+        return i18n.text(
+            "admin_revalidate_text",
+            language,
+            title=title,
+            status=i18n.text("admin_revalidate_ok", language),
+            countries=str(report.countries_count),
+            first_code=report.first_country_code,
+            last_code=report.last_country_code,
+        )
+    return i18n.text(
+        "admin_revalidate_error_text",
+        language,
+        title=title,
+        status=i18n.text("admin_revalidate_error", language),
+        error=report.error or "-",
     )
 
 
@@ -311,6 +337,11 @@ async def admin_actions(
             )
         except Exception:
             text = i18n.text("admin_health_error", language)
+    elif action == "revalidate":
+        dataset_path = settings.resolve_path(settings.countries_data_path)
+        flags_dir = settings.resolve_path(settings.flags_dir)
+        report = validate_local_dataset(dataset_path, flags_dir)
+        text = _format_admin_dataset_validation(report, language, i18n)
     elif action == "weakest":
         weakest = await repository.weakest_countries()
         text = _format_admin_progress_list(

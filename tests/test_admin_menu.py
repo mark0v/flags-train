@@ -1,5 +1,6 @@
-from app.bot.handlers.menu import _format_admin_catalog_health
+from app.bot.handlers.menu import _format_admin_catalog_health, _format_admin_dataset_validation
 from app.constants import SupportedLanguage
+from app.services.dataset_validation import DatasetValidationReport
 from app.services.i18n import I18nService
 
 
@@ -32,3 +33,33 @@ def test_format_admin_catalog_health_marks_issue_and_truncates_lists() -> None:
     assert "Status: <b>Issues found</b>" in text
     assert "Missing in DB: <b>ARG, BRA, CHL, DEU, ESP (+1)</b>" in text
     assert "Stale in DB: <b>OLD</b>" in text
+
+
+def test_format_admin_dataset_validation_for_valid_report() -> None:
+    text = _format_admin_dataset_validation(
+        DatasetValidationReport(
+            is_valid=True,
+            countries_count=193,
+            first_country_code="AFG",
+            last_country_code="ZWE",
+        ),
+        SupportedLanguage.EN,
+        I18nService(),
+    )
+
+    assert "Status: <b>Dataset is valid</b>" in text
+    assert "Countries: <b>193</b>" in text
+
+
+def test_format_admin_dataset_validation_for_invalid_report() -> None:
+    text = _format_admin_dataset_validation(
+        DatasetValidationReport(
+            is_valid=False,
+            error="Missing flag file for DEU: de.svg",
+        ),
+        SupportedLanguage.EN,
+        I18nService(),
+    )
+
+    assert "Status: <b>Dataset is invalid</b>" in text
+    assert "Error: <b>Missing flag file for DEU: de.svg</b>" in text
