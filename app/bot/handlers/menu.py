@@ -13,14 +13,12 @@ from app.bot.keyboards.common import (
 from app.config import Settings
 from app.constants import SupportedLanguage
 from app.repositories.admin import AdminRepository, format_progress_country_stat
-from app.repositories.countries import CountryCatalogRepository
 from app.repositories.quiz_runs import QuizRunRepository
 from app.repositories.users import UserRepository
-from app.services.catalog_health import build_catalog_health_report, format_code_list
-from app.services.catalog_sync_preview import CatalogSyncPreview, build_catalog_sync_preview
-from app.services.country_catalog_sync import sync_country_catalog
-from app.services.country_store import CountryStore
-from app.services.dataset_validation import DatasetValidationReport, validate_local_dataset
+from app.services.admin_catalog import AdminCatalogService
+from app.services.catalog_health import format_code_list
+from app.services.catalog_sync_preview import CatalogSyncPreview
+from app.services.dataset_validation import DatasetValidationReport
 from app.services.i18n import I18nService
 from app.services.statistics import UserStatsSummary
 
@@ -210,18 +208,6 @@ def _format_admin_sync_result(
     )
 
 
-async def _load_catalog_store_and_preview(
-    session: AsyncSession,
-    settings: Settings,
-) -> tuple[CountryStore, CatalogSyncPreview]:
-    dataset_path = settings.resolve_path(settings.countries_data_path)
-    flags_dir = settings.resolve_path(settings.flags_dir)
-    store = CountryStore.from_path(dataset_path, flags_dir)
-    db_countries = await CountryCatalogRepository(session).list_countries()
-    preview = build_catalog_sync_preview(store, db_countries)
-    return store, preview
-
-
 def _is_admin(user_id: int, settings: Settings) -> bool:
     return user_id in settings.admin_ids
 
@@ -369,6 +355,7 @@ async def admin_actions(
     language = SupportedLanguage(user.language or SupportedLanguage.EN.value)
     action = callback.data.split(":")[1]
     repository = AdminRepository(session)
+    catalog_service = AdminCatalogService(session, settings)
 
     if action == "back":
         await callback.message.edit_text(
@@ -392,14 +379,7 @@ async def admin_actions(
         )
     elif action == "health":
         try:
-            dataset_path = settings.resolve_path(settings.countries_data_path)
-            flags_dir = settings.resolve_path(settings.flags_dir)
-            store = CountryStore.from_path(dataset_path, flags_dir)
-            report = build_catalog_health_report(
-                store=store,
-                db_codes=await CountryCatalogRepository(session).list_codes(),
-                flags_dir=flags_dir,
-            )
+            report = await catalog_service.catalog_health()
             text = _format_admin_catalog_health(
                 report.dataset_count,
                 report.db_count,
@@ -412,19 +392,17 @@ async def admin_actions(
         except Exception:
             text = i18n.text("admin_health_error", language)
     elif action == "revalidate":
-        dataset_path = settings.resolve_path(settings.countries_data_path)
-        flags_dir = settings.resolve_path(settings.flags_dir)
-        report = validate_local_dataset(dataset_path, flags_dir)
+        report = await catalog_service.dataset_validation()
         text = _format_admin_dataset_validation(report, language, i18n)
     elif action == "sync_preview":
         try:
-            _, preview = await _load_catalog_store_and_preview(session, settings)
+            preview = await catalog_service.sync_preview()
             text = _format_admin_sync_preview(preview, language, i18n)
         except Exception:
             text = i18n.text("admin_sync_preview_error", language)
     elif action == "sync_prepare":
         try:
-            _, preview = await _load_catalog_store_and_preview(session, settings)
+            preview = await catalog_service.sync_preview()
             text = _format_admin_sync_confirmation(preview, language, i18n)
             await callback.message.edit_text(
                 text,
@@ -436,10 +414,13 @@ async def admin_actions(
             text = i18n.text("admin_sync_error", language)
     elif action == "sync_apply":
         try:
-            store, preview = await _load_catalog_store_and_preview(session, settings)
-            synced_count = await sync_country_catalog(CountryCatalogRepository(session), store)
-            await session.commit()
-            text = _format_admin_sync_result(preview, synced_count, language, i18n)
+            result = await catalog_service.apply_sync()
+            text = _format_admin_sync_result(
+                result.preview,
+                result.synced_count,
+                language,
+                i18n,
+            )
         except Exception:
             text = i18n.text("admin_sync_error", language)
     elif action == "weakest":

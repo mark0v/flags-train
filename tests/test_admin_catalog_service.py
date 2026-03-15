@@ -1,0 +1,106 @@
+from pathlib import Path
+
+from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
+
+from app.config import Settings
+from app.db.base import Base
+from app.db.models import CountryCatalog
+from app.repositories.countries import CountryCatalogRepository
+from app.services.admin_catalog import AdminCatalogService
+from app.services.country_store import CountryStore
+
+
+def _settings(tmp_path: Path) -> Settings:
+    flags_dir = tmp_path / "flags"
+    flags_dir.mkdir()
+    for flag in ["de.svg", "es.svg", "fr.svg", "it.svg", "pl.svg", "ua.svg"]:
+        (flags_dir / flag).write_text("<svg />", encoding="utf-8")
+
+    return Settings.model_construct(
+        bot_token="token",
+        app_env="test",
+        database_url="sqlite+aiosqlite:///:memory:",
+        countries_data_path=Path("tests/fixtures/countries.json"),
+        flags_dir=flags_dir,
+        quiz_autonext_seconds=1.2,
+        admin_ids_raw="",
+    )
+
+
+async def test_admin_catalog_service_reports_validation_health_preview_and_sync(
+    tmp_path: Path,
+) -> None:
+    engine = create_async_engine("sqlite+aiosqlite:///:memory:")
+    async with engine.begin() as connection:
+        await connection.run_sync(Base.metadata.create_all)
+
+    session_factory = async_sessionmaker(engine, expire_on_commit=False)
+    settings = _settings(tmp_path)
+
+    async with session_factory() as session:
+        repository = CountryCatalogRepository(session)
+        store = CountryStore.from_path(
+            Path("tests/fixtures/countries.json"),
+            Path("tests/fixtures"),
+        )
+        await repository.upsert_many(store.countries[:2])
+        await session.commit()
+
+        service = AdminCatalogService(session, settings)
+        validation = await service.dataset_validation()
+        health = await service.catalog_health()
+        preview = await service.sync_preview()
+        sync_result = await service.apply_sync()
+
+    await engine.dispose()
+
+    assert validation.is_valid is True
+    assert health.dataset_count == 6
+    assert sorted(health.missing_in_db) == ["ESP", "ITA", "POL", "UKR"]
+    assert preview.to_create == ["ESP", "ITA", "POL", "UKR"]
+    assert preview.to_update == []
+    assert preview.to_delete == []
+    assert sync_result.synced_count == 6
+    assert sync_result.preview.to_create == ["ESP", "ITA", "POL", "UKR"]
+
+
+async def test_admin_catalog_service_preview_detects_updates_and_deletes(tmp_path: Path) -> None:
+    engine = create_async_engine("sqlite+aiosqlite:///:memory:")
+    async with engine.begin() as connection:
+        await connection.run_sync(Base.metadata.create_all)
+
+    session_factory = async_sessionmaker(engine, expire_on_commit=False)
+    settings = _settings(tmp_path)
+
+    async with session_factory() as session:
+        repository = CountryCatalogRepository(session)
+        store = CountryStore.from_path(
+            Path("tests/fixtures/countries.json"),
+            Path("tests/fixtures"),
+        )
+        await repository.upsert_many(store.countries[:1])
+        existing = (await repository.list_countries())[0]
+        existing.population = 1
+
+        session.add(
+            CountryCatalog(
+                code="ZZZ",
+                localized_name={"ru": "Старое", "en": "Old", "de": "Alt"},
+                capital={"ru": "Старое", "en": "Old", "de": "Alt"},
+                official_language={"ru": "Старое", "en": "Old", "de": "Alt"},
+                population=1,
+                population_display={"ru": "1", "en": "1", "de": "1"},
+                currency_name={"ru": "Старое", "en": "Old", "de": "Alt"},
+                currency_code="OLD",
+                flag_file="old.svg",
+            )
+        )
+        await session.commit()
+
+        service = AdminCatalogService(session, settings)
+        preview = await service.sync_preview()
+
+    await engine.dispose()
+
+    assert preview.to_update == ["DEU"]
+    assert preview.to_delete == ["ZZZ"]

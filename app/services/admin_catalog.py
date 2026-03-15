@@ -1,0 +1,55 @@
+from dataclasses import dataclass
+
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.config import Settings
+from app.repositories.countries import CountryCatalogRepository
+from app.services.catalog_health import CatalogHealthReport, build_catalog_health_report
+from app.services.catalog_sync_preview import CatalogSyncPreview, build_catalog_sync_preview
+from app.services.country_catalog_sync import sync_country_catalog
+from app.services.country_store import CountryStore
+from app.services.dataset_validation import DatasetValidationReport, validate_local_dataset
+
+
+@dataclass(slots=True)
+class AdminCatalogSyncResult:
+    preview: CatalogSyncPreview
+    synced_count: int
+
+
+class AdminCatalogService:
+    def __init__(self, session: AsyncSession, settings: Settings) -> None:
+        self._session = session
+        self._settings = settings
+        self._repository = CountryCatalogRepository(session)
+
+    def _dataset_path(self):
+        return self._settings.resolve_path(self._settings.countries_data_path)
+
+    def _flags_dir(self):
+        return self._settings.resolve_path(self._settings.flags_dir)
+
+    def _load_store(self) -> CountryStore:
+        return CountryStore.from_path(self._dataset_path(), self._flags_dir())
+
+    async def dataset_validation(self) -> DatasetValidationReport:
+        return validate_local_dataset(self._dataset_path(), self._flags_dir())
+
+    async def catalog_health(self) -> CatalogHealthReport:
+        store = self._load_store()
+        return build_catalog_health_report(
+            store=store,
+            db_codes=await self._repository.list_codes(),
+            flags_dir=self._flags_dir(),
+        )
+
+    async def sync_preview(self) -> CatalogSyncPreview:
+        store = self._load_store()
+        return build_catalog_sync_preview(store, await self._repository.list_countries())
+
+    async def apply_sync(self) -> AdminCatalogSyncResult:
+        store = self._load_store()
+        preview = build_catalog_sync_preview(store, await self._repository.list_countries())
+        synced_count = await sync_country_catalog(self._repository, store)
+        await self._session.commit()
+        return AdminCatalogSyncResult(preview=preview, synced_count=synced_count)
