@@ -26,7 +26,7 @@ def test_quiz_builds_country_blocks() -> None:
     assert questions[1].category == QuizCategory.CAPITAL
 
 
-def test_wrong_answer_keeps_question_active_until_next() -> None:
+def test_wrong_answer_resolves_as_incorrect_on_next() -> None:
     store = CountryStore.from_path(
         Path("tests/fixtures/countries.json"),
         Path("tests/fixtures"),
@@ -42,10 +42,10 @@ def test_wrong_answer_keeps_question_active_until_next() -> None:
     session.on_wrong()
     assert session.current_question().id == first.id
 
-    next_resolution = session.skip_current()
+    next_resolution = session.resolve_incorrect()
 
     assert next_resolution.resolved is True
-    assert session.skipped_answers == 1
+    assert next_resolution.outcome == "incorrect"
     assert session.current_question().id != first.id
 
 
@@ -61,10 +61,12 @@ def test_progress_counts_only_resolved_questions() -> None:
         categories=[QuizCategory.CAPITAL],
     )
 
-    session.on_wrong()
-    session.skip_current()
-
     assert session.progress_text() == "1/3"
+
+    session.on_wrong()
+    session.resolve_incorrect()
+
+    assert session.progress_text() == "2/3"
 
 
 def test_quiz_prioritizes_due_countries() -> None:

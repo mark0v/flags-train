@@ -16,6 +16,11 @@ def schedule_next_review(
     if outcome is QuizAnswerOutcome.SKIPPED:
         return current_time + timedelta(hours=8)
 
+    if outcome is QuizAnswerOutcome.INCORRECT:
+        if wrong_attempts >= 2:
+            return current_time + timedelta(hours=8)
+        return current_time + timedelta(hours=16)
+
     if wrong_attempts > 0:
         if wrong_attempts >= 2:
             return current_time + timedelta(hours=8)

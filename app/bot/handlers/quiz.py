@@ -134,9 +134,7 @@ async def _show_question(
                 language,
                 resolved=str(session_obj.resolved_questions),
                 correct=str(session_obj.correct_answers),
-                skipped=str(session_obj.skipped_answers),
                 mistakes=str(session_obj.mistakes),
-                menu_hint=i18n.text("quiz_back_to_menu", language),
             ),
             reply_markup=main_menu_keyboard(language, i18n),
         )
@@ -200,7 +198,7 @@ async def _finalize_run(
         status=status,
         resolved_questions=quiz_session.resolved_questions,
         correct_answers=quiz_session.correct_answers,
-        skipped_answers=quiz_session.skipped_answers,
+        skipped_answers=0,
         wrong_attempts=quiz_session.mistakes,
     )
 
@@ -486,7 +484,7 @@ async def answer_action(
         await callback.answer()
         return
 
-    resolution = quiz_session.skip_current()
+    resolution = quiz_session.resolve_incorrect()
     if resolution.resolved:
         await _persist_resolution(
             session,
@@ -495,7 +493,7 @@ async def answer_action(
             quiz_session,
             resolution.question,
             None,
-            QuizAnswerOutcome.SKIPPED,
+            QuizAnswerOutcome.INCORRECT,
         )
     await state.update_data(quiz_session=quiz_session)
     await callback.message.delete()

@@ -23,6 +23,7 @@ class QuizRunStatus(StrEnum):
 
 class QuizAnswerOutcome(StrEnum):
     CORRECT = "correct"
+    INCORRECT = "incorrect"
     SKIPPED = "skipped"
 
 

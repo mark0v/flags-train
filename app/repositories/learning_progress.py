@@ -51,8 +51,11 @@ class LearningProgressRepository:
             progress.correct_answers += 1
             progress.current_streak = progress.current_streak + 1 if wrong_attempts == 0 else 1
             progress.proficiency_score += 2 if wrong_attempts == 0 else 1
-        else:
+        elif outcome is QuizAnswerOutcome.SKIPPED:
             progress.skipped_answers += 1
+            progress.current_streak = 0
+            progress.proficiency_score = max(0, progress.proficiency_score - 1)
+        else:
             progress.current_streak = 0
             progress.proficiency_score = max(0, progress.proficiency_score - 1)
         progress.next_review_at = schedule_next_review(

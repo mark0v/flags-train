@@ -8,6 +8,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.fsm.storage.base import StorageKey
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.types import InlineKeyboardMarkup
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
 from app.bot.handlers import menu as menu_handlers
@@ -23,6 +24,7 @@ from app.constants import (
     SupportedLanguage,
 )
 from app.db.base import Base
+from app.db.models import QuizAnswer, UserLearningProgress
 from app.repositories.learning_progress import LearningProgressRepository
 from app.repositories.users import UserRepository
 from app.services.admin_catalog import AdminCatalogDashboard
@@ -629,6 +631,34 @@ async def test_answer_feedback_keyboard_reveals_correct_option_for_success() -> 
     assert _keyboard_texts(markup) == ["Peru", "Ghana", "✅ Bulgaria", "Mali"]
 
 
+async def test_show_question_completion_message_omits_menu_hint_and_skipped_count() -> None:
+    callback = _build_callback()
+    bot = _build_bot()
+    state = _build_state()
+    i18n = I18nService()
+    session = quiz_handlers.QuizSession(
+        language=SupportedLanguage.EN,
+        countries_count=10,
+        categories=[QuizCategory.FLAG],
+        questions=deque(),
+        total_questions=10,
+        resolved_questions=10,
+        correct_answers=1,
+        mistakes=9,
+    )
+    await state.update_data(language=SupportedLanguage.EN.value)
+
+    await quiz_handlers._show_question(bot, callback, state, session, i18n)
+
+    callback.message.answer.assert_awaited_once()
+    rendered = callback.message.answer.await_args.args[0]
+    assert "Questions: <b>10</b>" in rendered
+    assert "Correct: <b>1</b>" in rendered
+    assert "Mistakes: <b>9</b>" in rendered
+    assert "Skipped" not in rendered
+    assert "main menu" not in rendered.lower()
+
+
 async def test_wrong_answer_actions_are_horizontal_and_use_next() -> None:
     markup = quiz_handlers.wrong_answer_actions(SupportedLanguage.EN, I18nService())
 
@@ -782,10 +812,12 @@ async def test_next_after_wrong_answer_resolves_question_without_retry() -> None
         total_questions=2,
     )
     quiz_session.on_wrong()
+    user_id = 0
 
     async with session_factory() as session:
         user = await UserRepository(session).get_or_create(42, "tester", "Test")
         user.language = SupportedLanguage.EN.value
+        user_id = user.id
         quiz_run = await quiz_handlers.QuizRunRepository(session).create_run(
             user_id=user.id,
             language=SupportedLanguage.EN,
@@ -807,13 +839,37 @@ async def test_next_after_wrong_answer_resolves_question_without_retry() -> None
 
         await quiz_handlers.answer_action(callback, bot, state, session, i18n)
         data = await state.get_data()
-
-    await engine.dispose()
+        await session.commit()
 
     callback.message.delete.assert_awaited_once()
     callback.message.answer.assert_awaited_once()
     rendered_question = callback.message.answer.await_args.args[0]
     assert rendered_question.startswith("Which country is this?")
     assert data["quiz_session"].resolved_questions == 1
-    assert data["quiz_session"].skipped_answers == 1
+    assert data["quiz_session"].mistakes == 1
     assert data["quiz_session"].current_question().id == next_question.id
+
+    async with session_factory() as session:
+        saved_answer = (
+            await session.execute(
+                select(QuizAnswer).where(
+                    QuizAnswer.question_id == current_question.id,
+                )
+            )
+        ).scalar_one()
+        assert saved_answer.outcome == QuizAnswerOutcome.INCORRECT.value
+        assert saved_answer.wrong_attempts == 1
+
+        progress = (
+            await session.execute(
+                select(UserLearningProgress).where(
+                    UserLearningProgress.user_id == user_id,
+                    UserLearningProgress.country_code == "BGR",
+                    UserLearningProgress.category == QuizCategory.FLAG.value,
+                )
+            )
+        ).scalar_one()
+        assert progress.skipped_answers == 0
+        assert progress.wrong_attempts == 1
+
+    await engine.dispose()

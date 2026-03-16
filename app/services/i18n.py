@@ -479,7 +479,6 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
             "Завершено за 7 дней: <b>{recent_completed}</b>\n"
             "Завершенных вопросов: <b>{resolved}</b>\n"
             "Правильно: <b>{correct}</b>\n"
-            "Пропущено: <b>{skipped}</b>\n"
             "Ошибок: <b>{mistakes}</b>\n"
             "Отслеживаемых карточек: <b>{tracked}</b>\n"
             "Освоено: <b>{mastered}</b>\n"
@@ -496,7 +495,6 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
             "Completed in 7 days: <b>{recent_completed}</b>\n"
             "Resolved questions: <b>{resolved}</b>\n"
             "Correct: <b>{correct}</b>\n"
-            "Skipped: <b>{skipped}</b>\n"
             "Mistakes: <b>{mistakes}</b>\n"
             "Tracked cards: <b>{tracked}</b>\n"
             "Mastered: <b>{mastered}</b>\n"
@@ -513,7 +511,6 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
             "Abgeschlossen in 7 Tagen: <b>{recent_completed}</b>\n"
             "Abgeschlossene Fragen: <b>{resolved}</b>\n"
             "Richtig: <b>{correct}</b>\n"
-            "Übersprungen: <b>{skipped}</b>\n"
             "Fehler: <b>{mistakes}</b>\n"
             "Verfolgte Karten: <b>{tracked}</b>\n"
             "Beherrscht: <b>{mastered}</b>\n"
@@ -634,27 +631,21 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
     "quiz_complete_stats": {
         "ru": (
             "<b>Квиз завершён</b>\n\n"
-            "Решено вопросов: <b>{resolved}</b>\n"
+            "Вопросов: <b>{resolved}</b>\n"
             "Правильно: <b>{correct}</b>\n"
-            "Пропущено: <b>{skipped}</b>\n"
-            "Ошибок: <b>{mistakes}</b>\n\n"
-            "{menu_hint}"
+            "Ошибок: <b>{mistakes}</b>"
         ),
         "en": (
             "<b>Quiz complete</b>\n\n"
-            "Resolved questions: <b>{resolved}</b>\n"
+            "Questions: <b>{resolved}</b>\n"
             "Correct: <b>{correct}</b>\n"
-            "Skipped: <b>{skipped}</b>\n"
-            "Mistakes: <b>{mistakes}</b>\n\n"
-            "{menu_hint}"
+            "Mistakes: <b>{mistakes}</b>"
         ),
         "de": (
             "<b>Quiz abgeschlossen</b>\n\n"
-            "Gelöste Fragen: <b>{resolved}</b>\n"
+            "Fragen: <b>{resolved}</b>\n"
             "Richtig: <b>{correct}</b>\n"
-            "Übersprungen: <b>{skipped}</b>\n"
-            "Fehler: <b>{mistakes}</b>\n\n"
-            "{menu_hint}"
+            "Fehler: <b>{mistakes}</b>"
         ),
     },
     "not_enough_categories": {

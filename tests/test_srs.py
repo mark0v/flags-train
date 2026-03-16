@@ -58,3 +58,17 @@ def test_schedule_next_review_after_wrong_attempts_stays_short() -> None:
     )
 
     assert next_review == now + timedelta(hours=8)
+
+
+def test_schedule_next_review_for_incorrect_answer_uses_wrong_attempt_interval() -> None:
+    now = datetime(2026, 3, 15, 12, 0, tzinfo=UTC)
+
+    next_review = schedule_next_review(
+        QuizAnswerOutcome.INCORRECT,
+        proficiency_score=3,
+        wrong_attempts=1,
+        current_streak=0,
+        now=now,
+    )
+
+    assert next_review == now + timedelta(hours=16)

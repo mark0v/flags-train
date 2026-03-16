@@ -45,6 +45,7 @@ def test_format_stats_includes_category_breakdown() -> None:
     assert "Abandoned: <b>1</b>" in rendered
     assert "Completion rate: <b>75%</b>" in rendered
     assert "Completed in 7 days: <b>2</b>" in rendered
+    assert "Skipped:" not in rendered
     assert "Best focus right now: <b>Capital</b>" in rendered
     assert "• Flag: due <b>0</b>, mastered <b>1/2</b>, accuracy <b>75%</b>" in rendered
     assert "• Capital: due <b>2</b>, mastered <b>0/2</b>, accuracy <b>33%</b>" in rendered
