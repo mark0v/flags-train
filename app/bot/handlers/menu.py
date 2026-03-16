@@ -543,7 +543,7 @@ async def continue_learning(
         selected_categories=[category.value for category in preferences.categories],
         language=language.value,
     )
-    await render_quiz_setup(callback, state, language, i18n)
+    await render_quiz_setup(callback, state, language, i18n, edit_existing=False)
     await callback.answer(i18n.text("continue_learning_restored", language))
 
 
@@ -603,7 +603,7 @@ async def stats_review_setup(
         selected_categories=due_categories,
         language=language.value,
     )
-    await render_quiz_setup(callback, state, language, i18n)
+    await render_quiz_setup(callback, state, language, i18n, edit_existing=False)
 
 
 @router.callback_query(F.data.startswith("admin:"))

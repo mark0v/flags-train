@@ -30,6 +30,7 @@ from app.services.i18n import I18nService
 from app.services.quiz.engine import Question, QuizEngine, QuizSession
 
 router = Router()
+QUIZ_SPACER_TEXT = "\u2800"
 
 
 async def _send_question_media(
@@ -87,6 +88,8 @@ async def _render_quiz_setup(
     state: FSMContext,
     language: SupportedLanguage,
     i18n: I18nService,
+    *,
+    edit_existing: bool = True,
 ) -> None:
     data = await state.get_data()
     selected_count = data.get("selected_count", 10)
@@ -102,16 +105,17 @@ async def _render_quiz_setup(
         f"{i18n.text('quiz_choose_categories', language)}: "
         f"{', '.join(i18n.category_label(category, language) for category in selected_categories)}"
     )
-    await callback.message.edit_text(
-        text,
-        reply_markup=quiz_setup_keyboard(
-            language,
-            i18n,
-            selected_count,
-            selected_categories,
-            selected_mode,
-        ),
+    markup = quiz_setup_keyboard(
+        language,
+        i18n,
+        selected_count,
+        selected_categories,
+        selected_mode,
     )
+    if edit_existing:
+        await callback.message.edit_text(text, reply_markup=markup)
+    else:
+        await callback.message.answer(text, reply_markup=markup)
     await callback.answer()
 
 
@@ -141,11 +145,24 @@ async def _show_question(
 
     await state.update_data(current_question_id=question.id)
     caption = f"{question.prompt}\n\n<i>{session_obj.progress_text()}</i>"
+    option_labels = question.option_labels or question.options
     if question.flag_path:
+        media_question = Question(
+            id=question.id,
+            country_code=question.country_code,
+            category=question.category,
+            prompt=question.prompt,
+            options=option_labels,
+            option_labels=question.option_labels,
+            correct_option=question.correct_option,
+            answer_context=question.answer_context,
+            flag_path=question.flag_path,
+            is_retry=question.is_retry,
+        )
         await _send_question_media(
             bot,
             callback.message.chat.id,
-            question,
+            media_question,
             caption,
             i18n,
             session_obj.language,
@@ -153,7 +170,7 @@ async def _show_question(
         return
     await callback.message.answer(
         caption,
-        reply_markup=answer_keyboard(question.options, session_obj.language, i18n),
+        reply_markup=answer_keyboard(option_labels, session_obj.language, i18n),
     )
 
 
@@ -230,7 +247,7 @@ async def start_quiz_setup(
         selected_categories=[QuizCategory.FLAG.value],
         language=language.value,
     )
-    await _render_quiz_setup(callback, state, language, i18n)
+    await _render_quiz_setup(callback, state, language, i18n, edit_existing=False)
 
 
 @router.callback_query(QuizStates.setup, F.data.startswith("quiz:size:"))
@@ -359,6 +376,7 @@ async def begin_quiz(
         f"<b>{i18n.text('quiz_setup_title', language)}</b>\n\n"
         f"{i18n.text('quiz_start', language)}..."
     )
+    await callback.message.answer(QUIZ_SPACER_TEXT)
     await _show_question(bot, callback, state, quiz_session, i18n)
     await callback.answer()
 
@@ -401,14 +419,16 @@ async def answer_question(
         await callback.answer()
         return
 
+    option_labels = question.option_labels or question.options
+    correct_index = question.options.index(question.correct_option)
     selected_index = int(callback.data.split(":")[1])
     selected_option = question.options[selected_index]
     reveal_correct = selected_option == question.correct_option
     await callback.message.edit_reply_markup(
         reply_markup=answer_feedback_keyboard(
-            question.options,
+            option_labels,
             selected_index,
-            question.correct_option,
+            correct_index,
             reveal_correct=reveal_correct,
             exit_text=i18n.text("quiz_exit", quiz_session.language),
         )
@@ -440,9 +460,9 @@ async def answer_question(
     await asyncio.sleep(settings.quiz_autonext_seconds)
     await callback.message.edit_reply_markup(
         reply_markup=answer_feedback_keyboard(
-            question.options,
+            option_labels,
             selected_index,
-            question.correct_option,
+            correct_index,
             exit_text=i18n.text("quiz_exit", quiz_session.language),
         )
     )

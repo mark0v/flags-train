@@ -94,21 +94,21 @@ def answer_keyboard(
 
 
 def answer_feedback_keyboard(
-    options: list[str],
+    option_labels: list[str],
     selected_index: int,
-    correct_option: str,
+    correct_index: int,
     *,
     reveal_correct: bool = True,
     exit_text: str | None = None,
 ) -> InlineKeyboardMarkup:
     builder = InlineKeyboardBuilder()
-    for index, option in enumerate(options):
-        if reveal_correct and option == correct_option:
-            label = f"✅ {option}"
+    for index, option_label in enumerate(option_labels):
+        if reveal_correct and index == correct_index:
+            label = f"✅ {option_label}"
         elif index == selected_index:
-            label = f"❌ {option}"
+            label = f"❌ {option_label}"
         else:
-            label = option
+            label = option_label
         builder.button(text=label, callback_data="answer:locked")
     if exit_text is not None:
         builder.button(text=exit_text, callback_data="answer:locked")

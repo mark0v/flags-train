@@ -34,6 +34,7 @@ from app.services.country_store import Country, CountryStore
 from app.services.dataset_validation import DatasetValidationReport
 from app.services.i18n import I18nService
 from app.services.quiz.engine import Question
+from app.services.quiz_display import quiz_option_label
 from app.services.statistics import CategoryProgressStat, UserStatsSummary
 
 
@@ -114,7 +115,7 @@ async def test_start_quiz_setup_initializes_state_and_renders_setup() -> None:
     assert data["selected_count"] == 10
     assert data["selected_mode"] == QuizMode.MIXED.value
     assert data["selected_categories"] == ["flag"]
-    callback.message.edit_text.assert_awaited()
+    callback.message.answer.assert_awaited()
     callback.answer.assert_awaited()
 
 
@@ -348,6 +349,7 @@ async def test_stats_review_setup_preconfigures_review_mode(monkeypatch) -> None
     assert data["selected_mode"] == menu_handlers.QuizMode.REVIEW.value
     assert data["selected_categories"] == ["flag", "capital"]
     render_setup.assert_awaited_once()
+    assert render_setup.await_args.kwargs["edit_existing"] is False
 
 
 async def test_begin_quiz_starts_review_mode_when_due_countries_are_available() -> None:
@@ -409,7 +411,8 @@ async def test_begin_quiz_starts_review_mode_when_due_countries_are_available() 
     assert data["selected_categories"] == ["capital"]
     assert data["quiz_session"].total_questions == 10
     callback.message.edit_text.assert_awaited()
-    callback.message.answer.assert_awaited()
+    assert callback.message.answer.await_count == 2
+    assert callback.message.answer.await_args_list[0].args[0] == quiz_handlers.QUIZ_SPACER_TEXT
     rendered_question = callback.message.answer.await_args.args[0]
     assert "What is the capital of" in rendered_question
     callback.answer.assert_awaited()
@@ -576,8 +579,8 @@ async def test_continue_learning_restores_last_quiz_setup() -> None:
     assert data["selected_count"] == 10
     assert data["selected_categories"] == ["capital"]
     assert data["selected_mode"] == QuizMode.MIXED.value
-    callback.message.edit_text.assert_awaited()
-    rendered_text = callback.message.edit_text.await_args.args[0]
+    callback.message.answer.assert_awaited()
+    rendered_text = callback.message.answer.await_args.args[0]
     assert "Quiz setup" in rendered_text
     assert "Capital" in rendered_text
     callback.answer.assert_awaited()
@@ -614,7 +617,7 @@ async def test_answer_feedback_keyboard_hides_correct_option_until_revealed() ->
     markup = answer_feedback_keyboard(
         ["Peru", "Ghana", "Bulgaria", "Mali"],
         0,
-        "Bulgaria",
+        2,
         reveal_correct=False,
         exit_text="Exit",
     )
@@ -627,7 +630,7 @@ async def test_answer_feedback_keyboard_reveals_correct_option_for_success() -> 
     markup = answer_feedback_keyboard(
         ["Peru", "Ghana", "Bulgaria", "Mali"],
         2,
-        "Bulgaria",
+        2,
         exit_text="Exit",
     )
 
@@ -689,6 +692,7 @@ async def test_wrong_answer_automatically_reveals_correct_option_and_advances() 
         category=QuizCategory.FLAG,
         prompt="Which country is this?",
         options=["Peru", "Ghana", "Bulgaria", "Mali"],
+        option_labels=["Peru", "Ghana", "Bulgaria", "Mali"],
         correct_option="Bulgaria",
         answer_context="Bulgaria",
     )
@@ -698,6 +702,7 @@ async def test_wrong_answer_automatically_reveals_correct_option_and_advances() 
         category=QuizCategory.FLAG,
         prompt="Which country is this?",
         options=["Ukraine", "Ghana", "Tanzania", "Moldova"],
+        option_labels=["Ukraine", "Ghana", "Tanzania", "Moldova"],
         correct_option="Ghana",
         answer_context="Ghana",
     )
@@ -797,6 +802,7 @@ async def test_wrong_answer_on_last_question_completes_quiz_after_auto_reveal() 
         category=QuizCategory.FLAG,
         prompt="Which country is this?",
         options=["Peru", "Ghana", "Bulgaria", "Mali"],
+        option_labels=["Peru", "Ghana", "Bulgaria", "Mali"],
         correct_option="Bulgaria",
         answer_context="Bulgaria",
     )
@@ -843,3 +849,18 @@ async def test_wrong_answer_on_last_question_completes_quiz_after_auto_reveal() 
     assert await state.get_state() is None
 
     await engine.dispose()
+
+
+def test_quiz_option_label_shortens_long_flag_country_names() -> None:
+    assert (
+        quiz_option_label("Central African Republic", QuizCategory.FLAG, SupportedLanguage.EN)
+        == "CAR"
+    )
+    assert (
+        quiz_option_label("Сейшельские Острова", QuizCategory.FLAG, SupportedLanguage.RU)
+        == "Сейшелы"
+    )
+    assert (
+        quiz_option_label("Marshall Islands", QuizCategory.CAPITAL, SupportedLanguage.EN)
+        == "Marshall Islands"
+    )

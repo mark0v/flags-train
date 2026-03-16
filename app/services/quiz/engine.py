@@ -5,6 +5,7 @@ from pathlib import Path
 
 from app.constants import QUESTION_ORDER, QuizCategory, SupportedLanguage
 from app.services.country_store import Country, CountryStore
+from app.services.quiz_display import quiz_option_label
 
 
 @dataclass(slots=True)
@@ -18,6 +19,7 @@ class Question:
     answer_context: str
     flag_path: Path | None = None
     is_retry: bool = False
+    option_labels: list[str] | None = None
 
 
 @dataclass(slots=True)
@@ -151,6 +153,7 @@ class QuizEngine:
         distractors = self._distractors(country.code, category, language, correct_option)
         options = distractors + [correct_option]
         self._random.shuffle(options)
+        option_labels = [quiz_option_label(option, category, language) for option in options]
         prompt, answer_context, flag_path = self._prompt_for(country, category, language)
         return Question(
             id=f"{country.code}:{category.value}",
@@ -158,6 +161,7 @@ class QuizEngine:
             category=category,
             prompt=prompt,
             options=options,
+            option_labels=option_labels,
             correct_option=correct_option,
             answer_context=answer_context,
             flag_path=flag_path,
