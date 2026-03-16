@@ -99,6 +99,7 @@ def answer_feedback_keyboard(
     correct_option: str,
     *,
     reveal_correct: bool = True,
+    exit_text: str | None = None,
 ) -> InlineKeyboardMarkup:
     builder = InlineKeyboardBuilder()
     for index, option in enumerate(options):
@@ -109,6 +110,10 @@ def answer_feedback_keyboard(
         else:
             label = option
         builder.button(text=label, callback_data="answer:locked")
+    if exit_text is not None:
+        builder.button(text=exit_text, callback_data="answer:locked")
+        builder.adjust(2, 2, 1)
+        return builder.as_markup()
     builder.adjust(2, 2)
     return builder.as_markup()
 

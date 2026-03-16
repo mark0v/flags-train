@@ -616,9 +616,11 @@ async def test_answer_feedback_keyboard_hides_correct_option_until_revealed() ->
         0,
         "Bulgaria",
         reveal_correct=False,
+        exit_text="Exit",
     )
 
-    assert _keyboard_texts(markup) == ["❌ Peru", "Ghana", "Bulgaria", "Mali"]
+    assert _keyboard_texts(markup) == ["❌ Peru", "Ghana", "Bulgaria", "Mali", "Exit"]
+    assert markup.inline_keyboard[-1][0].callback_data == "answer:locked"
 
 
 async def test_answer_feedback_keyboard_reveals_correct_option_for_success() -> None:
@@ -626,9 +628,10 @@ async def test_answer_feedback_keyboard_reveals_correct_option_for_success() -> 
         ["Peru", "Ghana", "Bulgaria", "Mali"],
         2,
         "Bulgaria",
+        exit_text="Exit",
     )
 
-    assert _keyboard_texts(markup) == ["Peru", "Ghana", "✅ Bulgaria", "Mali"]
+    assert _keyboard_texts(markup) == ["Peru", "Ghana", "✅ Bulgaria", "Mali", "Exit"]
 
 
 async def test_show_question_completion_message_omits_menu_hint_and_skipped_count() -> None:
@@ -732,8 +735,8 @@ async def test_wrong_answer_automatically_reveals_correct_option_and_advances() 
     assert callback.message.edit_reply_markup.await_count == 2
     first_markup = callback.message.edit_reply_markup.await_args_list[0].kwargs["reply_markup"]
     second_markup = callback.message.edit_reply_markup.await_args_list[1].kwargs["reply_markup"]
-    assert _keyboard_texts(first_markup) == ["❌ Peru", "Ghana", "Bulgaria", "Mali"]
-    assert _keyboard_texts(second_markup) == ["❌ Peru", "Ghana", "✅ Bulgaria", "Mali"]
+    assert _keyboard_texts(first_markup) == ["❌ Peru", "Ghana", "Bulgaria", "Mali", "Exit"]
+    assert _keyboard_texts(second_markup) == ["❌ Peru", "Ghana", "✅ Bulgaria", "Mali", "Exit"]
     callback.message.answer.assert_awaited_once()
     rendered_question = callback.message.answer.await_args.args[0]
     assert rendered_question.startswith("Which country is this?")
@@ -826,6 +829,11 @@ async def test_wrong_answer_on_last_question_completes_quiz_after_auto_reveal() 
 
         await quiz_handlers.answer_question(callback, bot, state, session, settings, i18n)
 
+    assert callback.message.edit_reply_markup.await_count == 2
+    first_markup = callback.message.edit_reply_markup.await_args_list[0].kwargs["reply_markup"]
+    second_markup = callback.message.edit_reply_markup.await_args_list[1].kwargs["reply_markup"]
+    assert _keyboard_texts(first_markup) == ["❌ Peru", "Ghana", "Bulgaria", "Mali", "Exit"]
+    assert _keyboard_texts(second_markup) == ["❌ Peru", "Ghana", "✅ Bulgaria", "Mali", "Exit"]
     callback.message.answer.assert_awaited_once()
     rendered = callback.message.answer.await_args.args[0]
     assert "Quiz complete" in rendered

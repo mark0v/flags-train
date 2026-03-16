@@ -410,6 +410,7 @@ async def answer_question(
             selected_index,
             question.correct_option,
             reveal_correct=reveal_correct,
+            exit_text=i18n.text("quiz_exit", quiz_session.language),
         )
     )
 
@@ -442,6 +443,7 @@ async def answer_question(
             question.options,
             selected_index,
             question.correct_option,
+            exit_text=i18n.text("quiz_exit", quiz_session.language),
         )
     )
     resolution = quiz_session.resolve_incorrect()
