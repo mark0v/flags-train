@@ -30,7 +30,6 @@ from app.services.i18n import I18nService
 from app.services.quiz.engine import Question, QuizEngine, QuizSession
 
 router = Router()
-QUIZ_SPACER_TEXT = "\u2800"
 
 
 async def _send_question_media(
@@ -376,7 +375,6 @@ async def begin_quiz(
         f"<b>{i18n.text('quiz_setup_title', language)}</b>\n\n"
         f"{i18n.text('quiz_start', language)}..."
     )
-    await callback.message.answer(QUIZ_SPACER_TEXT)
     await _show_question(bot, callback, state, quiz_session, i18n)
     await callback.answer()
 

@@ -411,8 +411,7 @@ async def test_begin_quiz_starts_review_mode_when_due_countries_are_available() 
     assert data["selected_categories"] == ["capital"]
     assert data["quiz_session"].total_questions == 10
     callback.message.edit_text.assert_awaited()
-    assert callback.message.answer.await_count == 2
-    assert callback.message.answer.await_args_list[0].args[0] == quiz_handlers.QUIZ_SPACER_TEXT
+    callback.message.answer.assert_awaited_once()
     rendered_question = callback.message.answer.await_args.args[0]
     assert "What is the capital of" in rendered_question
     callback.answer.assert_awaited()
