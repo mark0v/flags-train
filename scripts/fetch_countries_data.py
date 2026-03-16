@@ -12,6 +12,7 @@ from app.services.data_pipeline import (
     normalize_country,
     validate_dataset,
 )
+from app.services.flag_previews import build_flag_preview
 
 RESTCOUNTRIES_URL = "https://restcountries.com/v3.1/all"
 RESTCOUNTRIES_FIELDS = [
@@ -42,11 +43,15 @@ async def download_flag(
     semaphore: asyncio.Semaphore,
     url: str,
     target_path: Path,
+    *,
+    normalize_preview: bool = False,
 ) -> None:
     async with semaphore:
         response = await client.get(url, timeout=60)
         response.raise_for_status()
         target_path.write_bytes(response.content)
+        if normalize_preview:
+            build_flag_preview(target_path, target_path)
 
 
 async def fetch_country_lookup(client: httpx.AsyncClient, country_name: str) -> dict:
@@ -110,6 +115,7 @@ async def main() -> None:
                         semaphore,
                         item["flags"]["png"],
                         FLAGS_DIR / png_flag_file,
+                        normalize_preview=True,
                     ),
                 ]
             )
@@ -139,6 +145,7 @@ async def main() -> None:
                         semaphore,
                         extra_item["flags"]["png"],
                         FLAGS_DIR / png_flag_file,
+                        normalize_preview=True,
                     ),
                 ]
             )
