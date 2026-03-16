@@ -398,8 +398,7 @@ async def cancel_setup(
     language = await _user_language(session, callback)
     await state.clear()
     await callback.message.edit_text(
-        f"{i18n.text('quiz_setup_cancelled', language)}\n\n"
-        f"{i18n.text('main_menu', language)}",
+        i18n.text("quiz_setup_cancelled", language),
         reply_markup=main_menu_keyboard(language, i18n),
     )
     await callback.answer()
@@ -559,8 +558,7 @@ async def exit_yes(
         await _finalize_run(session, state, quiz_session, QuizRunStatus.ABANDONED)
     await state.clear()
     await callback.message.answer(
-        f"{i18n.text('quiz_abandoned', language)}\n\n"
-        f"{i18n.text('main_menu', language)}",
+        i18n.text("quiz_abandoned", language),
         reply_markup=main_menu_keyboard(language, i18n),
     )
     await callback.answer()

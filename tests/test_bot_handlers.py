@@ -135,7 +135,7 @@ async def test_cancel_setup_clears_state_and_returns_to_main_menu() -> None:
     assert await state.get_data() == {}
     callback.message.edit_text.assert_awaited()
     rendered_text = callback.message.edit_text.await_args.args[0]
-    assert "Quiz setup cancelled." in rendered_text
+    assert rendered_text == "Quiz setup cancelled."
     callback.answer.assert_awaited()
 
 
@@ -278,9 +278,19 @@ async def test_exit_yes_sends_abandoned_quiz_message() -> None:
     assert await state.get_state() is None
     callback.message.answer.assert_awaited()
     rendered_text = callback.message.answer.await_args.args[0]
-    assert "Quiz ended early." in rendered_text
-    assert "Main menu" in rendered_text
+    assert rendered_text == "Quiz ended early."
     callback.answer.assert_awaited()
+
+
+async def test_show_menu_renders_buttons_without_visible_title() -> None:
+    callback = _build_callback()
+    i18n = I18nService()
+
+    await menu_handlers._show_menu(callback, SupportedLanguage.EN, i18n)
+
+    callback.message.edit_text.assert_awaited_once()
+    assert callback.message.edit_text.await_args.args[0] == menu_handlers.MENU_SCREEN_TEXT
+    callback.answer.assert_awaited_once()
 
 
 async def test_stats_review_setup_preconfigures_review_mode(monkeypatch) -> None:

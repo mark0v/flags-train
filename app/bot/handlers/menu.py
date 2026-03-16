@@ -31,6 +31,7 @@ from app.services.statistics import (
 )
 
 router = Router()
+MENU_SCREEN_TEXT = "\u2060"
 
 
 def _format_optional_datetime(value) -> str:
@@ -44,12 +45,11 @@ async def _show_menu(
     language: SupportedLanguage,
     i18n: I18nService,
 ) -> None:
-    text = i18n.text("main_menu", language)
     markup = main_menu_keyboard(language, i18n)
     if isinstance(target, Message):
-        await target.answer(text, reply_markup=markup)
+        await target.answer(MENU_SCREEN_TEXT, reply_markup=markup)
         return
-    await target.message.edit_text(text, reply_markup=markup)
+    await target.message.edit_text(MENU_SCREEN_TEXT, reply_markup=markup)
     await target.answer()
 
 
@@ -630,11 +630,7 @@ async def admin_actions(
     catalog_service = AdminCatalogService(session, settings)
 
     if action == "back":
-        await callback.message.edit_text(
-            i18n.text("main_menu", language),
-            reply_markup=main_menu_keyboard(language, i18n),
-        )
-        await callback.answer()
+        await _show_menu(callback, language, i18n)
         return
 
     if action == "overview":
