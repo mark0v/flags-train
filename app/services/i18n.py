@@ -630,6 +630,7 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
     "answer_show": {"ru": "Показать ответ", "en": "Show answer", "de": "Antwort zeigen"},
     "answer_retry": {"ru": "Повторить попытку", "en": "Try again", "de": "Nochmal versuchen"},
     "answer_skip": {"ru": "Пропустить", "en": "Skip", "de": "Überspringen"},
+    "answer_next": {"ru": "Дальше", "en": "Next", "de": "Weiter"},
     "quiz_complete_stats": {
         "ru": (
             "<b>Квиз завершён</b>\n\n"

@@ -1,6 +1,6 @@
 import random
 from collections import deque
-from dataclasses import dataclass, field, replace
+from dataclasses import dataclass, field
 from pathlib import Path
 
 from app.constants import QUESTION_ORDER, QuizCategory, SupportedLanguage
@@ -35,8 +35,6 @@ class QuizSession:
     categories: list[QuizCategory]
     questions: deque[Question]
     total_questions: int
-    retry_queue: deque[Question] = field(default_factory=deque)
-    repeat_later_ids: set[str] = field(default_factory=set)
     wrong_attempts_by_question: dict[str, int] = field(default_factory=dict)
     resolved_questions: int = 0
     correct_answers: int = 0
@@ -44,32 +42,10 @@ class QuizSession:
     mistakes: int = 0
 
     def current_question(self) -> Question | None:
-        if self.questions:
-            return self.questions[0]
-        if self.retry_queue:
-            self.questions = deque(self.retry_queue)
-            self.retry_queue = deque()
-            return self.questions[0]
-        return None
+        return self.questions[0] if self.questions else None
 
     def on_correct(self, selected_option: str) -> QuestionResolution:
         question = self.questions.popleft()
-        if question.is_retry:
-            self.repeat_later_ids.discard(question.id)
-            self.resolved_questions += 1
-            self.correct_answers += 1
-            return QuestionResolution(
-                question,
-                resolved=True,
-                outcome="correct",
-                selected_option=selected_option,
-            )
-        if question.id in self.repeat_later_ids:
-            return QuestionResolution(
-                question,
-                resolved=False,
-                selected_option=selected_option,
-            )
         self.resolved_questions += 1
         self.correct_answers += 1
         return QuestionResolution(
@@ -85,19 +61,9 @@ class QuizSession:
         self.wrong_attempts_by_question[question.id] = (
             self.wrong_attempts_by_question.get(question.id, 0) + 1
         )
-        if question.id not in self.repeat_later_ids:
-            self.repeat_later_ids.add(question.id)
-            self.retry_queue.append(replace(question, is_retry=True))
 
     def skip_current(self) -> QuestionResolution:
         question = self.questions.popleft()
-        if question.is_retry:
-            self.repeat_later_ids.discard(question.id)
-            self.resolved_questions += 1
-            self.skipped_answers += 1
-            return QuestionResolution(question, resolved=True, outcome="skipped")
-        if question.id in self.repeat_later_ids:
-            return QuestionResolution(question, resolved=False)
         self.resolved_questions += 1
         self.skipped_answers += 1
         return QuestionResolution(question, resolved=True, outcome="skipped")

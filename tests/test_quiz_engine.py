@@ -26,7 +26,7 @@ def test_quiz_builds_country_blocks() -> None:
     assert questions[1].category == QuizCategory.CAPITAL
 
 
-def test_wrong_answer_keeps_question_active_until_skip() -> None:
+def test_wrong_answer_keeps_question_active_until_next() -> None:
     store = CountryStore.from_path(
         Path("tests/fixtures/countries.json"),
         Path("tests/fixtures"),
@@ -42,20 +42,11 @@ def test_wrong_answer_keeps_question_active_until_skip() -> None:
     session.on_wrong()
     assert session.current_question().id == first.id
 
-    resolution = session.on_correct(first.correct_option)
-    assert resolution.resolved is False
-    assert any(item.id == first.id for item in session.retry_queue)
+    next_resolution = session.skip_current()
 
-    while session.current_question() and session.current_question().id != first.id:
-        next_question = session.current_question()
-        session.on_correct(next_question.correct_option)
-
-    retry_question = session.current_question()
-    assert retry_question.id == first.id
-    retry_resolution = session.skip_current()
-
-    assert retry_resolution.resolved is True
+    assert next_resolution.resolved is True
     assert session.skipped_answers == 1
+    assert session.current_question().id != first.id
 
 
 def test_progress_counts_only_resolved_questions() -> None:
@@ -70,11 +61,10 @@ def test_progress_counts_only_resolved_questions() -> None:
         categories=[QuizCategory.CAPITAL],
     )
 
-    first = session.current_question()
     session.on_wrong()
-    session.on_correct(first.correct_option)
+    session.skip_current()
 
-    assert session.progress_text() == "0/3"
+    assert session.progress_text() == "1/3"
 
 
 def test_quiz_prioritizes_due_countries() -> None:

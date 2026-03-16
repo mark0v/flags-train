@@ -31,6 +31,7 @@ from app.services.i18n import I18nService
 from app.services.quiz.engine import Question, QuizEngine, QuizSession
 
 router = Router()
+QUIZ_ACTIONS_TEXT = "\u2060"
 
 
 async def _send_question_media(
@@ -157,28 +158,6 @@ async def _show_question(
     await callback.message.answer(
         caption,
         reply_markup=answer_keyboard(question.options, session_obj.language, i18n),
-    )
-
-
-async def _show_retry_question(
-    callback: CallbackQuery,
-    question: Question,
-    language: SupportedLanguage,
-    i18n: I18nService,
-) -> None:
-    if question.flag_path:
-        await _send_question_media(
-            callback.bot,
-            callback.message.chat.id,
-            question,
-            question.prompt,
-            i18n,
-            language,
-        )
-        return
-    await callback.message.answer(
-        question.prompt,
-        reply_markup=answer_keyboard(question.options, language, i18n),
     )
 
 
@@ -460,9 +439,14 @@ async def answer_question(
         return
 
     quiz_session.on_wrong()
-    await state.update_data(quiz_session=quiz_session, wrong_question=question)
+    await state.update_data(
+        quiz_session=quiz_session,
+        wrong_question=question,
+        wrong_question_chat_id=callback.message.chat.id,
+        wrong_question_message_id=callback.message.message_id,
+    )
     await callback.message.answer(
-        question.prompt,
+        QUIZ_ACTIONS_TEXT,
         reply_markup=wrong_answer_actions(language, i18n),
     )
     await callback.answer("❌")
@@ -482,18 +466,23 @@ async def answer_action(
     question: Question = data["wrong_question"]
     quiz_run_id: int = data["quiz_run_id"]
     user_id: int = data["user_id"]
+    question_chat_id: int = data["wrong_question_chat_id"]
+    question_message_id: int = data["wrong_question_message_id"]
     action = callback.data.split(":")[1]
 
     if action == "show":
-        await callback.message.answer(
-            i18n.text("show_answer_text", language, answer=question.correct_option),
-            reply_markup=wrong_answer_actions(language, i18n),
+        await bot.edit_message_reply_markup(
+            chat_id=question_chat_id,
+            message_id=question_message_id,
+            reply_markup=answer_feedback_keyboard(
+                question.options,
+                question.options.index(question.correct_option),
+                question.correct_option,
+            ),
         )
-        await callback.answer()
-        return
-
-    if action == "retry":
-        await _show_retry_question(callback, question, language, i18n)
+        await callback.message.edit_reply_markup(
+            reply_markup=wrong_answer_actions(language, i18n, can_show_answer=False),
+        )
         await callback.answer()
         return
 
@@ -509,6 +498,7 @@ async def answer_action(
             QuizAnswerOutcome.SKIPPED,
         )
     await state.update_data(quiz_session=quiz_session)
+    await callback.message.delete()
     await callback.answer()
     if await _finalize_run_if_complete(callback, state, session, quiz_session, i18n):
         return
