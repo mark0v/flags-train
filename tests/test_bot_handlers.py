@@ -659,14 +659,7 @@ async def test_show_question_completion_message_omits_menu_hint_and_skipped_coun
     assert "main menu" not in rendered.lower()
 
 
-async def test_wrong_answer_actions_are_horizontal_and_use_next() -> None:
-    markup = quiz_handlers.wrong_answer_actions(SupportedLanguage.EN, I18nService())
-
-    assert [button.text for button in markup.inline_keyboard[0]] == ["Show answer", "Next"]
-    assert len(markup.inline_keyboard) == 1
-
-
-async def test_wrong_answer_creates_compact_actions_block_without_question_repeat() -> None:
+async def test_wrong_answer_automatically_reveals_correct_option_and_advances() -> None:
     engine = create_async_engine("sqlite+aiosqlite:///:memory:")
     async with engine.begin() as connection:
         await connection.run_sync(Base.metadata.create_all)
@@ -675,6 +668,115 @@ async def test_wrong_answer_creates_compact_actions_block_without_question_repea
     callback = _build_callback()
     callback.data = "answer:0"
     bot = _build_bot()
+    callback.bot = bot
+    state = _build_state()
+    i18n = I18nService()
+    settings = Settings.model_construct(
+        bot_token="token",
+        app_env="test",
+        database_url="sqlite+aiosqlite:///:memory:",
+        countries_data_path="data/normalized/countries.json",
+        flags_dir="data/flags",
+        quiz_autonext_seconds=0,
+        admin_ids_raw="42",
+    )
+    current_question = Question(
+        id="BGR:flag",
+        country_code="BGR",
+        category=QuizCategory.FLAG,
+        prompt="Which country is this?",
+        options=["Peru", "Ghana", "Bulgaria", "Mali"],
+        correct_option="Bulgaria",
+        answer_context="Bulgaria",
+    )
+    next_question = Question(
+        id="GHA:flag",
+        country_code="GHA",
+        category=QuizCategory.FLAG,
+        prompt="Which country is this?",
+        options=["Ukraine", "Ghana", "Tanzania", "Moldova"],
+        correct_option="Ghana",
+        answer_context="Ghana",
+    )
+    quiz_session = quiz_handlers.QuizSession(
+        language=SupportedLanguage.EN,
+        countries_count=10,
+        categories=[QuizCategory.FLAG],
+        questions=deque([current_question, next_question]),
+        total_questions=2,
+    )
+
+    async with session_factory() as session:
+        user = await UserRepository(session).get_or_create(42, "tester", "Test")
+        user.language = SupportedLanguage.EN.value
+        quiz_run = await quiz_handlers.QuizRunRepository(session).create_run(
+            user_id=user.id,
+            language=SupportedLanguage.EN,
+            countries_count=2,
+            categories=[QuizCategory.FLAG],
+            total_questions=2,
+        )
+        await session.commit()
+        await state.set_state(QuizStates.in_progress)
+        await state.update_data(
+            language=SupportedLanguage.EN.value,
+            quiz_session=quiz_session,
+            quiz_run_id=quiz_run.id,
+            user_id=user.id,
+        )
+
+        await quiz_handlers.answer_question(callback, bot, state, session, settings, i18n)
+        data = await state.get_data()
+        await session.commit()
+
+    assert callback.message.edit_reply_markup.await_count == 2
+    first_markup = callback.message.edit_reply_markup.await_args_list[0].kwargs["reply_markup"]
+    second_markup = callback.message.edit_reply_markup.await_args_list[1].kwargs["reply_markup"]
+    assert _keyboard_texts(first_markup) == ["❌ Peru", "Ghana", "Bulgaria", "Mali"]
+    assert _keyboard_texts(second_markup) == ["❌ Peru", "Ghana", "✅ Bulgaria", "Mali"]
+    callback.message.answer.assert_awaited_once()
+    rendered_question = callback.message.answer.await_args.args[0]
+    assert rendered_question.startswith("Which country is this?")
+    assert data["quiz_session"].resolved_questions == 1
+    assert data["quiz_session"].mistakes == 1
+    assert data["quiz_session"].current_question().id == next_question.id
+
+    async with session_factory() as session:
+        saved_answer = (
+            await session.execute(
+                select(QuizAnswer).where(
+                    QuizAnswer.question_id == current_question.id,
+                )
+            )
+        ).scalar_one()
+        assert saved_answer.outcome == QuizAnswerOutcome.INCORRECT.value
+        assert saved_answer.wrong_attempts == 1
+
+        progress = (
+            await session.execute(
+                select(UserLearningProgress).where(
+                    UserLearningProgress.user_id == user.id,
+                    UserLearningProgress.country_code == "BGR",
+                    UserLearningProgress.category == QuizCategory.FLAG.value,
+                )
+            )
+        ).scalar_one()
+        assert progress.skipped_answers == 0
+        assert progress.wrong_attempts == 1
+
+    await engine.dispose()
+
+
+async def test_wrong_answer_on_last_question_completes_quiz_after_auto_reveal() -> None:
+    engine = create_async_engine("sqlite+aiosqlite:///:memory:")
+    async with engine.begin() as connection:
+        await connection.run_sync(Base.metadata.create_all)
+
+    session_factory = async_sessionmaker(engine, expire_on_commit=False)
+    callback = _build_callback()
+    callback.data = "answer:0"
+    bot = _build_bot()
+    callback.bot = bot
     state = _build_state()
     i18n = I18nService()
     settings = Settings.model_construct(
@@ -704,172 +806,32 @@ async def test_wrong_answer_creates_compact_actions_block_without_question_repea
     )
 
     async with session_factory() as session:
-        await state.set_state(QuizStates.in_progress)
-        await state.update_data(
-            language=SupportedLanguage.EN.value,
-            quiz_session=quiz_session,
-            quiz_run_id=1,
-            user_id=42,
-        )
-
-        await quiz_handlers.answer_question(callback, bot, state, session, settings, i18n)
-        data = await state.get_data()
-
-    await engine.dispose()
-
-    callback.message.answer.assert_awaited_once()
-    assert callback.message.answer.await_args.args[0] == quiz_handlers.QUIZ_ACTIONS_TEXT
-    assert data["wrong_question"].id == question.id
-    assert data["wrong_question_message_id"] == 501
-
-
-async def test_show_answer_reveals_correct_option_on_original_question() -> None:
-    engine = create_async_engine("sqlite+aiosqlite:///:memory:")
-    async with engine.begin() as connection:
-        await connection.run_sync(Base.metadata.create_all)
-
-    session_factory = async_sessionmaker(engine, expire_on_commit=False)
-    callback = _build_callback()
-    callback.data = "answer_action:show"
-    bot = _build_bot()
-    state = _build_state()
-    i18n = I18nService()
-    question = Question(
-        id="BGR:flag",
-        country_code="BGR",
-        category=QuizCategory.FLAG,
-        prompt="Which country is this?",
-        options=["Peru", "Ghana", "Bulgaria", "Mali"],
-        correct_option="Bulgaria",
-        answer_context="Bulgaria",
-    )
-    quiz_session = quiz_handlers.QuizSession(
-        language=SupportedLanguage.EN,
-        countries_count=10,
-        categories=[QuizCategory.FLAG],
-        questions=deque([question]),
-        total_questions=1,
-    )
-
-    async with session_factory() as session:
-        await state.set_state(QuizStates.in_progress)
-        await state.update_data(
-            language=SupportedLanguage.EN.value,
-            quiz_session=quiz_session,
-            wrong_question=question,
-            wrong_question_chat_id=100,
-            wrong_question_message_id=501,
-            quiz_run_id=1,
-            user_id=42,
-        )
-
-        await quiz_handlers.answer_action(callback, bot, state, session, i18n)
-
-    await engine.dispose()
-
-    bot.edit_message_reply_markup.assert_awaited_once()
-    reply_markup = bot.edit_message_reply_markup.await_args.kwargs["reply_markup"]
-    assert "✅ Bulgaria" in _keyboard_texts(reply_markup)
-    callback.message.edit_reply_markup.assert_awaited_once()
-    action_markup = callback.message.edit_reply_markup.await_args.kwargs["reply_markup"]
-    assert _keyboard_texts(action_markup) == ["Next"]
-
-
-async def test_next_after_wrong_answer_resolves_question_without_retry() -> None:
-    engine = create_async_engine("sqlite+aiosqlite:///:memory:")
-    async with engine.begin() as connection:
-        await connection.run_sync(Base.metadata.create_all)
-
-    session_factory = async_sessionmaker(engine, expire_on_commit=False)
-    callback = _build_callback()
-    callback.data = "answer_action:next"
-    bot = _build_bot()
-    state = _build_state()
-    i18n = I18nService()
-    next_question = Question(
-        id="GHA:flag",
-        country_code="GHA",
-        category=QuizCategory.FLAG,
-        prompt="Which country is this?",
-        options=["Ukraine", "Ghana", "Tanzania", "Moldova"],
-        correct_option="Ghana",
-        answer_context="Ghana",
-    )
-    current_question = Question(
-        id="BGR:flag",
-        country_code="BGR",
-        category=QuizCategory.FLAG,
-        prompt="Which country is this?",
-        options=["Peru", "Ghana", "Bulgaria", "Mali"],
-        correct_option="Bulgaria",
-        answer_context="Bulgaria",
-    )
-    quiz_session = quiz_handlers.QuizSession(
-        language=SupportedLanguage.EN,
-        countries_count=10,
-        categories=[QuizCategory.FLAG],
-        questions=deque([current_question, next_question]),
-        total_questions=2,
-    )
-    quiz_session.on_wrong()
-    user_id = 0
-
-    async with session_factory() as session:
         user = await UserRepository(session).get_or_create(42, "tester", "Test")
         user.language = SupportedLanguage.EN.value
-        user_id = user.id
         quiz_run = await quiz_handlers.QuizRunRepository(session).create_run(
             user_id=user.id,
             language=SupportedLanguage.EN,
-            countries_count=2,
+            countries_count=1,
             categories=[QuizCategory.FLAG],
-            total_questions=2,
+            total_questions=1,
         )
         await session.commit()
         await state.set_state(QuizStates.in_progress)
         await state.update_data(
             language=SupportedLanguage.EN.value,
             quiz_session=quiz_session,
-            wrong_question=current_question,
-            wrong_question_chat_id=100,
-            wrong_question_message_id=501,
             quiz_run_id=quiz_run.id,
             user_id=user.id,
         )
 
-        await quiz_handlers.answer_action(callback, bot, state, session, i18n)
-        data = await state.get_data()
-        await session.commit()
+        await quiz_handlers.answer_question(callback, bot, state, session, settings, i18n)
 
-    callback.message.delete.assert_awaited_once()
     callback.message.answer.assert_awaited_once()
-    rendered_question = callback.message.answer.await_args.args[0]
-    assert rendered_question.startswith("Which country is this?")
-    assert data["quiz_session"].resolved_questions == 1
-    assert data["quiz_session"].mistakes == 1
-    assert data["quiz_session"].current_question().id == next_question.id
-
-    async with session_factory() as session:
-        saved_answer = (
-            await session.execute(
-                select(QuizAnswer).where(
-                    QuizAnswer.question_id == current_question.id,
-                )
-            )
-        ).scalar_one()
-        assert saved_answer.outcome == QuizAnswerOutcome.INCORRECT.value
-        assert saved_answer.wrong_attempts == 1
-
-        progress = (
-            await session.execute(
-                select(UserLearningProgress).where(
-                    UserLearningProgress.user_id == user_id,
-                    UserLearningProgress.country_code == "BGR",
-                    UserLearningProgress.category == QuizCategory.FLAG.value,
-                )
-            )
-        ).scalar_one()
-        assert progress.skipped_answers == 0
-        assert progress.wrong_attempts == 1
+    rendered = callback.message.answer.await_args.args[0]
+    assert "Quiz complete" in rendered
+    assert "Questions: <b>1</b>" in rendered
+    assert "Correct: <b>0</b>" in rendered
+    assert "Mistakes: <b>1</b>" in rendered
+    assert await state.get_state() is None
 
     await engine.dispose()

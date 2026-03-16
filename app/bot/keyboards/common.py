@@ -113,20 +113,6 @@ def answer_feedback_keyboard(
     return builder.as_markup()
 
 
-def wrong_answer_actions(
-    language: SupportedLanguage,
-    i18n: I18nService,
-    *,
-    can_show_answer: bool = True,
-) -> InlineKeyboardMarkup:
-    builder = InlineKeyboardBuilder()
-    if can_show_answer:
-        builder.button(text=i18n.text("answer_show", language), callback_data="answer_action:show")
-    builder.button(text=i18n.text("answer_next", language), callback_data="answer_action:next")
-    builder.adjust(2 if can_show_answer else 1)
-    return builder.as_markup()
-
-
 def exit_confirmation_keyboard(
     language: SupportedLanguage,
     i18n: I18nService,

@@ -11,7 +11,6 @@ from app.bot.keyboards.common import (
     exit_confirmation_keyboard,
     main_menu_keyboard,
     quiz_setup_keyboard,
-    wrong_answer_actions,
 )
 from app.bot.states import QuizStates
 from app.config import Settings
@@ -31,7 +30,6 @@ from app.services.i18n import I18nService
 from app.services.quiz.engine import Question, QuizEngine, QuizSession
 
 router = Router()
-QUIZ_ACTIONS_TEXT = "\u2060"
 
 
 async def _send_question_media(
@@ -395,7 +393,6 @@ async def answer_question(
         return
 
     data = await state.get_data()
-    language = SupportedLanguage(data["language"])
     quiz_session: QuizSession = data["quiz_session"]
     quiz_run_id: int = data["quiz_run_id"]
     user_id: int = data["user_id"]
@@ -437,53 +434,16 @@ async def answer_question(
         return
 
     quiz_session.on_wrong()
-    await state.update_data(
-        quiz_session=quiz_session,
-        wrong_question=question,
-        wrong_question_chat_id=callback.message.chat.id,
-        wrong_question_message_id=callback.message.message_id,
-    )
-    await callback.message.answer(
-        QUIZ_ACTIONS_TEXT,
-        reply_markup=wrong_answer_actions(language, i18n),
-    )
+    await state.update_data(quiz_session=quiz_session)
     await callback.answer("❌")
-
-
-@router.callback_query(QuizStates.in_progress, F.data.startswith("answer_action:"))
-async def answer_action(
-    callback: CallbackQuery,
-    bot: Bot,
-    state: FSMContext,
-    session: AsyncSession,
-    i18n: I18nService,
-) -> None:
-    data = await state.get_data()
-    language = SupportedLanguage(data["language"])
-    quiz_session: QuizSession = data["quiz_session"]
-    question: Question = data["wrong_question"]
-    quiz_run_id: int = data["quiz_run_id"]
-    user_id: int = data["user_id"]
-    question_chat_id: int = data["wrong_question_chat_id"]
-    question_message_id: int = data["wrong_question_message_id"]
-    action = callback.data.split(":")[1]
-
-    if action == "show":
-        await bot.edit_message_reply_markup(
-            chat_id=question_chat_id,
-            message_id=question_message_id,
-            reply_markup=answer_feedback_keyboard(
-                question.options,
-                question.options.index(question.correct_option),
-                question.correct_option,
-            ),
+    await asyncio.sleep(settings.quiz_autonext_seconds)
+    await callback.message.edit_reply_markup(
+        reply_markup=answer_feedback_keyboard(
+            question.options,
+            selected_index,
+            question.correct_option,
         )
-        await callback.message.edit_reply_markup(
-            reply_markup=wrong_answer_actions(language, i18n, can_show_answer=False),
-        )
-        await callback.answer()
-        return
-
+    )
     resolution = quiz_session.resolve_incorrect()
     if resolution.resolved:
         await _persist_resolution(
@@ -496,10 +456,9 @@ async def answer_action(
             QuizAnswerOutcome.INCORRECT,
         )
     await state.update_data(quiz_session=quiz_session)
-    await callback.message.delete()
-    await callback.answer()
     if await _finalize_run_if_complete(callback, state, session, quiz_session, i18n):
         return
+    await asyncio.sleep(settings.quiz_autonext_seconds)
     await _show_question(bot, callback, state, quiz_session, i18n)
 
 
