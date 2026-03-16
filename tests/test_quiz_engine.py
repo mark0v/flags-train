@@ -104,3 +104,22 @@ def test_quiz_excludes_already_studied_countries_for_new_mode() -> None:
     country_codes = [question.country_code for question in session.questions]
 
     assert set(country_codes) == {"ESP", "ITA"}
+
+
+def test_non_flag_questions_also_include_country_flag() -> None:
+    store = CountryStore.from_path(
+        Path("tests/fixtures/countries.json"),
+        Path("tests/fixtures"),
+    )
+    engine = QuizEngine(store, random.Random(17))
+    session = engine.create_session(
+        language=SupportedLanguage.EN,
+        countries_count=1,
+        categories=[QuizCategory.CAPITAL, QuizCategory.POPULATION],
+    )
+
+    questions = list(session.questions)
+
+    assert len(questions) == 2
+    assert all(question.flag_path is not None for question in questions)
+    assert questions[0].flag_path == questions[1].flag_path

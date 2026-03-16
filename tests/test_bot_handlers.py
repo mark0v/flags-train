@@ -411,11 +411,10 @@ async def test_begin_quiz_starts_review_mode_when_due_countries_are_available() 
     assert data["selected_categories"] == ["capital"]
     assert data["quiz_session"].total_questions == 10
     callback.message.edit_text.assert_awaited()
-    callback.message.answer.assert_awaited_once()
-    rendered_question = callback.message.answer.await_args.args[0]
-    assert "What is the capital of" in rendered_question
+    bot.send_document.assert_awaited_once()
+    assert "What is the capital of" in bot.send_document.await_args.kwargs["caption"]
     callback.answer.assert_awaited()
-    bot.send_photo.assert_not_called()
+    callback.message.answer.assert_not_awaited()
 
 
 async def test_begin_quiz_review_mode_shows_alert_when_due_countries_are_missing() -> None:

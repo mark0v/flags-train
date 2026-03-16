@@ -206,34 +206,35 @@ class QuizEngine:
         language: SupportedLanguage,
     ) -> tuple[str, str, Path | None]:
         country_name = country.name(language)
+        flag_path = self._store.flag_path(country)
         if category is QuizCategory.FLAG:
             prompts = {
                 "ru": "Какая это страна?",
                 "en": "Which country is this?",
                 "de": "Welches Land ist das?",
             }
-            return prompts[language.value], country_name, self._store.flag_path(country)
+            return prompts[language.value], country_name, flag_path
         if category is QuizCategory.CAPITAL:
             prompts = {
                 "ru": f"Столица страны <b>{country_name}</b>?",
                 "en": f"What is the capital of <b>{country_name}</b>?",
                 "de": f"Was ist die Hauptstadt von <b>{country_name}</b>?",
             }
-            return prompts[language.value], country.capital_name(language), None
+            return prompts[language.value], country.capital_name(language), flag_path
         if category is QuizCategory.LANGUAGE:
             prompts = {
                 "ru": f"Основной официальный язык страны <b>{country_name}</b>?",
                 "en": f"What is the main official language of <b>{country_name}</b>?",
                 "de": f"Was ist die wichtigste Amtssprache von <b>{country_name}</b>?",
             }
-            return prompts[language.value], country.language_name(language), None
+            return prompts[language.value], country.language_name(language), flag_path
         if category is QuizCategory.POPULATION:
             prompts = {
                 "ru": f"Население страны <b>{country_name}</b>?",
                 "en": f"What is the population of <b>{country_name}</b>?",
                 "de": f"Wie gross ist die Bevolkerung von <b>{country_name}</b>?",
             }
-            return prompts[language.value], country.population_label(language), None
+            return prompts[language.value], country.population_label(language), flag_path
 
         prompts = {
             "ru": f"Валюта страны <b>{country_name}</b>?",
@@ -241,4 +242,4 @@ class QuizEngine:
             "de": f"Was ist die Wahrung von <b>{country_name}</b>?",
         }
         answer = f"{country.currency_label(language)} ({country.currency_code})"
-        return prompts[language.value], answer, None
+        return prompts[language.value], answer, flag_path
