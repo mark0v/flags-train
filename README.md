@@ -126,14 +126,8 @@ The `scripts/fetch_countries_data.py` script:
 - downloads country data from the public `restcountries` source
 - keeps only UN member states
 - normalizes fields for the bot's needs
-- saves local SVG flags and normalized PNG previews into `data/flags/`
+- saves local SVG and PNG flags into `data/flags/`
 - writes the final dataset to `data/normalized/countries.json`
-
-Normalize already downloaded PNG previews again if needed:
-
-```bash
-python -m scripts.normalize_flag_previews
-```
 
 Validate the dataset:
 
