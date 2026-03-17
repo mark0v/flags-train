@@ -43,6 +43,10 @@ def _sanitize_selected_categories(values: list[str] | None) -> list[QuizCategory
     return selected or [QuizCategory.FLAG]
 
 
+def _selected_country_count(question_count: int, categories: list[QuizCategory]) -> int:
+    return question_count // max(len(categories), 1)
+
+
 async def _send_question_media(
     bot: Bot,
     chat_id: int,
@@ -302,10 +306,11 @@ async def begin_quiz(
         return
 
     engine = QuizEngine(country_store)
+    countries_count = _selected_country_count(data["selected_count"], categories)
     try:
         quiz_session = engine.create_session(
             language=language,
-            countries_count=data["selected_count"],
+            countries_count=countries_count,
             categories=categories,
         )
     except ValueError:
@@ -316,7 +321,7 @@ async def begin_quiz(
         user_id=user.id,
         language=language,
         mode=QuizMode.MIXED,
-        countries_count=data["selected_count"],
+        countries_count=countries_count,
         categories=categories,
         total_questions=quiz_session.total_questions,
     )

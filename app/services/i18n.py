@@ -592,7 +592,7 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
     },
     "quiz_choose_count": {
         "ru": "Количество стран",
-        "en": "Number of countries",
+        "en": "Number of questions",
         "de": "Anzahl der Länder",
     },
     "quiz_choose_mode": {

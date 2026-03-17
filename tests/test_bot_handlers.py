@@ -109,6 +109,39 @@ async def test_start_quiz_setup_initializes_state_and_renders_setup() -> None:
     callback.answer.assert_awaited()
 
 
+async def test_begin_quiz_uses_selected_count_as_total_questions() -> None:
+    engine = create_async_engine("sqlite+aiosqlite:///:memory:")
+    async with engine.begin() as connection:
+        await connection.run_sync(Base.metadata.create_all)
+
+    session_factory = async_sessionmaker(engine, expire_on_commit=False)
+    callback = _build_callback()
+    bot = _build_bot()
+    state = _build_state()
+    i18n = I18nService()
+    country_store = _build_country_store(20)
+
+    async with session_factory() as session:
+        user = await UserRepository(session).get_or_create(42, "tester", "Test")
+        user.language = SupportedLanguage.EN.value
+        await session.commit()
+        await state.set_state(QuizStates.setup)
+        await state.update_data(
+            selected_count=20,
+            selected_categories=[QuizCategory.FLAG.value, QuizCategory.CAPITAL.value],
+            language=SupportedLanguage.EN.value,
+        )
+
+        await quiz_handlers.begin_quiz(callback, bot, state, session, i18n, country_store)
+        data = await state.get_data()
+
+    await engine.dispose()
+
+    assert await state.get_state() == QuizStates.in_progress.state
+    assert data["quiz_session"].countries_count == 10
+    assert data["quiz_session"].total_questions == 20
+
+
 def test_quiz_setup_keyboard_hides_non_core_categories() -> None:
     markup = quiz_setup_keyboard(
         SupportedLanguage.EN,
@@ -143,7 +176,7 @@ async def test_cancel_setup_clears_state_and_returns_to_main_menu() -> None:
         user.language = SupportedLanguage.EN.value
         await session.commit()
         await state.set_state(QuizStates.setup)
-        await state.update_data(selected_count=25)
+        await state.update_data(selected_count=20)
 
         await quiz_handlers.cancel_setup(callback, state, session, i18n)
 

@@ -46,4 +46,4 @@ EXPOSED_QUIZ_CATEGORIES = [
     QuizCategory.CAPITAL,
 ]
 
-QUIZ_SIZES = [10, 25, 50]
+QUIZ_SIZES = [10, 20, 30]
