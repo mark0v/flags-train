@@ -1,6 +1,6 @@
 # Flags Train
 
-Telegram bot for learning the flags, capitals, languages, populations, and currencies of UN member states in an Anki-like quiz format.
+Telegram bot for learning UN member states in an Anki-like quiz format, currently focused on flags and capitals.
 
 ## Current Features
 
@@ -9,6 +9,7 @@ Telegram bot for learning the flags, capitals, languages, populations, and curre
 - localization for `ru / en / de`
 - local offline dataset: `data/normalized/countries.json`
 - local SVG and PNG flags in `data/flags/`
+- product-focused quiz UI built around `flag` and `capital`
 - quiz modes: `mixed / review / new`
 - cross-session learning progress
 - user statistics
@@ -74,8 +75,14 @@ Migrations: OK (current=..., expected=...)
 7. Start the bot:
 
 ```bash
-python scripts/run_bot.py
+python -m scripts.run_bot
 ```
+
+Important:
+
+- local Python runs read `.env`
+- Docker compose in this project uses `.env.docker`
+- if the bot works locally but not in Docker, compare those two files first
 
 ## Docker Compose
 
@@ -109,6 +116,27 @@ docker compose --profile ops run --rm preflight
 docker compose up --build bot
 ```
 
+Quick restart and debug path when the bot container is up but Telegram does not get replies:
+
+```bash
+docker compose up -d --build bot
+docker compose ps
+docker compose logs --tail=100 bot
+```
+
+Look for:
+
+- `Runtime preflight report`
+- `Overall: READY`
+- `Bot polling started`
+- `Run polling for bot @...`
+
+One known failure mode is:
+
+- `Bad Request: text must be non-empty`
+
+If that appears, inspect the menu rendering path first.
+
 `bot` no longer runs migrations automatically on startup. This is intentional so runtime startup remains predictable and safer for production-like environments.
 
 `run_bot.py` now logs:
@@ -136,6 +164,15 @@ python scripts/validate_countries_data.py
 ```
 
 The bot runtime does not use external APIs. Network access is only required during local data preparation.
+
+## Product Scope
+
+The current user-facing product is intentionally focused on:
+
+- `flag`
+- `capital`
+
+Other categories still exist in the domain model and codebase, but they are currently hidden from the user-facing quiz setup.
 
 ## Admin and Ops
 
@@ -190,6 +227,7 @@ Before deployment, run at least this minimum set:
 Recommended runtime environment variables:
 
 - `APP_ENV`
+- `BOT_TOKEN`
 - `DATABASE_URL`
 - `COUNTRIES_DATA_PATH`
 - `FLAGS_DIR`
