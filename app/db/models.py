@@ -58,7 +58,6 @@ class QuizRun(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
     language: Mapped[str] = mapped_column(String(2))
-    mode: Mapped[str] = mapped_column(String(20), default="mixed")
     countries_count: Mapped[int] = mapped_column(Integer)
     categories_csv: Mapped[str] = mapped_column(String(255))
     total_questions: Mapped[int] = mapped_column(Integer)

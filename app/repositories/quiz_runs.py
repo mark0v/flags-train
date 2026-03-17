@@ -31,7 +31,6 @@ class QuizRunRepository:
         quiz_run = QuizRun(
             user_id=user_id,
             language=language.value,
-            mode="mixed",
             countries_count=countries_count,
             categories_csv=",".join(category.value for category in categories),
             total_questions=total_questions,
