@@ -7,7 +7,7 @@ from app.bot.keyboards.common import (
     admin_keyboard,
     admin_sync_confirmation_keyboard,
     main_menu_keyboard,
-    settings_keyboard,
+    reset_hidden_countries_confirmation_keyboard,
     stats_keyboard,
 )
 from app.config import Settings
@@ -396,8 +396,12 @@ async def admin_panel(
     )
 
 
-@router.callback_query(F.data == "menu:settings")
-async def settings(callback: CallbackQuery, session: AsyncSession, i18n: I18nService) -> None:
+@router.callback_query(F.data == "menu:reset_hidden_countries")
+async def confirm_reset_hidden_countries(
+    callback: CallbackQuery,
+    session: AsyncSession,
+    i18n: I18nService,
+) -> None:
     users = UserRepository(session)
     user = await users.get_or_create(
         telegram_id=callback.from_user.id,
@@ -407,13 +411,13 @@ async def settings(callback: CallbackQuery, session: AsyncSession, i18n: I18nSer
     language = SupportedLanguage(user.language)
     hidden_count = await HiddenCountriesRepository(session).hidden_count(user.id)
     await callback.message.edit_text(
-        i18n.text("settings_text", language, hidden_count=str(hidden_count)),
-        reply_markup=settings_keyboard(language, i18n),
+        i18n.text("reset_hidden_countries_confirm", language, count=str(hidden_count)),
+        reply_markup=reset_hidden_countries_confirmation_keyboard(language, i18n),
     )
     await callback.answer()
 
 
-@router.callback_query(F.data == "settings:reset_hidden_countries")
+@router.callback_query(F.data == "menu:reset_hidden_countries:yes")
 async def reset_hidden_countries(
     callback: CallbackQuery,
     session: AsyncSession,
@@ -428,13 +432,25 @@ async def reset_hidden_countries(
     language = SupportedLanguage(user.language)
     hidden_repo = HiddenCountriesRepository(session)
     reset_count = await hidden_repo.reset_hidden_countries(user.id)
-    await callback.message.edit_text(
-        i18n.text("settings_text", language, hidden_count="0"),
-        reply_markup=settings_keyboard(language, i18n),
-    )
+    await _show_menu(callback, language, i18n)
     await callback.answer(
         i18n.text("settings_hidden_countries_reset", language, count=str(reset_count))
     )
+
+
+@router.callback_query(F.data == "menu:reset_hidden_countries:no")
+async def cancel_reset_hidden_countries(
+    callback: CallbackQuery,
+    session: AsyncSession,
+    i18n: I18nService,
+) -> None:
+    users = UserRepository(session)
+    user = await users.get_or_create(
+        telegram_id=callback.from_user.id,
+        username=callback.from_user.username,
+        first_name=callback.from_user.first_name,
+    )
+    await _show_menu(callback, SupportedLanguage(user.language), i18n)
 
 
 @router.callback_query(F.data == "menu:back")

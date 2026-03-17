@@ -8,7 +8,10 @@ from app.services.i18n import I18nService
 def main_menu_keyboard(language: SupportedLanguage, i18n: I18nService) -> InlineKeyboardMarkup:
     builder = InlineKeyboardBuilder()
     builder.button(text=i18n.text("menu_start_quiz", language), callback_data="menu:start_quiz")
-    builder.button(text=i18n.text("menu_settings", language), callback_data="menu:settings")
+    builder.button(
+        text=i18n.text("menu_reset_hidden_countries", language),
+        callback_data="menu:reset_hidden_countries",
+    )
     builder.button(text=i18n.text("menu_stats", language), callback_data="menu:stats")
     builder.adjust(1)
     return builder.as_markup()
@@ -24,14 +27,20 @@ def stats_keyboard(
     return builder.as_markup()
 
 
-def settings_keyboard(language: SupportedLanguage, i18n: I18nService) -> InlineKeyboardMarkup:
+def reset_hidden_countries_confirmation_keyboard(
+    language: SupportedLanguage,
+    i18n: I18nService,
+) -> InlineKeyboardMarkup:
     builder = InlineKeyboardBuilder()
     builder.button(
-        text=i18n.text("settings_reset_hidden_countries", language),
-        callback_data="settings:reset_hidden_countries",
+        text=i18n.text("confirm_yes", language),
+        callback_data="menu:reset_hidden_countries:yes",
     )
-    builder.button(text=i18n.text("stats_back", language), callback_data="menu:back")
-    builder.adjust(1)
+    builder.button(
+        text=i18n.text("confirm_no", language),
+        callback_data="menu:reset_hidden_countries:no",
+    )
+    builder.adjust(2)
     return builder.as_markup()
 
 

@@ -36,6 +36,11 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "en": "Settings",
         "de": "Einstellungen",
     },
+    "menu_reset_hidden_countries": {
+        "ru": "Reset hidden countries",
+        "en": "Reset hidden countries",
+        "de": "Reset hidden countries",
+    },
     "menu_change_language": {
         "ru": "Сменить язык",
         "en": "Change language",
@@ -687,6 +692,11 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "ru": "Reset: {count}",
         "en": "Reset: {count}",
         "de": "Reset: {count}",
+    },
+    "reset_hidden_countries_confirm": {
+        "ru": "Reset {count} hidden countries?",
+        "en": "Reset {count} hidden countries?",
+        "de": "Reset {count} hidden countries?",
     },
     "quiz_hide_country": {
         "ru": "Don't repeat this country",

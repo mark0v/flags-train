@@ -392,6 +392,12 @@ async def test_show_menu_renders_buttons_without_visible_title() -> None:
 
     callback.message.edit_text.assert_awaited_once()
     assert callback.message.edit_text.await_args.args[0] == menu_handlers.MENU_SCREEN_TEXT
+    markup = callback.message.edit_text.await_args.kwargs["reply_markup"]
+    texts = _keyboard_texts(markup)
+    assert "Start quiz" in texts
+    assert "Reset hidden countries" in texts
+    assert "Statistics" in texts
+    assert "Settings" not in texts
     callback.answer.assert_awaited_once()
 
 
@@ -945,7 +951,7 @@ async def test_hide_country_shows_limit_alert_when_only_thirty_countries_would_r
     assert callback.answer.await_args.args[0] == "At least 30 countries must remain."
 
 
-async def test_settings_shows_hidden_country_count_and_resets_it() -> None:
+async def test_reset_hidden_countries_confirmation_shows_count_and_resets_it() -> None:
     engine = create_async_engine("sqlite+aiosqlite:///:memory:")
     async with engine.begin() as connection:
         await connection.run_sync(Base.metadata.create_all)
@@ -1004,8 +1010,8 @@ async def test_settings_shows_hidden_country_count_and_resets_it() -> None:
 
         callback.message.edit_text.reset_mock()
         callback.answer.reset_mock()
-        await menu_handlers.settings(callback, session, i18n)
-        settings_text = callback.message.edit_text.await_args.args[0]
+        await menu_handlers.confirm_reset_hidden_countries(callback, session, i18n)
+        confirm_text = callback.message.edit_text.await_args.args[0]
 
         callback.message.edit_text.reset_mock()
         callback.answer.reset_mock()
@@ -1013,7 +1019,7 @@ async def test_settings_shows_hidden_country_count_and_resets_it() -> None:
 
     await engine.dispose()
 
-    assert "Hidden countries: <b>1</b>" in settings_text
+    assert confirm_text == "Reset 1 hidden countries?"
     reset_text = callback.message.edit_text.await_args.args[0]
-    assert "Hidden countries: <b>0</b>" in reset_text
+    assert reset_text == menu_handlers.MENU_SCREEN_TEXT
     assert callback.answer.await_args.args[0] == "Reset: 1"
