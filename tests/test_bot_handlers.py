@@ -571,6 +571,7 @@ async def test_continue_learning_restores_last_quiz_setup() -> None:
         quiz_run = await quiz_handlers.QuizRunRepository(session).create_run(
             user_id=user.id,
             language=SupportedLanguage.EN,
+            mode=QuizMode.MIXED,
             countries_count=10,
             categories=[QuizCategory.CAPITAL],
             total_questions=10,
@@ -619,6 +620,7 @@ async def test_continue_learning_sanitizes_hidden_categories() -> None:
         quiz_run = await quiz_handlers.QuizRunRepository(session).create_run(
             user_id=user.id,
             language=SupportedLanguage.EN,
+            mode=QuizMode.NEW,
             countries_count=10,
             categories=[QuizCategory.LANGUAGE],
             total_questions=10,
@@ -639,6 +641,7 @@ async def test_continue_learning_sanitizes_hidden_categories() -> None:
     await engine.dispose()
 
     assert data["selected_categories"] == ["flag"]
+    assert data["selected_mode"] == QuizMode.NEW.value
 
 
 async def test_continue_learning_shows_alert_without_history() -> None:
@@ -774,6 +777,7 @@ async def test_wrong_answer_automatically_reveals_correct_option_and_advances() 
         quiz_run = await quiz_handlers.QuizRunRepository(session).create_run(
             user_id=user.id,
             language=SupportedLanguage.EN,
+            mode=QuizMode.MIXED,
             countries_count=2,
             categories=[QuizCategory.FLAG],
             total_questions=2,
@@ -874,6 +878,7 @@ async def test_wrong_answer_on_last_question_completes_quiz_after_auto_reveal() 
         quiz_run = await quiz_handlers.QuizRunRepository(session).create_run(
             user_id=user.id,
             language=SupportedLanguage.EN,
+            mode=QuizMode.MIXED,
             countries_count=1,
             categories=[QuizCategory.FLAG],
             total_questions=1,

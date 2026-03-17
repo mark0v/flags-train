@@ -368,6 +368,7 @@ async def begin_quiz(
     quiz_run = await QuizRunRepository(session).create_run(
         user_id=user.id,
         language=language,
+        mode=quiz_mode,
         countries_count=data["selected_count"],
         categories=categories,
         total_questions=quiz_session.total_questions,

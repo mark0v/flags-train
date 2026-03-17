@@ -7,6 +7,7 @@ from app.constants import (
     EXPOSED_QUIZ_CATEGORIES,
     QuizAnswerOutcome,
     QuizCategory,
+    QuizMode,
     QuizRunStatus,
     SupportedLanguage,
 )
@@ -24,6 +25,7 @@ class QuizRunRepository:
         self,
         user_id: int,
         language: SupportedLanguage,
+        mode: QuizMode,
         countries_count: int,
         categories: list[QuizCategory],
         total_questions: int,
@@ -31,6 +33,7 @@ class QuizRunRepository:
         quiz_run = QuizRun(
             user_id=user_id,
             language=language.value,
+            mode=mode.value,
             countries_count=countries_count,
             categories_csv=",".join(category.value for category in categories),
             total_questions=total_questions,
@@ -158,7 +161,7 @@ class QuizRunRepository:
 
     async def get_last_quiz_preferences(self, user_id: int) -> LastQuizPreferences | None:
         stmt = (
-            select(QuizRun.countries_count, QuizRun.categories_csv)
+            select(QuizRun.countries_count, QuizRun.categories_csv, QuizRun.mode)
             .where(QuizRun.user_id == user_id)
             .order_by(QuizRun.started_at.desc(), QuizRun.id.desc())
             .limit(1)
@@ -176,4 +179,5 @@ class QuizRunRepository:
         return LastQuizPreferences(
             countries_count=int(row[0]),
             categories=categories,
+            mode=QuizMode(row[2] or QuizMode.MIXED.value),
         )

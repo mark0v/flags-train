@@ -2,7 +2,13 @@ from datetime import UTC, datetime, timedelta
 
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
-from app.constants import QuizAnswerOutcome, QuizCategory, QuizRunStatus, SupportedLanguage
+from app.constants import (
+    QuizAnswerOutcome,
+    QuizCategory,
+    QuizMode,
+    QuizRunStatus,
+    SupportedLanguage,
+)
 from app.db.base import Base
 from app.repositories.admin import AdminRepository
 from app.repositories.learning_progress import LearningProgressRepository
@@ -26,6 +32,7 @@ async def test_admin_overview_aggregates_users_runs_and_due_items() -> None:
         run = await QuizRunRepository(session).create_run(
             user_id=user.id,
             language=SupportedLanguage.EN,
+            mode=QuizMode.MIXED,
             countries_count=10,
             categories=[QuizCategory.CAPITAL],
             total_questions=10,
