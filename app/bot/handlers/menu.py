@@ -154,7 +154,10 @@ def _format_stats_category_breakdown(
     language: SupportedLanguage,
     i18n: I18nService,
 ) -> str:
-    breakdown = summary.category_breakdown or []
+    exposed_categories = set(EXPOSED_QUIZ_CATEGORIES)
+    breakdown = [
+        item for item in (summary.category_breakdown or []) if item.category in exposed_categories
+    ]
     if not breakdown:
         return ""
 

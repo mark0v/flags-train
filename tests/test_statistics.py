@@ -321,14 +321,13 @@ async def test_quiz_run_repository_includes_category_breakdown() -> None:
     await engine.dispose()
 
     assert summary.category_breakdown is not None
-    assert [item.category for item in summary.category_breakdown] == [
-        QuizCategory.CAPITAL,
-        QuizCategory.LANGUAGE,
-    ]
+    assert [item.category for item in summary.category_breakdown] == [QuizCategory.CAPITAL]
     assert summary.category_breakdown[0].due_items == 1
     assert summary.category_breakdown[0].accuracy_percent == 0
-    assert summary.category_breakdown[1].mastered_items == 1
-    assert summary.category_breakdown[1].accuracy_percent == 100
+    assert summary.tracked_items == 1
+    assert summary.mastered_items == 0
+    assert summary.due_items == 1
+    assert summary.due_countries == 1
 
 
 async def test_quiz_run_repository_returns_last_quiz_preferences() -> None:

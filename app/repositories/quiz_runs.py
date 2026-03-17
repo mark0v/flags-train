@@ -3,7 +3,13 @@ from datetime import UTC, datetime, timedelta
 from sqlalchemy import case, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.constants import QuizAnswerOutcome, QuizCategory, QuizRunStatus, SupportedLanguage
+from app.constants import (
+    EXPOSED_QUIZ_CATEGORIES,
+    QuizAnswerOutcome,
+    QuizCategory,
+    QuizRunStatus,
+    SupportedLanguage,
+)
 from app.db.models import QuizAnswer, QuizRun
 from app.repositories.learning_progress import LearningProgressRepository
 from app.services.quiz.engine import Question
@@ -120,10 +126,19 @@ class QuizRunRepository:
         result = await self._session.execute(stmt)
         row = result.one()
         progress_repo = LearningProgressRepository(self._session)
-        tracked_items, mastered_items = await progress_repo.get_progress_counters(user_id)
-        due_items = await progress_repo.get_due_items_count(user_id)
-        due_countries = await progress_repo.get_due_country_count(user_id)
-        category_breakdown = await progress_repo.get_category_breakdown(user_id)
+        tracked_items, mastered_items = await progress_repo.get_progress_counters(
+            user_id,
+            EXPOSED_QUIZ_CATEGORIES,
+        )
+        due_items = await progress_repo.get_due_items_count(user_id, EXPOSED_QUIZ_CATEGORIES)
+        due_countries = await progress_repo.get_due_country_count(
+            user_id,
+            EXPOSED_QUIZ_CATEGORIES,
+        )
+        category_breakdown = await progress_repo.get_category_breakdown(
+            user_id,
+            EXPOSED_QUIZ_CATEGORIES,
+        )
         return UserStatsSummary(
             quizzes_started=row[0] or 0,
             quizzes_completed=row[1] or 0,
