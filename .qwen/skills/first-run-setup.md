@@ -1,141 +1,146 @@
 # Flags Train: First Run Setup
 
-## Quick Start
+## Goal
 
-```powershell
-# 1. Подними PostgreSQL
-docker compose up -d db
+Use this guide for the very first local setup of the project or when rebuilding a fresh environment.
 
-# 2. Установи зависимости
-pip install -e .[dev]
+The project needs three things before the bot can answer quiz questions:
+- PostgreSQL
+- local country data and flags
+- a synced `countries` catalog in the database
 
-# 3. Подготовь данные (флаги + countries.json)
-#    Можно запускать сколько угодно раз — безопасно перезаписывает
-python scripts/fetch_countries_data.py
+---
 
-# 4. Примени миграции
-python -m alembic upgrade head
+## Local Python path
 
-# 5. Синхронизируй страны в БД
-python scripts/sync_countries_to_db.py
-
-# 6. Прогони preflight (опционально, проверка готовности)
-python scripts/runtime_preflight.py
-
-# 7. Запусти бота
-python scripts/run_bot.py
-```
-
-## Детали по шагам
-
-### Шаг 1: PostgreSQL
+### 1. Start PostgreSQL
 
 ```powershell
 docker compose up -d db
 ```
 
-Проверка:
+Optional check:
+
 ```powershell
 docker compose ps db
 ```
 
-### Шаг 2: Зависимости
+### 2. Install dependencies
 
 ```powershell
-pip install -e .[dev]
+python -m pip install -e .[dev]
 ```
 
-Устанавливает: aiogram, SQLAlchemy, Alembic, asyncpg, pydantic-settings + dev-зависимости (pytest, ruff).
+This installs runtime dependencies and developer tools such as `pytest` and `ruff`.
 
-### Шаг 3: Data Pipeline
+### 3. Prepare local data
 
 ```powershell
 python scripts/fetch_countries_data.py
 ```
 
-Скачивает:
-- 193 флага ООН в `data/flags/`
-- Нормализованный `data/normalized/countries.json`
+This prepares:
+- local flags in `data/flags/`
+- normalized country data in `data/normalized/countries.json`
 
-**Важно:** Бот работает без внешних API, все данные локальные.
+The runtime is designed to work offline after this step.
 
-### Шаг 4: Миграции БД
+### 4. Apply migrations
 
 ```powershell
 python -m alembic upgrade head
 ```
 
-Создаёт таблицы:
-- `users` — пользователи Telegram
-- `quiz_runs` — запуски квизов
-- `quiz_answers` — ответы на вопросы
-- `user_learning_progress` — прогресс обучения (SRS)
-- `countries` — каталог стран
+This creates the application schema, including:
+- `users`
+- `quiz_runs`
+- `quiz_answers`
+- `user_learning_progress`
+- `countries`
 
-### Шаг 5: Синхронизация каталога
+### 5. Sync countries into PostgreSQL
 
 ```powershell
 python scripts/sync_countries_to_db.py
 ```
 
-Загружает 193 страны из `data/normalized/countries.json` в таблицу `countries`.
+This step is required. Without it, the quiz catalog is not available to the bot.
 
-**Без этого шага квиз не работает!**
-
-### Шаг 6: Preflight (опционально)
+### 6. Run runtime preflight
 
 ```powershell
 python scripts/runtime_preflight.py
 ```
 
-Проверяет:
-- ✅ БД доступна
-- ✅ `countries.json` существует
-- ✅ Флаги на месте
-- ✅ Каталог синхронизирован
+This verifies:
+- database connectivity
+- dataset presence and validity
+- local flag availability
+- migration state
 
-### Шаг 7: Запуск бота
-
-```powershell
-python scripts/run_bot.py
-```
-
-Или напрямую:
-```powershell
-python -m app.main
-```
-
-## Docker (альтернатива)
-
-Для запуска через Docker:
+### 7. Start the bot
 
 ```powershell
-# .env должен содержать BOT_TOKEN
-docker compose up --build
+python -m scripts.run_bot
 ```
 
-Бот применит миграции и запустится автоматически.
+Use this module form for local startup.
 
-## Проверка работы
+---
 
-1. Отправь `/start` в Telegram
-2. Выбери язык (RU/EN/DE)
-3. Нажми **"Начать квиз"**
-4. Выбери 10 стран + категорию "Флаг"
-5. Квиз должен показать первый вопрос с флагом
+## Docker path
 
-## Troubleshooting
+### Preparation
 
-| Проблема | Решение |
-|----------|---------|
-| `alembic: command not found` | Используй `python -m alembic` |
-| Квиз завис на старте | Запусти `python scripts/sync_countries_to_db.py` |
-| Нет флагов / устарели данные | Запусти `python scripts/fetch_countries_data.py` (безопасно) |
-| БД недоступна | `docker compose up -d db` |
+```powershell
+docker compose up -d db
+docker compose --profile ops run --rm migrate
+docker compose --profile ops run --rm sync
+docker compose --profile ops run --rm preflight
+```
 
-**Можно ли запускать `fetch_countries_data.py` повторно?**
+### Start the bot
 
-Да, скрипт идемпотентный:
-- Перезаписывает `countries.json`
-- Обновляет флаги
-- Удаляет устаревшие флаги
+```powershell
+docker compose up --build bot
+```
+
+Important:
+- local Python runs use `.env`
+- Docker runs in this project use `.env.docker`
+
+If the bot works locally but not in Docker, compare those two files first.
+
+---
+
+## Minimal verification
+
+After startup:
+1. Open the bot in Telegram.
+2. Send `/start`.
+3. Select a language.
+4. Start a quiz.
+5. Confirm that the first question appears with a flag and answer buttons.
+
+---
+
+## Common problems
+
+| Problem | Suggested fix |
+|---------|---------------|
+| `alembic` is not found | Use `python -m alembic upgrade head` |
+| Quiz does not start | Run `python scripts/sync_countries_to_db.py` |
+| Flags or dataset are missing | Run `python scripts/fetch_countries_data.py` |
+| Database is unavailable | Run `docker compose up -d db` |
+| Docker bot does not answer | Check `docker compose logs --tail=100 bot` and compare `.env` vs `.env.docker` |
+
+---
+
+## Safe reruns
+
+These setup steps are safe to rerun when needed:
+- `python scripts/fetch_countries_data.py`
+- `python scripts/sync_countries_to_db.py`
+- `python scripts/runtime_preflight.py`
+
+This is useful after updating data, recreating the database, or validating a new environment.
