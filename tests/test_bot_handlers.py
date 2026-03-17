@@ -55,6 +55,18 @@ def _build_bot():
     )
 
 
+def _build_settings(autonext_seconds: float = 0) -> Settings:
+    return Settings.model_construct(
+        bot_token="token",
+        app_env="test",
+        database_url="sqlite+aiosqlite:///:memory:",
+        countries_data_path="data/normalized/countries.json",
+        flags_dir="data/flags",
+        quiz_autonext_seconds=autonext_seconds,
+        admin_ids_raw="42",
+    )
+
+
 def _build_state() -> FSMContext:
     storage = MemoryStorage()
     return FSMContext(storage=storage, key=StorageKey(bot_id=1, chat_id=1, user_id=42))
@@ -456,11 +468,13 @@ async def test_answer_feedback_keyboard_hides_correct_option_until_revealed() ->
         0,
         2,
         reveal_correct=False,
+        hide_country_text="Don't repeat this country",
         exit_text="Exit",
     )
 
     texts = _keyboard_texts(markup)
     assert texts[-1] == "Exit"
+    assert texts[-2] == "Don't repeat this country"
     assert texts[0].endswith("Peru")
     assert texts[1:4] == ["Ghana", "Bulgaria", "Mali"]
     assert markup.inline_keyboard[-1][0].callback_data == "answer:locked"
@@ -471,13 +485,14 @@ async def test_answer_feedback_keyboard_reveals_correct_option_for_success() -> 
         ["Peru", "Ghana", "Bulgaria", "Mali"],
         2,
         2,
+        hide_country_text="Don't repeat this country",
         exit_text="Exit",
     )
 
     texts = _keyboard_texts(markup)
     assert texts[:2] == ["Peru", "Ghana"]
     assert texts[2].endswith("Bulgaria")
-    assert texts[3:] == ["Mali", "Exit"]
+    assert texts[3:] == ["Mali", "Don't repeat this country", "Exit"]
 
 
 async def test_show_question_completion_message_omits_menu_hint_and_skipped_count() -> None:
@@ -520,15 +535,7 @@ async def test_wrong_answer_automatically_reveals_correct_option_and_advances() 
     callback.bot = bot
     state = _build_state()
     i18n = I18nService()
-    settings = Settings.model_construct(
-        bot_token="token",
-        app_env="test",
-        database_url="sqlite+aiosqlite:///:memory:",
-        countries_data_path="data/normalized/countries.json",
-        flags_dir="data/flags",
-        quiz_autonext_seconds=0,
-        admin_ids_raw="42",
-    )
+    settings = _build_settings()
     current_question = Question(
         id="BGR:flag",
         country_code="BGR",
@@ -585,9 +592,11 @@ async def test_wrong_answer_automatically_reveals_correct_option_and_advances() 
     first_texts = _keyboard_texts(first_markup)
     second_texts = _keyboard_texts(second_markup)
     assert first_texts[-1] == "Exit"
+    assert first_texts[-2] == "Don't repeat this country"
     assert first_texts[0].endswith("Peru")
     assert first_texts[1:4] == ["Ghana", "Bulgaria", "Mali"]
     assert second_texts[-1] == "Exit"
+    assert second_texts[-2] == "Don't repeat this country"
     assert second_texts[0].endswith("Peru")
     assert second_texts[1] == "Ghana"
     assert second_texts[2].endswith("Bulgaria")
@@ -637,15 +646,7 @@ async def test_wrong_answer_on_last_question_completes_quiz_after_auto_reveal() 
     callback.bot = bot
     state = _build_state()
     i18n = I18nService()
-    settings = Settings.model_construct(
-        bot_token="token",
-        app_env="test",
-        database_url="sqlite+aiosqlite:///:memory:",
-        countries_data_path="data/normalized/countries.json",
-        flags_dir="data/flags",
-        quiz_autonext_seconds=0,
-        admin_ids_raw="42",
-    )
+    settings = _build_settings()
     question = Question(
         id="BGR:flag",
         country_code="BGR",
@@ -690,9 +691,11 @@ async def test_wrong_answer_on_last_question_completes_quiz_after_auto_reveal() 
     first_texts = _keyboard_texts(first_markup)
     second_texts = _keyboard_texts(second_markup)
     assert first_texts[-1] == "Exit"
+    assert first_texts[-2] == "Don't repeat this country"
     assert first_texts[0].endswith("Peru")
     assert first_texts[1:4] == ["Ghana", "Bulgaria", "Mali"]
     assert second_texts[-1] == "Exit"
+    assert second_texts[-2] == "Don't repeat this country"
     assert second_texts[0].endswith("Peru")
     assert second_texts[1] == "Ghana"
     assert second_texts[2].endswith("Bulgaria")
@@ -816,19 +819,58 @@ async def test_hide_country_removes_future_questions_from_current_session() -> N
     async with session_factory() as session:
         user = await UserRepository(session).get_or_create(42, "tester", "Test")
         user.language = SupportedLanguage.EN.value
+        quiz_run = await quiz_handlers.QuizRunRepository(session).create_run(
+            user_id=user.id,
+            language=SupportedLanguage.EN,
+            countries_count=10,
+            categories=[QuizCategory.FLAG, QuizCategory.CAPITAL],
+            total_questions=3,
+        )
         await session.commit()
         await state.set_state(QuizStates.in_progress)
         await state.update_data(
             quiz_session=quiz_session,
-            feedback_country_code="UKR",
+            quiz_run_id=quiz_run.id,
+            user_id=user.id,
         )
 
-        await quiz_handlers.hide_country(callback, state, session, i18n, country_store)
+        await quiz_handlers.hide_country(
+            callback,
+            _build_bot(),
+            state,
+            session,
+            _build_settings(),
+            i18n,
+            country_store,
+        )
         data = await state.get_data()
+        await session.commit()
+
+        saved_answer = (
+            await session.execute(
+                select(QuizAnswer).where(
+                    QuizAnswer.question_id == "UKR:capital",
+                )
+            )
+        ).scalar_one()
+        assert saved_answer.outcome == QuizAnswerOutcome.SKIPPED.value
+
+        progress = (
+            await session.execute(
+                select(UserLearningProgress).where(
+                    UserLearningProgress.user_id == user.id,
+                    UserLearningProgress.country_code == "UKR",
+                    UserLearningProgress.category == QuizCategory.CAPITAL.value,
+                )
+            )
+        ).scalar_one()
+        assert progress.skipped_answers == 1
 
     await engine.dispose()
 
-    assert data["quiz_session"].total_questions == 1
+    assert data["quiz_session"].total_questions == 2
+    assert data["quiz_session"].resolved_questions == 1
+    assert data["quiz_session"].skipped_answers == 1
     assert [question.country_code for question in data["quiz_session"].questions] == ["DEU"]
     callback.answer.assert_awaited_once()
     assert callback.answer.await_args.args[0] == "Country hidden."
@@ -849,17 +891,55 @@ async def test_hide_country_shows_limit_alert_when_only_thirty_countries_would_r
     async with session_factory() as session:
         user = await UserRepository(session).get_or_create(42, "tester", "Test")
         user.language = SupportedLanguage.EN.value
+        quiz_run = await quiz_handlers.QuizRunRepository(session).create_run(
+            user_id=user.id,
+            language=SupportedLanguage.EN,
+            countries_count=1,
+            categories=[QuizCategory.FLAG],
+            total_questions=1,
+        )
         await session.commit()
         await state.set_state(QuizStates.in_progress)
-        await state.update_data(feedback_country_code="UKR")
+        await state.update_data(
+            quiz_session=quiz_handlers.QuizSession(
+                language=SupportedLanguage.EN,
+                countries_count=1,
+                categories=[QuizCategory.FLAG],
+                questions=deque(
+                    [
+                        Question(
+                            id="UKR:flag",
+                            country_code="UKR",
+                            category=QuizCategory.FLAG,
+                            prompt="Flag?",
+                            options=["Ukraine", "France", "Italy", "Spain"],
+                            correct_option="Ukraine",
+                            answer_context="Ukraine",
+                        )
+                    ]
+                ),
+                total_questions=1,
+            ),
+            quiz_run_id=quiz_run.id,
+            user_id=user.id,
+            language=SupportedLanguage.EN.value,
+        )
 
-        await quiz_handlers.hide_country(callback, state, session, i18n, country_store)
+        await quiz_handlers.hide_country(
+            callback,
+            _build_bot(),
+            state,
+            session,
+            _build_settings(),
+            i18n,
+            country_store,
+        )
 
     await engine.dispose()
 
     callback.answer.assert_awaited_once()
     assert callback.answer.await_args.kwargs["show_alert"] is True
-    assert callback.answer.await_args.args[0] == "You need at least 30 available countries."
+    assert callback.answer.await_args.args[0] == "At least 30 countries must remain."
 
 
 async def test_settings_shows_hidden_country_count_and_resets_it() -> None:
@@ -869,18 +949,57 @@ async def test_settings_shows_hidden_country_count_and_resets_it() -> None:
 
     session_factory = async_sessionmaker(engine, expire_on_commit=False)
     callback = _build_callback()
+    callback.bot = _build_bot()
     i18n = I18nService()
     country_store = _build_country_store(40)
 
     async with session_factory() as session:
         user = await UserRepository(session).get_or_create(42, "tester", "Test")
         user.language = SupportedLanguage.EN.value
+        quiz_run = await quiz_handlers.QuizRunRepository(session).create_run(
+            user_id=user.id,
+            language=SupportedLanguage.EN,
+            countries_count=1,
+            categories=[QuizCategory.FLAG],
+            total_questions=1,
+        )
         await session.commit()
         state = _build_state()
         await state.set_state(QuizStates.in_progress)
-        await state.update_data(feedback_country_code="UKR")
+        await state.update_data(
+            quiz_session=quiz_handlers.QuizSession(
+                language=SupportedLanguage.EN,
+                countries_count=1,
+                categories=[QuizCategory.FLAG],
+                questions=deque(
+                    [
+                        Question(
+                            id="UKR:flag",
+                            country_code="UKR",
+                            category=QuizCategory.FLAG,
+                            prompt="Flag?",
+                            options=["Ukraine", "France", "Italy", "Spain"],
+                            correct_option="Ukraine",
+                            answer_context="Ukraine",
+                        )
+                    ]
+                ),
+                total_questions=1,
+            ),
+            quiz_run_id=quiz_run.id,
+            user_id=user.id,
+            language=SupportedLanguage.EN.value,
+        )
 
-        await quiz_handlers.hide_country(callback, state, session, i18n, country_store)
+        await quiz_handlers.hide_country(
+            callback,
+            callback.bot,
+            state,
+            session,
+            _build_settings(),
+            i18n,
+            country_store,
+        )
 
         callback.message.edit_text.reset_mock()
         callback.answer.reset_mock()

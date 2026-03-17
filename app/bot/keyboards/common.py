@@ -43,11 +43,11 @@ def quiz_setup_keyboard(
 ) -> InlineKeyboardMarkup:
     builder = InlineKeyboardBuilder()
     for size in QUIZ_SIZES:
-        prefix = "â— " if size == selected_count else ""
+        prefix = "\u25cf " if size == selected_count else ""
         builder.button(text=f"{prefix}{size}", callback_data=f"quiz:size:{size}")
 
     for category in EXPOSED_QUIZ_CATEGORIES:
-        mark = "âœ“ " if category in selected_categories else ""
+        mark = "\u2713 " if category in selected_categories else ""
         builder.button(
             text=f"{mark}{i18n.category_label(category, language)}",
             callback_data=f"quiz:category:{category.value}",
@@ -67,8 +67,9 @@ def answer_keyboard(
     builder = InlineKeyboardBuilder()
     for index, option in enumerate(options):
         builder.button(text=option, callback_data=f"answer:{index}")
+    builder.button(text=i18n.text("quiz_hide_country", language), callback_data="quiz:hide_country")
     builder.button(text=i18n.text("quiz_exit", language), callback_data="quiz:cancel")
-    builder.adjust(2, 2)
+    builder.adjust(2, 2, 2)
     return builder.as_markup()
 
 
@@ -84,14 +85,14 @@ def answer_feedback_keyboard(
     builder = InlineKeyboardBuilder()
     for index, option_label in enumerate(option_labels):
         if reveal_correct and index == correct_index:
-            label = f"âœ… {option_label}"
+            label = f"\u2705 {option_label}"
         elif index == selected_index:
-            label = f"âŒ {option_label}"
+            label = f"\u274c {option_label}"
         else:
             label = option_label
         builder.button(text=label, callback_data="answer:locked")
     if hide_country_text is not None:
-        builder.button(text=hide_country_text, callback_data="quiz:hide_country")
+        builder.button(text=hide_country_text, callback_data="answer:locked")
     if exit_text is not None:
         builder.button(text=exit_text, callback_data="answer:locked")
         builder.adjust(2, 2, 2 if hide_country_text is not None else 1)

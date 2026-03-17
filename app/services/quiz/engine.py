@@ -40,6 +40,7 @@ class QuizSession:
     wrong_attempts_by_question: dict[str, int] = field(default_factory=dict)
     resolved_questions: int = 0
     correct_answers: int = 0
+    skipped_answers: int = 0
     mistakes: int = 0
 
     def current_question(self) -> Question | None:
@@ -67,6 +68,12 @@ class QuizSession:
         question = self.questions.popleft()
         self.resolved_questions += 1
         return QuestionResolution(question, resolved=True, outcome="incorrect")
+
+    def skip_current(self) -> QuestionResolution:
+        question = self.questions.popleft()
+        self.resolved_questions += 1
+        self.skipped_answers += 1
+        return QuestionResolution(question, resolved=True, outcome="skipped")
 
     def progress_text(self) -> str:
         if self.total_questions == 0:

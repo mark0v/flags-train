@@ -222,7 +222,7 @@ async def _finalize_run(
         status=status,
         resolved_questions=quiz_session.resolved_questions,
         correct_answers=quiz_session.correct_answers,
-        skipped_answers=0,
+        skipped_answers=quiz_session.skipped_answers,
         wrong_attempts=quiz_session.mistakes,
     )
 
@@ -289,6 +289,8 @@ async def toggle_category(
         selected.add(category)
     await state.update_data(selected_categories=sorted(selected))
     await _render_quiz_setup(callback, state, language, i18n)
+
+
 @router.callback_query(QuizStates.setup, F.data == "quiz:begin")
 async def begin_quiz(
     callback: CallbackQuery,
@@ -399,7 +401,6 @@ async def answer_question(
             exit_text=i18n.text("quiz_exit", quiz_session.language),
         )
     )
-    await state.update_data(feedback_country_code=question.country_code)
 
     if reveal_correct:
         resolution = quiz_session.on_correct(selected_option)
@@ -414,7 +415,7 @@ async def answer_question(
                 QuizAnswerOutcome.CORRECT,
             )
         await state.update_data(quiz_session=quiz_session)
-        await callback.answer("✅")
+        await callback.answer("\u2705")
         if await _finalize_run_if_complete(callback, state, session, quiz_session, i18n):
             return
         await asyncio.sleep(settings.quiz_autonext_seconds)
@@ -423,7 +424,7 @@ async def answer_question(
 
     quiz_session.on_wrong()
     await state.update_data(quiz_session=quiz_session)
-    await callback.answer("❌")
+    await callback.answer("\u274c")
     await asyncio.sleep(settings.quiz_autonext_seconds)
     await callback.message.edit_reply_markup(
         reply_markup=answer_feedback_keyboard(
@@ -455,23 +456,30 @@ async def answer_question(
 @router.callback_query(QuizStates.in_progress, F.data == "quiz:hide_country")
 async def hide_country(
     callback: CallbackQuery,
+    bot: Bot,
     state: FSMContext,
     session: AsyncSession,
+    settings: Settings,
     i18n: I18nService,
     country_store: CountryStore,
 ) -> None:
     data = await state.get_data()
     user = await _get_user(session, callback)
     language = SupportedLanguage(user.language)
-    country_code = data.get("feedback_country_code")
-    if country_code is None:
+    quiz_session: QuizSession | None = data.get("quiz_session")
+    if quiz_session is None:
+        await callback.answer()
+        return
+
+    question = quiz_session.current_question()
+    if question is None:
         await callback.answer()
         return
 
     hidden_repo = HiddenCountriesRepository(session)
     hidden = await hidden_repo.hide_country(
         user.id,
-        country_code,
+        question.country_code,
         total_country_count=len(country_store.countries),
         min_available_countries=MIN_AVAILABLE_COUNTRIES,
     )
@@ -479,11 +487,25 @@ async def hide_country(
         await callback.answer(i18n.text("quiz_hide_country_limit", language), show_alert=True)
         return
 
-    quiz_session: QuizSession | None = data.get("quiz_session")
-    if quiz_session is not None:
-        quiz_session.remove_country(country_code)
-        await state.update_data(quiz_session=quiz_session)
+    quiz_run_id: int = data["quiz_run_id"]
+    user_id: int = data["user_id"]
+    resolution = quiz_session.skip_current()
+    await _persist_resolution(
+        session,
+        user_id,
+        quiz_run_id,
+        quiz_session,
+        resolution.question,
+        None,
+        QuizAnswerOutcome.SKIPPED,
+    )
+    quiz_session.remove_country(question.country_code)
+    await state.update_data(quiz_session=quiz_session)
     await callback.answer(i18n.text("quiz_hide_country_done", language))
+    if await _finalize_run_if_complete(callback, state, session, quiz_session, i18n):
+        return
+    await asyncio.sleep(settings.quiz_autonext_seconds)
+    await _show_question(bot, callback, state, quiz_session, i18n)
 
 
 @router.callback_query(QuizStates.in_progress, F.data == "quiz:cancel")

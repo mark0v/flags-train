@@ -699,9 +699,9 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "de": "Country hidden.",
     },
     "quiz_hide_country_limit": {
-        "ru": "You need at least 30 available countries.",
-        "en": "You need at least 30 available countries.",
-        "de": "You need at least 30 available countries.",
+        "ru": "At least 30 countries must remain.",
+        "en": "At least 30 countries must remain.",
+        "de": "At least 30 countries must remain.",
     },
     "quiz_not_enough_available": {
         "ru": "Not enough available countries.",
