@@ -18,7 +18,6 @@ from app.constants import (
     EXPOSED_QUIZ_CATEGORIES,
     QuizAnswerOutcome,
     QuizCategory,
-    QuizMode,
     QuizRunStatus,
     SupportedLanguage,
 )
@@ -326,7 +325,6 @@ async def begin_quiz(
     quiz_run = await QuizRunRepository(session).create_run(
         user_id=user.id,
         language=language,
-        mode=QuizMode.MIXED,
         countries_count=countries_count,
         categories=categories,
         total_questions=quiz_session.total_questions,

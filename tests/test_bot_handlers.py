@@ -15,7 +15,7 @@ from app.bot.handlers import quiz as quiz_handlers
 from app.bot.keyboards.common import answer_feedback_keyboard, quiz_setup_keyboard
 from app.bot.states import QuizStates
 from app.config import Settings
-from app.constants import QuizAnswerOutcome, QuizCategory, QuizMode, SupportedLanguage
+from app.constants import QuizAnswerOutcome, QuizCategory, SupportedLanguage
 from app.db.base import Base
 from app.db.models import QuizAnswer, UserLearningProgress
 from app.repositories.users import UserRepository
@@ -563,7 +563,6 @@ async def test_wrong_answer_automatically_reveals_correct_option_and_advances() 
         quiz_run = await quiz_handlers.QuizRunRepository(session).create_run(
             user_id=user.id,
             language=SupportedLanguage.EN,
-            mode=QuizMode.MIXED,
             countries_count=2,
             categories=[QuizCategory.FLAG],
             total_questions=2,
@@ -671,7 +670,6 @@ async def test_wrong_answer_on_last_question_completes_quiz_after_auto_reveal() 
         quiz_run = await quiz_handlers.QuizRunRepository(session).create_run(
             user_id=user.id,
             language=SupportedLanguage.EN,
-            mode=QuizMode.MIXED,
             countries_count=1,
             categories=[QuizCategory.FLAG],
             total_questions=1,

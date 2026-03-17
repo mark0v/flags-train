@@ -5,7 +5,6 @@ from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from app.constants import (
     QuizAnswerOutcome,
     QuizCategory,
-    QuizMode,
     QuizRunStatus,
     SupportedLanguage,
 )
@@ -36,7 +35,6 @@ async def test_quiz_run_repository_aggregates_user_summary() -> None:
         run = await repo.create_run(
             user_id=user.id,
             language=SupportedLanguage.EN,
-            mode=QuizMode.MIXED,
             countries_count=10,
             categories=[QuizCategory.FLAG, QuizCategory.CAPITAL],
             total_questions=20,
@@ -74,7 +72,6 @@ async def test_quiz_run_repository_aggregates_user_summary() -> None:
         abandoned_run = await repo.create_run(
             user_id=user.id,
             language=SupportedLanguage.EN,
-            mode=QuizMode.MIXED,
             countries_count=10,
             categories=[QuizCategory.FLAG],
             total_questions=10,
@@ -310,7 +307,6 @@ async def test_quiz_run_repository_includes_category_breakdown() -> None:
         run = await QuizRunRepository(session).create_run(
             user_id=user.id,
             language=SupportedLanguage.EN,
-            mode=QuizMode.MIXED,
             countries_count=10,
             categories=[QuizCategory.CAPITAL, QuizCategory.LANGUAGE],
             total_questions=20,
@@ -337,44 +333,6 @@ async def test_quiz_run_repository_includes_category_breakdown() -> None:
     assert summary.mastered_items == 0
     assert summary.due_items == 1
     assert summary.due_countries == 1
-
-
-async def test_quiz_run_repository_returns_last_quiz_preferences() -> None:
-    engine = create_async_engine("sqlite+aiosqlite:///:memory:")
-    async with engine.begin() as connection:
-        await connection.run_sync(Base.metadata.create_all)
-
-    session_factory = async_sessionmaker(engine, expire_on_commit=False)
-    async with session_factory() as session:
-        user = await UserRepository(session).get_or_create(7, "prefs", "Prefs")
-        user.language = SupportedLanguage.EN.value
-        repo = QuizRunRepository(session)
-        await repo.create_run(
-            user_id=user.id,
-            language=SupportedLanguage.EN,
-            mode=QuizMode.MIXED,
-            countries_count=10,
-            categories=[QuizCategory.FLAG],
-            total_questions=10,
-        )
-        await repo.create_run(
-            user_id=user.id,
-            language=SupportedLanguage.EN,
-            mode=QuizMode.NEW,
-            countries_count=25,
-            categories=[QuizCategory.CAPITAL, QuizCategory.LANGUAGE],
-            total_questions=50,
-        )
-        await session.commit()
-
-        preferences = await repo.get_last_quiz_preferences(user.id)
-
-    await engine.dispose()
-
-    assert preferences is not None
-    assert preferences.countries_count == 25
-    assert preferences.categories == [QuizCategory.CAPITAL, QuizCategory.LANGUAGE]
-    assert preferences.mode is QuizMode.NEW
 
 
 async def test_studied_country_codes_returns_distinct_country_list() -> None:
