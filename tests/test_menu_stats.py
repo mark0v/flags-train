@@ -49,8 +49,8 @@ def test_format_stats_includes_category_breakdown() -> None:
     assert "Best focus right now: <b>Capital</b>" in rendered
     assert "Flag: due <b>0</b>, mastered <b>1/2</b>, accuracy <b>75%</b>" in rendered
     assert "Capital: due <b>2</b>, mastered <b>0/2</b>, accuracy <b>33%</b>" in rendered
-    assert "Countries ready for review mode: <b>0</b>" in rendered
-    assert "Review-ready: <b>not yet</b>" in rendered
+    assert "review mode" not in rendered.lower()
+    assert "Review-ready" not in rendered
 
 
 def test_format_stats_hides_hidden_categories_from_breakdown() -> None:

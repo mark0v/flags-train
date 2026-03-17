@@ -103,13 +103,10 @@ async def _render_quiz_setup(
 ) -> None:
     data = await state.get_data()
     selected_count = data.get("selected_count", 10)
-    selected_mode = QuizMode(data.get("selected_mode", QuizMode.MIXED.value))
     selected_categories = _sanitize_selected_categories(data.get("selected_categories"))
     text = (
         f"<b>{i18n.text('quiz_setup_title', language)}</b>\n\n"
         f"{i18n.text('quiz_choose_count', language)}: <b>{selected_count}</b>\n"
-        f"{i18n.text('quiz_choose_mode', language)}: "
-        f"<b>{i18n.mode_label(selected_mode, language)}</b>\n"
         f"{i18n.text('quiz_choose_categories', language)}: "
         f"{', '.join(i18n.category_label(category, language) for category in selected_categories)}"
     )
@@ -118,7 +115,6 @@ async def _render_quiz_setup(
         i18n,
         selected_count,
         selected_categories,
-        selected_mode,
     )
     if edit_existing:
         await callback.message.edit_text(text, reply_markup=markup)
@@ -251,7 +247,6 @@ async def start_quiz_setup(
     await state.set_state(QuizStates.setup)
     await state.update_data(
         selected_count=10,
-        selected_mode=QuizMode.MIXED.value,
         selected_categories=[QuizCategory.FLAG.value],
         language=language.value,
     )
@@ -289,21 +284,6 @@ async def toggle_category(
         selected.add(category)
     await state.update_data(selected_categories=sorted(selected))
     await _render_quiz_setup(callback, state, language, i18n)
-
-
-@router.callback_query(QuizStates.setup, F.data.startswith("quiz:mode:"))
-async def update_mode(
-    callback: CallbackQuery,
-    state: FSMContext,
-    session: AsyncSession,
-    i18n: I18nService,
-) -> None:
-    language = await _user_language(session, callback)
-    mode = callback.data.split(":")[2]
-    await state.update_data(selected_mode=mode)
-    await _render_quiz_setup(callback, state, language, i18n)
-
-
 @router.callback_query(QuizStates.setup, F.data == "quiz:begin")
 async def begin_quiz(
     callback: CallbackQuery,
@@ -317,40 +297,9 @@ async def begin_quiz(
     language = SupportedLanguage(user.language)
     data = await state.get_data()
     categories = _sanitize_selected_categories(data.get("selected_categories"))
-    quiz_mode = QuizMode(data.get("selected_mode", QuizMode.MIXED.value))
     if not categories:
         await callback.answer(i18n.text("not_enough_categories", language), show_alert=True)
         return
-
-    progress_repo = LearningProgressRepository(session)
-    due_country_codes = await progress_repo.get_due_country_codes(
-        user.id,
-        categories,
-        data["selected_count"],
-    )
-    excluded_country_codes: list[str] = []
-    priority_country_codes: list[str] = []
-
-    if quiz_mode is QuizMode.REVIEW:
-        if len(due_country_codes) < data["selected_count"]:
-            await callback.answer(i18n.text("review_not_enough", language), show_alert=True)
-            return
-        priority_country_codes = due_country_codes
-    elif quiz_mode is QuizMode.NEW:
-        studied_country_codes = await progress_repo.get_studied_country_codes(user.id, categories)
-        excluded_country_codes = studied_country_codes
-        available_new = len(
-            [
-                country
-                for country in country_store.countries
-                if country.code not in studied_country_codes
-            ]
-        )
-        if available_new < data["selected_count"]:
-            await callback.answer(i18n.text("new_not_enough", language), show_alert=True)
-            return
-    else:
-        priority_country_codes = due_country_codes
 
     engine = QuizEngine(country_store)
     try:
@@ -358,8 +307,6 @@ async def begin_quiz(
             language=language,
             countries_count=data["selected_count"],
             categories=categories,
-            priority_country_codes=priority_country_codes,
-            excluded_country_codes=excluded_country_codes,
         )
     except ValueError:
         await callback.answer(i18n.text("dataset_too_small", language), show_alert=True)
@@ -368,7 +315,7 @@ async def begin_quiz(
     quiz_run = await QuizRunRepository(session).create_run(
         user_id=user.id,
         language=language,
-        mode=quiz_mode,
+        mode=QuizMode.MIXED,
         countries_count=data["selected_count"],
         categories=categories,
         total_questions=quiz_session.total_questions,
