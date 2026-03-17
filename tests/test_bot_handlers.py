@@ -13,7 +13,7 @@ from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
 from app.bot.handlers import menu as menu_handlers
 from app.bot.handlers import quiz as quiz_handlers
-from app.bot.keyboards.common import answer_feedback_keyboard
+from app.bot.keyboards.common import answer_feedback_keyboard, quiz_setup_keyboard
 from app.bot.states import QuizStates
 from app.config import Settings
 from app.constants import (
@@ -117,6 +117,23 @@ async def test_start_quiz_setup_initializes_state_and_renders_setup() -> None:
     assert data["selected_categories"] == ["flag"]
     callback.message.answer.assert_awaited()
     callback.answer.assert_awaited()
+
+
+def test_quiz_setup_keyboard_hides_non_core_categories() -> None:
+    markup = quiz_setup_keyboard(
+        SupportedLanguage.EN,
+        I18nService(),
+        10,
+        [QuizCategory.FLAG],
+        QuizMode.MIXED,
+    )
+
+    texts = _keyboard_texts(markup)
+    assert "✓ Flag" in texts
+    assert "Capital" in texts
+    assert "Language" not in texts
+    assert "Population" not in texts
+    assert "Currency" not in texts
 
 
 async def test_cancel_setup_clears_state_and_returns_to_main_menu() -> None:
@@ -583,6 +600,45 @@ async def test_continue_learning_restores_last_quiz_setup() -> None:
     assert "Capital" in rendered_text
     callback.answer.assert_awaited()
     assert callback.answer.await_args.args[0] == "Your recent quiz setup has been restored."
+
+
+async def test_continue_learning_sanitizes_hidden_categories() -> None:
+    engine = create_async_engine("sqlite+aiosqlite:///:memory:")
+    async with engine.begin() as connection:
+        await connection.run_sync(Base.metadata.create_all)
+
+    session_factory = async_sessionmaker(engine, expire_on_commit=False)
+    callback = _build_callback()
+    callback.data = "menu:continue_learning"
+    state = _build_state()
+    i18n = I18nService()
+
+    async with session_factory() as session:
+        user = await UserRepository(session).get_or_create(42, "tester", "Test")
+        user.language = SupportedLanguage.EN.value
+        quiz_run = await quiz_handlers.QuizRunRepository(session).create_run(
+            user_id=user.id,
+            language=SupportedLanguage.EN,
+            countries_count=10,
+            categories=[QuizCategory.LANGUAGE],
+            total_questions=10,
+        )
+        await quiz_handlers.QuizRunRepository(session).finish_run(
+            quiz_run_id=quiz_run.id,
+            status=QuizRunStatus.COMPLETED,
+            resolved_questions=10,
+            correct_answers=6,
+            skipped_answers=0,
+            wrong_attempts=4,
+        )
+        await session.commit()
+
+        await menu_handlers.continue_learning(callback, state, session, i18n)
+        data = await state.get_data()
+
+    await engine.dispose()
+
+    assert data["selected_categories"] == ["flag"]
 
 
 async def test_continue_learning_shows_alert_without_history() -> None:

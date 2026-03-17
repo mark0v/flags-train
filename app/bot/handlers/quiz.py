@@ -15,6 +15,7 @@ from app.bot.keyboards.common import (
 from app.bot.states import QuizStates
 from app.config import Settings
 from app.constants import (
+    EXPOSED_QUIZ_CATEGORIES,
     QuizAnswerOutcome,
     QuizCategory,
     QuizMode,
@@ -30,6 +31,16 @@ from app.services.i18n import I18nService
 from app.services.quiz.engine import Question, QuizEngine, QuizSession
 
 router = Router()
+
+
+def _sanitize_selected_categories(values: list[str] | None) -> list[QuizCategory]:
+    exposed = set(EXPOSED_QUIZ_CATEGORIES)
+    selected: list[QuizCategory] = []
+    for value in values or []:
+        category = QuizCategory(value)
+        if category in exposed:
+            selected.append(category)
+    return selected or [QuizCategory.FLAG]
 
 
 async def _send_question_media(
@@ -93,9 +104,7 @@ async def _render_quiz_setup(
     data = await state.get_data()
     selected_count = data.get("selected_count", 10)
     selected_mode = QuizMode(data.get("selected_mode", QuizMode.MIXED.value))
-    selected_categories = [
-        QuizCategory(value) for value in data.get("selected_categories", [QuizCategory.FLAG.value])
-    ]
+    selected_categories = _sanitize_selected_categories(data.get("selected_categories"))
     text = (
         f"<b>{i18n.text('quiz_setup_title', language)}</b>\n\n"
         f"{i18n.text('quiz_choose_count', language)}: <b>{selected_count}</b>\n"
@@ -272,7 +281,8 @@ async def toggle_category(
     language = await _user_language(session, callback)
     category = callback.data.split(":")[2]
     data = await state.get_data()
-    selected = set(data.get("selected_categories", []))
+    exposed_values = {category.value for category in EXPOSED_QUIZ_CATEGORIES}
+    selected = {value for value in data.get("selected_categories", []) if value in exposed_values}
     if category in selected:
         selected.remove(category)
     else:
@@ -306,7 +316,7 @@ async def begin_quiz(
     user = await _get_user(session, callback)
     language = SupportedLanguage(user.language)
     data = await state.get_data()
-    categories = [QuizCategory(value) for value in data.get("selected_categories", [])]
+    categories = _sanitize_selected_categories(data.get("selected_categories"))
     quiz_mode = QuizMode(data.get("selected_mode", QuizMode.MIXED.value))
     if not categories:
         await callback.answer(i18n.text("not_enough_categories", language), show_alert=True)

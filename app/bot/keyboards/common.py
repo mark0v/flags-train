@@ -1,7 +1,13 @@
 from aiogram.types import InlineKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
-from app.constants import QUIZ_SIZES, QuizCategory, QuizMode, SupportedLanguage
+from app.constants import (
+    EXPOSED_QUIZ_CATEGORIES,
+    QUIZ_SIZES,
+    QuizCategory,
+    QuizMode,
+    SupportedLanguage,
+)
 from app.services.i18n import I18nService
 
 
@@ -67,7 +73,7 @@ def quiz_setup_keyboard(
             callback_data=f"quiz:mode:{mode.value}",
         )
 
-    for category in QuizCategory:
+    for category in EXPOSED_QUIZ_CATEGORIES:
         mark = "✓ " if category in selected_categories else ""
         builder.button(
             text=f"{mark}{i18n.category_label(category, language)}",

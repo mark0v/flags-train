@@ -14,7 +14,7 @@ from app.bot.keyboards.common import (
 )
 from app.bot.states import QuizStates
 from app.config import Settings
-from app.constants import QUIZ_SIZES, QuizMode, SupportedLanguage
+from app.constants import EXPOSED_QUIZ_CATEGORIES, QUIZ_SIZES, QuizMode, SupportedLanguage
 from app.repositories.admin import AdminRepository, format_progress_country_stat
 from app.repositories.learning_progress import LearningProgressRepository
 from app.repositories.quiz_runs import QuizRunRepository
@@ -32,6 +32,12 @@ from app.services.statistics import (
 
 router = Router()
 MENU_SCREEN_TEXT = "\u2060"
+
+
+def _sanitize_category_values(values: list[str]) -> list[str]:
+    exposed = {category.value for category in EXPOSED_QUIZ_CATEGORIES}
+    selected = [value for value in values if value in exposed]
+    return selected or [EXPOSED_QUIZ_CATEGORIES[0].value]
 
 
 def _format_optional_datetime(value) -> str:
@@ -127,10 +133,11 @@ def _resolved_continue_mode(preferences: LastQuizPreferences, due_country_count:
 
 
 def _due_review_categories(summary: UserStatsSummary) -> list[str]:
+    exposed = {category.value for category in EXPOSED_QUIZ_CATEGORIES}
     return [
         item.category.value
         for item in summary.category_breakdown or []
-        if item.due_items > 0
+        if item.due_items > 0 and item.category.value in exposed
     ]
 
 
@@ -527,11 +534,17 @@ async def continue_learning(
         await callback.answer(i18n.text("continue_learning_missing", language), show_alert=True)
         return
 
+    sanitized_categories = _sanitize_category_values(
+        [category.value for category in preferences.categories]
+    )
     progress_repo = LearningProgressRepository(session)
+    due_categories = [
+        category for category in preferences.categories if category.value in sanitized_categories
+    ]
     due_country_count = len(
         await progress_repo.get_due_country_codes(
             user.id,
-            preferences.categories,
+            due_categories,
             preferences.countries_count,
         )
     )
@@ -540,7 +553,7 @@ async def continue_learning(
     await state.update_data(
         selected_count=preferences.countries_count,
         selected_mode=selected_mode.value,
-        selected_categories=[category.value for category in preferences.categories],
+        selected_categories=sanitized_categories,
         language=language.value,
     )
     await render_quiz_setup(callback, state, language, i18n, edit_existing=False)
