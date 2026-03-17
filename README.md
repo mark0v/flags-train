@@ -217,6 +217,7 @@ GitHub Actions:
 
 - `.github/workflows/ci.yml` runs `ruff` and `pytest` on every pull request
 - it also runs on pushes to `main`, `master`, and `codex/**` branches
+- the same workflow also verifies that the Docker image builds successfully
 
 ## Deploy Checklist
 
