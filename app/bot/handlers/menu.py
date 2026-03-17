@@ -24,7 +24,9 @@ from app.services.i18n import I18nService
 from app.services.statistics import CategoryProgressStat, UserStatsSummary
 
 router = Router()
-MENU_SCREEN_TEXT = "\u2060"
+# Braille blank keeps the menu visually empty while giving Telegram enough width
+# to render full-width inline buttons on mobile.
+MENU_SCREEN_TEXT = "\u2800" * 24
 
 
 def _format_optional_datetime(value) -> str:
