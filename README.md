@@ -213,6 +213,11 @@ pytest
 ruff check app tests scripts
 ```
 
+GitHub Actions:
+
+- `.github/workflows/ci.yml` runs `ruff` and `pytest` on every pull request
+- it also runs on pushes to `main`, `master`, and `codex/**` branches
+
 ## Deploy Checklist
 
 Before deployment, run at least this minimum set:
