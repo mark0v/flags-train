@@ -55,6 +55,8 @@ async def _send_question_media(
     caption: str,
     i18n: I18nService,
     language: SupportedLanguage,
+    *,
+    hide_country_locked: bool = False,
 ) -> None:
     if question.flag_path is None:
         raise ValueError("Question media is missing.")
@@ -66,7 +68,12 @@ async def _send_question_media(
             media_path = png_path
 
     media = FSInputFile(media_path)
-    reply_markup = answer_keyboard(question.options, language, i18n)
+    reply_markup = answer_keyboard(
+        question.options,
+        language,
+        i18n,
+        hide_country_locked=hide_country_locked,
+    )
     if media_path.suffix.lower() == ".svg":
         await bot.send_document(
             chat_id=chat_id,
@@ -152,7 +159,7 @@ async def _show_question(
         await state.clear()
         return
 
-    await state.update_data(current_question_id=question.id)
+    await state.update_data(current_question_id=question.id, hidden_current_question_id=None)
     caption = f"{question.prompt}\n\n<i>{session_obj.progress_text()}</i>"
     option_labels = question.option_labels or question.options
     if question.flag_path:
@@ -175,6 +182,7 @@ async def _show_question(
             caption,
             i18n,
             session_obj.language,
+            hide_country_locked=False,
         )
         return
     await callback.message.answer(
@@ -456,10 +464,8 @@ async def answer_question(
 @router.callback_query(QuizStates.in_progress, F.data == "quiz:hide_country")
 async def hide_country(
     callback: CallbackQuery,
-    bot: Bot,
     state: FSMContext,
     session: AsyncSession,
-    settings: Settings,
     i18n: I18nService,
     country_store: CountryStore,
 ) -> None:
@@ -487,25 +493,17 @@ async def hide_country(
         await callback.answer(i18n.text("quiz_hide_country_limit", language), show_alert=True)
         return
 
-    quiz_run_id: int = data["quiz_run_id"]
-    user_id: int = data["user_id"]
-    resolution = quiz_session.skip_current()
-    await _persist_resolution(
-        session,
-        user_id,
-        quiz_run_id,
-        quiz_session,
-        resolution.question,
-        None,
-        QuizAnswerOutcome.SKIPPED,
+    option_labels = question.option_labels or question.options
+    await callback.message.edit_reply_markup(
+        reply_markup=answer_keyboard(
+            option_labels,
+            quiz_session.language,
+            i18n,
+            hide_country_locked=True,
+        )
     )
-    quiz_session.remove_country(question.country_code)
-    await state.update_data(quiz_session=quiz_session)
+    await state.update_data(hidden_current_question_id=question.id)
     await callback.answer(i18n.text("quiz_hide_country_done", language))
-    if await _finalize_run_if_complete(callback, state, session, quiz_session, i18n):
-        return
-    await asyncio.sleep(settings.quiz_autonext_seconds)
-    await _show_question(bot, callback, state, quiz_session, i18n)
 
 
 @router.callback_query(QuizStates.in_progress, F.data == "quiz:cancel")

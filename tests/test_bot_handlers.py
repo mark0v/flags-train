@@ -832,28 +832,26 @@ async def test_hide_country_removes_future_questions_from_current_session() -> N
             quiz_session=quiz_session,
             quiz_run_id=quiz_run.id,
             user_id=user.id,
+            language=SupportedLanguage.EN.value,
         )
 
         await quiz_handlers.hide_country(
             callback,
-            _build_bot(),
             state,
             session,
-            _build_settings(),
             i18n,
             country_store,
         )
         data = await state.get_data()
         await session.commit()
-
-        saved_answer = (
+        saved_answers = (
             await session.execute(
                 select(QuizAnswer).where(
                     QuizAnswer.question_id == "UKR:capital",
                 )
             )
-        ).scalar_one()
-        assert saved_answer.outcome == QuizAnswerOutcome.SKIPPED.value
+        ).scalars().all()
+        assert saved_answers == []
 
         progress = (
             await session.execute(
@@ -863,15 +861,22 @@ async def test_hide_country_removes_future_questions_from_current_session() -> N
                     UserLearningProgress.category == QuizCategory.CAPITAL.value,
                 )
             )
-        ).scalar_one()
-        assert progress.skipped_answers == 1
+        ).scalars().all()
+        assert progress == []
 
     await engine.dispose()
 
-    assert data["quiz_session"].total_questions == 2
-    assert data["quiz_session"].resolved_questions == 1
-    assert data["quiz_session"].skipped_answers == 1
-    assert [question.country_code for question in data["quiz_session"].questions] == ["DEU"]
+    assert data["quiz_session"].total_questions == 3
+    assert data["quiz_session"].resolved_questions == 0
+    assert data["quiz_session"].skipped_answers == 0
+    assert [question.country_code for question in data["quiz_session"].questions] == [
+        "UKR",
+        "UKR",
+        "DEU",
+    ]
+    locked_markup = callback.message.edit_reply_markup.await_args.kwargs["reply_markup"]
+    assert _keyboard_texts(locked_markup)[-2] == "Don't repeat this country"
+    assert locked_markup.inline_keyboard[-1][0].callback_data == "answer:locked"
     callback.answer.assert_awaited_once()
     assert callback.answer.await_args.args[0] == "Country hidden."
 
@@ -927,10 +932,8 @@ async def test_hide_country_shows_limit_alert_when_only_thirty_countries_would_r
 
         await quiz_handlers.hide_country(
             callback,
-            _build_bot(),
             state,
             session,
-            _build_settings(),
             i18n,
             country_store,
         )
@@ -993,10 +996,8 @@ async def test_settings_shows_hidden_country_count_and_resets_it() -> None:
 
         await quiz_handlers.hide_country(
             callback,
-            callback.bot,
             state,
             session,
-            _build_settings(),
             i18n,
             country_store,
         )

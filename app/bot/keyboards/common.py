@@ -63,11 +63,16 @@ def answer_keyboard(
     options: list[str],
     language: SupportedLanguage,
     i18n: I18nService,
+    *,
+    hide_country_locked: bool = False,
 ) -> InlineKeyboardMarkup:
     builder = InlineKeyboardBuilder()
     for index, option in enumerate(options):
         builder.button(text=option, callback_data=f"answer:{index}")
-    builder.button(text=i18n.text("quiz_hide_country", language), callback_data="quiz:hide_country")
+    builder.button(
+        text=i18n.text("quiz_hide_country", language),
+        callback_data="answer:locked" if hide_country_locked else "quiz:hide_country",
+    )
     builder.button(text=i18n.text("quiz_exit", language), callback_data="quiz:cancel")
     builder.adjust(2, 2, 2)
     return builder.as_markup()
