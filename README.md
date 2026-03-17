@@ -1,5 +1,7 @@
 # Flags Train
 
+[![CI](https://github.com/mark0v/flags-train/actions/workflows/ci.yml/badge.svg)](https://github.com/mark0v/flags-train/actions/workflows/ci.yml)
+
 Telegram bot for learning UN member states in an Anki-like quiz format, currently focused on flags and capitals.
 
 ## Current Features
