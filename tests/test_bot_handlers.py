@@ -142,6 +142,45 @@ async def test_begin_quiz_uses_selected_count_as_total_questions() -> None:
     assert data["quiz_session"].total_questions == 20
 
 
+async def test_begin_quiz_excludes_hidden_countries() -> None:
+    engine = create_async_engine("sqlite+aiosqlite:///:memory:")
+    async with engine.begin() as connection:
+        await connection.run_sync(Base.metadata.create_all)
+
+    session_factory = async_sessionmaker(engine, expire_on_commit=False)
+    callback = _build_callback()
+    bot = _build_bot()
+    state = _build_state()
+    i18n = I18nService()
+    country_store = _build_country_store(40)
+
+    async with session_factory() as session:
+        user = await UserRepository(session).get_or_create(42, "tester", "Test")
+        user.language = SupportedLanguage.EN.value
+        hidden_repo = quiz_handlers.HiddenCountriesRepository(session)
+        await hidden_repo.hide_country(
+            user.id,
+            "C01",
+            total_country_count=len(country_store.countries),
+            min_available_countries=30,
+        )
+        await session.commit()
+        await state.set_state(QuizStates.setup)
+        await state.update_data(
+            selected_count=10,
+            selected_categories=[QuizCategory.FLAG.value],
+            language=SupportedLanguage.EN.value,
+        )
+
+        await quiz_handlers.begin_quiz(callback, bot, state, session, i18n, country_store)
+        data = await state.get_data()
+
+    await engine.dispose()
+
+    country_codes = [question.country_code for question in data["quiz_session"].questions]
+    assert "C01" not in country_codes
+
+
 def test_quiz_setup_keyboard_hides_non_core_categories() -> None:
     markup = quiz_setup_keyboard(
         SupportedLanguage.EN,
@@ -725,3 +764,138 @@ async def test_start_quiz_setup_keeps_previous_stats_message_in_chat() -> None:
 
     assert callback.message.answer.await_count == completion_calls + 1
     callback.message.edit_text.assert_not_awaited()
+
+
+async def test_hide_country_removes_future_questions_from_current_session() -> None:
+    engine = create_async_engine("sqlite+aiosqlite:///:memory:")
+    async with engine.begin() as connection:
+        await connection.run_sync(Base.metadata.create_all)
+
+    session_factory = async_sessionmaker(engine, expire_on_commit=False)
+    callback = _build_callback()
+    callback.data = "quiz:hide_country"
+    state = _build_state()
+    i18n = I18nService()
+    country_store = _build_country_store(40)
+    quiz_session = quiz_handlers.QuizSession(
+        language=SupportedLanguage.EN,
+        countries_count=10,
+        categories=[QuizCategory.FLAG, QuizCategory.CAPITAL],
+        questions=deque(
+            [
+                Question(
+                    id="UKR:capital",
+                    country_code="UKR",
+                    category=QuizCategory.CAPITAL,
+                    prompt="Capital?",
+                    options=["Kyiv", "Paris", "Rome", "Madrid"],
+                    correct_option="Kyiv",
+                    answer_context="Kyiv",
+                ),
+                Question(
+                    id="UKR:flag",
+                    country_code="UKR",
+                    category=QuizCategory.FLAG,
+                    prompt="Flag?",
+                    options=["Ukraine", "France", "Italy", "Spain"],
+                    correct_option="Ukraine",
+                    answer_context="Ukraine",
+                ),
+                Question(
+                    id="DEU:flag",
+                    country_code="DEU",
+                    category=QuizCategory.FLAG,
+                    prompt="Flag?",
+                    options=["Germany", "France", "Italy", "Spain"],
+                    correct_option="Germany",
+                    answer_context="Germany",
+                ),
+            ]
+        ),
+        total_questions=3,
+    )
+
+    async with session_factory() as session:
+        user = await UserRepository(session).get_or_create(42, "tester", "Test")
+        user.language = SupportedLanguage.EN.value
+        await session.commit()
+        await state.set_state(QuizStates.in_progress)
+        await state.update_data(
+            quiz_session=quiz_session,
+            feedback_country_code="UKR",
+        )
+
+        await quiz_handlers.hide_country(callback, state, session, i18n, country_store)
+        data = await state.get_data()
+
+    await engine.dispose()
+
+    assert data["quiz_session"].total_questions == 1
+    assert [question.country_code for question in data["quiz_session"].questions] == ["DEU"]
+    callback.answer.assert_awaited_once()
+    assert callback.answer.await_args.args[0] == "Country hidden."
+
+
+async def test_hide_country_shows_limit_alert_when_only_thirty_countries_would_remain() -> None:
+    engine = create_async_engine("sqlite+aiosqlite:///:memory:")
+    async with engine.begin() as connection:
+        await connection.run_sync(Base.metadata.create_all)
+
+    session_factory = async_sessionmaker(engine, expire_on_commit=False)
+    callback = _build_callback()
+    callback.data = "quiz:hide_country"
+    state = _build_state()
+    i18n = I18nService()
+    country_store = _build_country_store(30)
+
+    async with session_factory() as session:
+        user = await UserRepository(session).get_or_create(42, "tester", "Test")
+        user.language = SupportedLanguage.EN.value
+        await session.commit()
+        await state.set_state(QuizStates.in_progress)
+        await state.update_data(feedback_country_code="UKR")
+
+        await quiz_handlers.hide_country(callback, state, session, i18n, country_store)
+
+    await engine.dispose()
+
+    callback.answer.assert_awaited_once()
+    assert callback.answer.await_args.kwargs["show_alert"] is True
+    assert callback.answer.await_args.args[0] == "You need at least 30 available countries."
+
+
+async def test_settings_shows_hidden_country_count_and_resets_it() -> None:
+    engine = create_async_engine("sqlite+aiosqlite:///:memory:")
+    async with engine.begin() as connection:
+        await connection.run_sync(Base.metadata.create_all)
+
+    session_factory = async_sessionmaker(engine, expire_on_commit=False)
+    callback = _build_callback()
+    i18n = I18nService()
+    country_store = _build_country_store(40)
+
+    async with session_factory() as session:
+        user = await UserRepository(session).get_or_create(42, "tester", "Test")
+        user.language = SupportedLanguage.EN.value
+        await session.commit()
+        state = _build_state()
+        await state.set_state(QuizStates.in_progress)
+        await state.update_data(feedback_country_code="UKR")
+
+        await quiz_handlers.hide_country(callback, state, session, i18n, country_store)
+
+        callback.message.edit_text.reset_mock()
+        callback.answer.reset_mock()
+        await menu_handlers.settings(callback, session, i18n)
+        settings_text = callback.message.edit_text.await_args.args[0]
+
+        callback.message.edit_text.reset_mock()
+        callback.answer.reset_mock()
+        await menu_handlers.reset_hidden_countries(callback, session, i18n)
+
+    await engine.dispose()
+
+    assert "Hidden countries: <b>1</b>" in settings_text
+    reset_text = callback.message.edit_text.await_args.args[0]
+    assert "Hidden countries: <b>0</b>" in reset_text
+    assert callback.answer.await_args.args[0] == "Reset: 1"

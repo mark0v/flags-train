@@ -7,11 +7,13 @@ from app.bot.keyboards.common import (
     admin_keyboard,
     admin_sync_confirmation_keyboard,
     main_menu_keyboard,
+    settings_keyboard,
     stats_keyboard,
 )
 from app.config import Settings
 from app.constants import EXPOSED_QUIZ_CATEGORIES, SupportedLanguage
 from app.repositories.admin import AdminRepository, format_progress_country_stat
+from app.repositories.hidden_countries import HiddenCountriesRepository
 from app.repositories.quiz_runs import QuizRunRepository
 from app.repositories.users import UserRepository
 from app.services.admin_catalog import AdminCatalogDashboard, AdminCatalogService
@@ -403,11 +405,36 @@ async def settings(callback: CallbackQuery, session: AsyncSession, i18n: I18nSer
         first_name=callback.from_user.first_name,
     )
     language = SupportedLanguage(user.language)
+    hidden_count = await HiddenCountriesRepository(session).hidden_count(user.id)
     await callback.message.edit_text(
-        i18n.text("settings_text", language),
-        reply_markup=main_menu_keyboard(language, i18n),
+        i18n.text("settings_text", language, hidden_count=str(hidden_count)),
+        reply_markup=settings_keyboard(language, i18n),
     )
     await callback.answer()
+
+
+@router.callback_query(F.data == "settings:reset_hidden_countries")
+async def reset_hidden_countries(
+    callback: CallbackQuery,
+    session: AsyncSession,
+    i18n: I18nService,
+) -> None:
+    users = UserRepository(session)
+    user = await users.get_or_create(
+        telegram_id=callback.from_user.id,
+        username=callback.from_user.username,
+        first_name=callback.from_user.first_name,
+    )
+    language = SupportedLanguage(user.language)
+    hidden_repo = HiddenCountriesRepository(session)
+    reset_count = await hidden_repo.reset_hidden_countries(user.id)
+    await callback.message.edit_text(
+        i18n.text("settings_text", language, hidden_count="0"),
+        reply_markup=settings_keyboard(language, i18n),
+    )
+    await callback.answer(
+        i18n.text("settings_hidden_countries_reset", language, count=str(reset_count))
+    )
 
 
 @router.callback_query(F.data == "menu:back")

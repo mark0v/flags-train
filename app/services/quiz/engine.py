@@ -81,6 +81,16 @@ class QuizSession:
     def wrong_attempts(self, question_id: str) -> int:
         return self.wrong_attempts_by_question.get(question_id, 0)
 
+    def remove_country(self, country_code: str) -> int:
+        remaining_questions = [
+            question for question in self.questions if question.country_code != country_code
+        ]
+        removed_count = len(self.questions) - len(remaining_questions)
+        if removed_count:
+            self.questions = deque(remaining_questions)
+            self.total_questions -= removed_count
+        return removed_count
+
 
 class QuizEngine:
     def __init__(self, store: CountryStore, random_source: random.Random | None = None) -> None:

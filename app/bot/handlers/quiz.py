@@ -23,6 +23,7 @@ from app.constants import (
     SupportedLanguage,
 )
 from app.db.models import User
+from app.repositories.hidden_countries import HiddenCountriesRepository
 from app.repositories.learning_progress import LearningProgressRepository
 from app.repositories.quiz_runs import QuizRunRepository
 from app.repositories.users import UserRepository
@@ -31,6 +32,7 @@ from app.services.i18n import I18nService
 from app.services.quiz.engine import Question, QuizEngine, QuizSession
 
 router = Router()
+MIN_AVAILABLE_COUNTRIES = 30
 
 
 def _sanitize_selected_categories(values: list[str] | None) -> list[QuizCategory]:
@@ -305,6 +307,9 @@ async def begin_quiz(
         await callback.answer(i18n.text("not_enough_categories", language), show_alert=True)
         return
 
+    hidden_country_codes = await HiddenCountriesRepository(session).get_hidden_country_codes(
+        user.id
+    )
     engine = QuizEngine(country_store)
     countries_count = _selected_country_count(data["selected_count"], categories)
     try:
@@ -312,9 +317,10 @@ async def begin_quiz(
             language=language,
             countries_count=countries_count,
             categories=categories,
+            excluded_country_codes=hidden_country_codes,
         )
     except ValueError:
-        await callback.answer(i18n.text("dataset_too_small", language), show_alert=True)
+        await callback.answer(i18n.text("quiz_not_enough_available", language), show_alert=True)
         return
 
     quiz_run = await QuizRunRepository(session).create_run(
@@ -391,9 +397,11 @@ async def answer_question(
             selected_index,
             correct_index,
             reveal_correct=reveal_correct,
+            hide_country_text=i18n.text("quiz_hide_country", quiz_session.language),
             exit_text=i18n.text("quiz_exit", quiz_session.language),
         )
     )
+    await state.update_data(feedback_country_code=question.country_code)
 
     if reveal_correct:
         resolution = quiz_session.on_correct(selected_option)
@@ -424,6 +432,7 @@ async def answer_question(
             option_labels,
             selected_index,
             correct_index,
+            hide_country_text=i18n.text("quiz_hide_country", quiz_session.language),
             exit_text=i18n.text("quiz_exit", quiz_session.language),
         )
     )
@@ -443,6 +452,40 @@ async def answer_question(
         return
     await asyncio.sleep(settings.quiz_autonext_seconds)
     await _show_question(bot, callback, state, quiz_session, i18n)
+
+
+@router.callback_query(QuizStates.in_progress, F.data == "quiz:hide_country")
+async def hide_country(
+    callback: CallbackQuery,
+    state: FSMContext,
+    session: AsyncSession,
+    i18n: I18nService,
+    country_store: CountryStore,
+) -> None:
+    data = await state.get_data()
+    user = await _get_user(session, callback)
+    language = SupportedLanguage(user.language)
+    country_code = data.get("feedback_country_code")
+    if country_code is None:
+        await callback.answer()
+        return
+
+    hidden_repo = HiddenCountriesRepository(session)
+    hidden = await hidden_repo.hide_country(
+        user.id,
+        country_code,
+        total_country_count=len(country_store.countries),
+        min_available_countries=MIN_AVAILABLE_COUNTRIES,
+    )
+    if not hidden:
+        await callback.answer(i18n.text("quiz_hide_country_limit", language), show_alert=True)
+        return
+
+    quiz_session: QuizSession | None = data.get("quiz_session")
+    if quiz_session is not None:
+        quiz_session.remove_country(country_code)
+        await state.update_data(quiz_session=quiz_session)
+    await callback.answer(i18n.text("quiz_hide_country_done", language))
 
 
 @router.callback_query(QuizStates.in_progress, F.data == "quiz:cancel")

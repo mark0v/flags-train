@@ -24,6 +24,17 @@ def stats_keyboard(
     return builder.as_markup()
 
 
+def settings_keyboard(language: SupportedLanguage, i18n: I18nService) -> InlineKeyboardMarkup:
+    builder = InlineKeyboardBuilder()
+    builder.button(
+        text=i18n.text("settings_reset_hidden_countries", language),
+        callback_data="settings:reset_hidden_countries",
+    )
+    builder.button(text=i18n.text("stats_back", language), callback_data="menu:back")
+    builder.adjust(1)
+    return builder.as_markup()
+
+
 def quiz_setup_keyboard(
     language: SupportedLanguage,
     i18n: I18nService,
@@ -67,6 +78,7 @@ def answer_feedback_keyboard(
     correct_index: int,
     *,
     reveal_correct: bool = True,
+    hide_country_text: str | None = None,
     exit_text: str | None = None,
 ) -> InlineKeyboardMarkup:
     builder = InlineKeyboardBuilder()
@@ -78,9 +90,11 @@ def answer_feedback_keyboard(
         else:
             label = option_label
         builder.button(text=label, callback_data="answer:locked")
+    if hide_country_text is not None:
+        builder.button(text=hide_country_text, callback_data="quiz:hide_country")
     if exit_text is not None:
         builder.button(text=exit_text, callback_data="answer:locked")
-        builder.adjust(2, 2, 1)
+        builder.adjust(2, 2, 2 if hide_country_text is not None else 1)
         return builder.as_markup()
     builder.adjust(2, 2)
     return builder.as_markup()

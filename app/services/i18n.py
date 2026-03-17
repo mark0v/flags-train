@@ -675,8 +675,38 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
     },
     "settings_text": {
         "ru": "Настройки: язык интерфейса можно менять в любой момент.",
-        "en": "Settings: you can change the interface language any time.",
+        "en": "Hidden countries: <b>{hidden_count}</b>",
         "de": "Einstellungen: Die Sprache kann jederzeit geändert werden.",
+    },
+    "settings_reset_hidden_countries": {
+        "ru": "Reset hidden countries",
+        "en": "Reset hidden countries",
+        "de": "Reset hidden countries",
+    },
+    "settings_hidden_countries_reset": {
+        "ru": "Reset: {count}",
+        "en": "Reset: {count}",
+        "de": "Reset: {count}",
+    },
+    "quiz_hide_country": {
+        "ru": "Don't repeat this country",
+        "en": "Don't repeat this country",
+        "de": "Don't repeat this country",
+    },
+    "quiz_hide_country_done": {
+        "ru": "Country hidden.",
+        "en": "Country hidden.",
+        "de": "Country hidden.",
+    },
+    "quiz_hide_country_limit": {
+        "ru": "You need at least 30 available countries.",
+        "en": "You need at least 30 available countries.",
+        "de": "You need at least 30 available countries.",
+    },
+    "quiz_not_enough_available": {
+        "ru": "Not enough available countries.",
+        "en": "Not enough available countries.",
+        "de": "Not enough available countries.",
     },
 }
 
