@@ -15,13 +15,14 @@ from app.bot.keyboards.common import (
 from app.bot.states import QuizStates
 from app.config import Settings
 from app.constants import (
+    EXPOSED_QUIZ_CATEGORIES,
     QuizAnswerOutcome,
     QuizCategory,
-    QuizMode,
     QuizRunStatus,
     SupportedLanguage,
 )
 from app.db.models import User
+from app.repositories.hidden_countries import HiddenCountriesRepository
 from app.repositories.learning_progress import LearningProgressRepository
 from app.repositories.quiz_runs import QuizRunRepository
 from app.repositories.users import UserRepository
@@ -30,6 +31,21 @@ from app.services.i18n import I18nService
 from app.services.quiz.engine import Question, QuizEngine, QuizSession
 
 router = Router()
+MIN_AVAILABLE_COUNTRIES = 30
+
+
+def _sanitize_selected_categories(values: list[str] | None) -> list[QuizCategory]:
+    exposed = set(EXPOSED_QUIZ_CATEGORIES)
+    selected: list[QuizCategory] = []
+    for value in values or []:
+        category = QuizCategory(value)
+        if category in exposed:
+            selected.append(category)
+    return selected or [QuizCategory.FLAG]
+
+
+def _selected_country_count(question_count: int, categories: list[QuizCategory]) -> int:
+    return question_count // max(len(categories), 1)
 
 
 async def _send_question_media(
@@ -39,6 +55,8 @@ async def _send_question_media(
     caption: str,
     i18n: I18nService,
     language: SupportedLanguage,
+    *,
+    hide_country_locked: bool = False,
 ) -> None:
     if question.flag_path is None:
         raise ValueError("Question media is missing.")
@@ -50,7 +68,12 @@ async def _send_question_media(
             media_path = png_path
 
     media = FSInputFile(media_path)
-    reply_markup = answer_keyboard(question.options, language, i18n)
+    reply_markup = answer_keyboard(
+        question.options,
+        language,
+        i18n,
+        hide_country_locked=hide_country_locked,
+    )
     if media_path.suffix.lower() == ".svg":
         await bot.send_document(
             chat_id=chat_id,
@@ -92,15 +115,10 @@ async def _render_quiz_setup(
 ) -> None:
     data = await state.get_data()
     selected_count = data.get("selected_count", 10)
-    selected_mode = QuizMode(data.get("selected_mode", QuizMode.MIXED.value))
-    selected_categories = [
-        QuizCategory(value) for value in data.get("selected_categories", [QuizCategory.FLAG.value])
-    ]
+    selected_categories = _sanitize_selected_categories(data.get("selected_categories"))
     text = (
         f"<b>{i18n.text('quiz_setup_title', language)}</b>\n\n"
         f"{i18n.text('quiz_choose_count', language)}: <b>{selected_count}</b>\n"
-        f"{i18n.text('quiz_choose_mode', language)}: "
-        f"<b>{i18n.mode_label(selected_mode, language)}</b>\n"
         f"{i18n.text('quiz_choose_categories', language)}: "
         f"{', '.join(i18n.category_label(category, language) for category in selected_categories)}"
     )
@@ -109,7 +127,6 @@ async def _render_quiz_setup(
         i18n,
         selected_count,
         selected_categories,
-        selected_mode,
     )
     if edit_existing:
         await callback.message.edit_text(text, reply_markup=markup)
@@ -142,7 +159,7 @@ async def _show_question(
         await state.clear()
         return
 
-    await state.update_data(current_question_id=question.id)
+    await state.update_data(current_question_id=question.id, hidden_current_question_id=None)
     caption = f"{question.prompt}\n\n<i>{session_obj.progress_text()}</i>"
     option_labels = question.option_labels or question.options
     if question.flag_path:
@@ -165,6 +182,7 @@ async def _show_question(
             caption,
             i18n,
             session_obj.language,
+            hide_country_locked=False,
         )
         return
     await callback.message.answer(
@@ -212,7 +230,7 @@ async def _finalize_run(
         status=status,
         resolved_questions=quiz_session.resolved_questions,
         correct_answers=quiz_session.correct_answers,
-        skipped_answers=0,
+        skipped_answers=quiz_session.skipped_answers,
         wrong_attempts=quiz_session.mistakes,
     )
 
@@ -242,7 +260,6 @@ async def start_quiz_setup(
     await state.set_state(QuizStates.setup)
     await state.update_data(
         selected_count=10,
-        selected_mode=QuizMode.MIXED.value,
         selected_categories=[QuizCategory.FLAG.value],
         language=language.value,
     )
@@ -272,25 +289,13 @@ async def toggle_category(
     language = await _user_language(session, callback)
     category = callback.data.split(":")[2]
     data = await state.get_data()
-    selected = set(data.get("selected_categories", []))
+    exposed_values = {category.value for category in EXPOSED_QUIZ_CATEGORIES}
+    selected = {value for value in data.get("selected_categories", []) if value in exposed_values}
     if category in selected:
         selected.remove(category)
     else:
         selected.add(category)
     await state.update_data(selected_categories=sorted(selected))
-    await _render_quiz_setup(callback, state, language, i18n)
-
-
-@router.callback_query(QuizStates.setup, F.data.startswith("quiz:mode:"))
-async def update_mode(
-    callback: CallbackQuery,
-    state: FSMContext,
-    session: AsyncSession,
-    i18n: I18nService,
-) -> None:
-    language = await _user_language(session, callback)
-    mode = callback.data.split(":")[2]
-    await state.update_data(selected_mode=mode)
     await _render_quiz_setup(callback, state, language, i18n)
 
 
@@ -306,59 +311,31 @@ async def begin_quiz(
     user = await _get_user(session, callback)
     language = SupportedLanguage(user.language)
     data = await state.get_data()
-    categories = [QuizCategory(value) for value in data.get("selected_categories", [])]
-    quiz_mode = QuizMode(data.get("selected_mode", QuizMode.MIXED.value))
+    categories = _sanitize_selected_categories(data.get("selected_categories"))
     if not categories:
         await callback.answer(i18n.text("not_enough_categories", language), show_alert=True)
         return
 
-    progress_repo = LearningProgressRepository(session)
-    due_country_codes = await progress_repo.get_due_country_codes(
-        user.id,
-        categories,
-        data["selected_count"],
+    hidden_country_codes = await HiddenCountriesRepository(session).get_hidden_country_codes(
+        user.id
     )
-    excluded_country_codes: list[str] = []
-    priority_country_codes: list[str] = []
-
-    if quiz_mode is QuizMode.REVIEW:
-        if len(due_country_codes) < data["selected_count"]:
-            await callback.answer(i18n.text("review_not_enough", language), show_alert=True)
-            return
-        priority_country_codes = due_country_codes
-    elif quiz_mode is QuizMode.NEW:
-        studied_country_codes = await progress_repo.get_studied_country_codes(user.id, categories)
-        excluded_country_codes = studied_country_codes
-        available_new = len(
-            [
-                country
-                for country in country_store.countries
-                if country.code not in studied_country_codes
-            ]
-        )
-        if available_new < data["selected_count"]:
-            await callback.answer(i18n.text("new_not_enough", language), show_alert=True)
-            return
-    else:
-        priority_country_codes = due_country_codes
-
     engine = QuizEngine(country_store)
+    countries_count = _selected_country_count(data["selected_count"], categories)
     try:
         quiz_session = engine.create_session(
             language=language,
-            countries_count=data["selected_count"],
+            countries_count=countries_count,
             categories=categories,
-            priority_country_codes=priority_country_codes,
-            excluded_country_codes=excluded_country_codes,
+            excluded_country_codes=hidden_country_codes,
         )
     except ValueError:
-        await callback.answer(i18n.text("dataset_too_small", language), show_alert=True)
+        await callback.answer(i18n.text("quiz_not_enough_available", language), show_alert=True)
         return
 
     quiz_run = await QuizRunRepository(session).create_run(
         user_id=user.id,
         language=language,
-        countries_count=data["selected_count"],
+        countries_count=countries_count,
         categories=categories,
         total_questions=quiz_session.total_questions,
     )
@@ -428,6 +405,7 @@ async def answer_question(
             selected_index,
             correct_index,
             reveal_correct=reveal_correct,
+            hide_country_text=i18n.text("quiz_hide_country", quiz_session.language),
             exit_text=i18n.text("quiz_exit", quiz_session.language),
         )
     )
@@ -445,7 +423,7 @@ async def answer_question(
                 QuizAnswerOutcome.CORRECT,
             )
         await state.update_data(quiz_session=quiz_session)
-        await callback.answer("✅")
+        await callback.answer("\u2705")
         if await _finalize_run_if_complete(callback, state, session, quiz_session, i18n):
             return
         await asyncio.sleep(settings.quiz_autonext_seconds)
@@ -454,13 +432,14 @@ async def answer_question(
 
     quiz_session.on_wrong()
     await state.update_data(quiz_session=quiz_session)
-    await callback.answer("❌")
+    await callback.answer("\u274c")
     await asyncio.sleep(settings.quiz_autonext_seconds)
     await callback.message.edit_reply_markup(
         reply_markup=answer_feedback_keyboard(
             option_labels,
             selected_index,
             correct_index,
+            hide_country_text=i18n.text("quiz_hide_country", quiz_session.language),
             exit_text=i18n.text("quiz_exit", quiz_session.language),
         )
     )
@@ -480,6 +459,51 @@ async def answer_question(
         return
     await asyncio.sleep(settings.quiz_autonext_seconds)
     await _show_question(bot, callback, state, quiz_session, i18n)
+
+
+@router.callback_query(QuizStates.in_progress, F.data == "quiz:hide_country")
+async def hide_country(
+    callback: CallbackQuery,
+    state: FSMContext,
+    session: AsyncSession,
+    i18n: I18nService,
+    country_store: CountryStore,
+) -> None:
+    data = await state.get_data()
+    user = await _get_user(session, callback)
+    language = SupportedLanguage(user.language)
+    quiz_session: QuizSession | None = data.get("quiz_session")
+    if quiz_session is None:
+        await callback.answer()
+        return
+
+    question = quiz_session.current_question()
+    if question is None:
+        await callback.answer()
+        return
+
+    hidden_repo = HiddenCountriesRepository(session)
+    hidden = await hidden_repo.hide_country(
+        user.id,
+        question.country_code,
+        total_country_count=len(country_store.countries),
+        min_available_countries=MIN_AVAILABLE_COUNTRIES,
+    )
+    if not hidden:
+        await callback.answer(i18n.text("quiz_hide_country_limit", language), show_alert=True)
+        return
+
+    option_labels = question.option_labels or question.options
+    await callback.message.edit_reply_markup(
+        reply_markup=answer_keyboard(
+            option_labels,
+            quiz_session.language,
+            i18n,
+            hide_country_locked=True,
+        )
+    )
+    await state.update_data(hidden_current_question_id=question.id)
+    await callback.answer(i18n.text("quiz_hide_country_done", language))
 
 
 @router.callback_query(QuizStates.in_progress, F.data == "quiz:cancel")

@@ -1,30 +1,16 @@
 from aiogram.types import InlineKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
-from app.constants import QUIZ_SIZES, QuizCategory, QuizMode, SupportedLanguage
+from app.constants import EXPOSED_QUIZ_CATEGORIES, QUIZ_SIZES, QuizCategory, SupportedLanguage
 from app.services.i18n import I18nService
-
-
-def language_keyboard() -> InlineKeyboardMarkup:
-    builder = InlineKeyboardBuilder()
-    builder.button(text="Русский", callback_data="lang:ru")
-    builder.button(text="English", callback_data="lang:en")
-    builder.button(text="Deutsch", callback_data="lang:de")
-    builder.adjust(1)
-    return builder.as_markup()
 
 
 def main_menu_keyboard(language: SupportedLanguage, i18n: I18nService) -> InlineKeyboardMarkup:
     builder = InlineKeyboardBuilder()
     builder.button(text=i18n.text("menu_start_quiz", language), callback_data="menu:start_quiz")
     builder.button(
-        text=i18n.text("menu_continue_learning", language),
-        callback_data="menu:continue_learning",
-    )
-    builder.button(text=i18n.text("menu_settings", language), callback_data="menu:settings")
-    builder.button(
-        text=i18n.text("menu_change_language", language),
-        callback_data="menu:change_language",
+        text=i18n.text("menu_reset_hidden_countries", language),
+        callback_data="menu:reset_hidden_countries",
     )
     builder.button(text=i18n.text("menu_stats", language), callback_data="menu:stats")
     builder.adjust(1)
@@ -34,17 +20,27 @@ def main_menu_keyboard(language: SupportedLanguage, i18n: I18nService) -> Inline
 def stats_keyboard(
     language: SupportedLanguage,
     i18n: I18nService,
-    *,
-    review_ready: bool,
 ) -> InlineKeyboardMarkup:
     builder = InlineKeyboardBuilder()
-    if review_ready:
-        builder.button(
-            text=i18n.text("stats_review_cta", language),
-            callback_data="stats:review_setup",
-        )
     builder.button(text=i18n.text("stats_back", language), callback_data="menu:back")
     builder.adjust(1)
+    return builder.as_markup()
+
+
+def reset_hidden_countries_confirmation_keyboard(
+    language: SupportedLanguage,
+    i18n: I18nService,
+) -> InlineKeyboardMarkup:
+    builder = InlineKeyboardBuilder()
+    builder.button(
+        text=i18n.text("confirm_yes", language),
+        callback_data="menu:reset_hidden_countries:yes",
+    )
+    builder.button(
+        text=i18n.text("confirm_no", language),
+        callback_data="menu:reset_hidden_countries:no",
+    )
+    builder.adjust(2)
     return builder.as_markup()
 
 
@@ -53,22 +49,14 @@ def quiz_setup_keyboard(
     i18n: I18nService,
     selected_count: int,
     selected_categories: list[QuizCategory],
-    selected_mode: QuizMode,
 ) -> InlineKeyboardMarkup:
     builder = InlineKeyboardBuilder()
     for size in QUIZ_SIZES:
-        prefix = "● " if size == selected_count else ""
+        prefix = "\u25cf " if size == selected_count else ""
         builder.button(text=f"{prefix}{size}", callback_data=f"quiz:size:{size}")
 
-    for mode in QuizMode:
-        prefix = "● " if mode == selected_mode else ""
-        builder.button(
-            text=f"{prefix}{i18n.mode_label(mode, language)}",
-            callback_data=f"quiz:mode:{mode.value}",
-        )
-
-    for category in QuizCategory:
-        mark = "✓ " if category in selected_categories else ""
+    for category in EXPOSED_QUIZ_CATEGORIES:
+        mark = "\u2713 " if category in selected_categories else ""
         builder.button(
             text=f"{mark}{i18n.category_label(category, language)}",
             callback_data=f"quiz:category:{category.value}",
@@ -76,7 +64,7 @@ def quiz_setup_keyboard(
 
     builder.button(text=i18n.text("quiz_start", language), callback_data="quiz:begin")
     builder.button(text=i18n.text("quiz_exit", language), callback_data="quiz:cancel")
-    builder.adjust(3, 3, 2, 3, 1, 1)
+    builder.adjust(3, 2, 1, 1)
     return builder.as_markup()
 
 
@@ -84,12 +72,18 @@ def answer_keyboard(
     options: list[str],
     language: SupportedLanguage,
     i18n: I18nService,
+    *,
+    hide_country_locked: bool = False,
 ) -> InlineKeyboardMarkup:
     builder = InlineKeyboardBuilder()
     for index, option in enumerate(options):
         builder.button(text=option, callback_data=f"answer:{index}")
+    builder.button(
+        text=i18n.text("quiz_hide_country", language),
+        callback_data="answer:locked" if hide_country_locked else "quiz:hide_country",
+    )
     builder.button(text=i18n.text("quiz_exit", language), callback_data="quiz:cancel")
-    builder.adjust(2, 2)
+    builder.adjust(2, 2, 2)
     return builder.as_markup()
 
 
@@ -99,20 +93,23 @@ def answer_feedback_keyboard(
     correct_index: int,
     *,
     reveal_correct: bool = True,
+    hide_country_text: str | None = None,
     exit_text: str | None = None,
 ) -> InlineKeyboardMarkup:
     builder = InlineKeyboardBuilder()
     for index, option_label in enumerate(option_labels):
         if reveal_correct and index == correct_index:
-            label = f"✅ {option_label}"
+            label = f"\u2705 {option_label}"
         elif index == selected_index:
-            label = f"❌ {option_label}"
+            label = f"\u274c {option_label}"
         else:
             label = option_label
         builder.button(text=label, callback_data="answer:locked")
+    if hide_country_text is not None:
+        builder.button(text=hide_country_text, callback_data="answer:locked")
     if exit_text is not None:
         builder.button(text=exit_text, callback_data="answer:locked")
-        builder.adjust(2, 2, 1)
+        builder.adjust(2, 2, 2 if hide_country_text is not None else 1)
         return builder.as_markup()
     builder.adjust(2, 2)
     return builder.as_markup()

@@ -1,22 +1,19 @@
 from aiogram import F, Router
-from aiogram.filters import Command, CommandStart
-from aiogram.fsm.context import FSMContext
+from aiogram.filters import Command
 from aiogram.types import CallbackQuery, Message
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.bot.handlers.quiz import _render_quiz_setup as render_quiz_setup
 from app.bot.keyboards.common import (
     admin_keyboard,
     admin_sync_confirmation_keyboard,
-    language_keyboard,
     main_menu_keyboard,
+    reset_hidden_countries_confirmation_keyboard,
     stats_keyboard,
 )
-from app.bot.states import QuizStates
 from app.config import Settings
-from app.constants import QUIZ_SIZES, QuizMode, SupportedLanguage
+from app.constants import EXPOSED_QUIZ_CATEGORIES, SupportedLanguage
 from app.repositories.admin import AdminRepository, format_progress_country_stat
-from app.repositories.learning_progress import LearningProgressRepository
+from app.repositories.hidden_countries import HiddenCountriesRepository
 from app.repositories.quiz_runs import QuizRunRepository
 from app.repositories.users import UserRepository
 from app.services.admin_catalog import AdminCatalogDashboard, AdminCatalogService
@@ -24,14 +21,12 @@ from app.services.catalog_health import format_code_list
 from app.services.catalog_sync_preview import CatalogSyncPreview
 from app.services.dataset_validation import DatasetValidationReport
 from app.services.i18n import I18nService
-from app.services.statistics import (
-    CategoryProgressStat,
-    LastQuizPreferences,
-    UserStatsSummary,
-)
+from app.services.statistics import CategoryProgressStat, UserStatsSummary
 
 router = Router()
-MENU_SCREEN_TEXT = "\u2060"
+# Hangul filler stays visually empty in Telegram, unlike regular spaces or
+# braille blanks that Bot API may normalize into an empty string.
+MENU_SCREEN_TEXT = "\u3164"
 
 
 def _format_optional_datetime(value) -> str:
@@ -84,62 +79,14 @@ def _format_stats(
         last_completed=last_completed,
     )
     category_section = _format_stats_category_breakdown(summary, language, i18n)
-    review_section = _format_stats_review_readiness(summary, language, i18n)
     sections = [stats_text]
     if category_section:
         sections.append(category_section)
-    if review_section:
-        sections.append(review_section)
     return "\n\n".join(sections)
 
 
-def _format_stats_review_readiness(
-    summary: UserStatsSummary,
-    language: SupportedLanguage,
-    i18n: I18nService,
-) -> str:
-    review_size = _recommended_review_size(summary.due_countries)
-    readiness_text = i18n.text(
-        "stats_review_readiness",
-        language,
-        due_countries=str(summary.due_countries),
-        status=i18n.text(
-            "stats_review_ready_yes" if review_size is not None else "stats_review_ready_no",
-            language,
-        ),
-    )
-    if review_size is not None:
-        return readiness_text
-    return f"{readiness_text}\n{i18n.text('stats_review_hint', language)}"
-
-
-def _recommended_review_size(due_countries: int) -> int | None:
-    for size in reversed(QUIZ_SIZES):
-        if due_countries >= size:
-            return size
-    return None
-
-
-def _resolved_continue_mode(preferences: LastQuizPreferences, due_country_count: int) -> QuizMode:
-    if due_country_count >= preferences.countries_count:
-        return QuizMode.REVIEW
-    return preferences.mode
-
-
-def _due_review_categories(summary: UserStatsSummary) -> list[str]:
-    return [
-        item.category.value
-        for item in summary.category_breakdown or []
-        if item.due_items > 0
-    ]
-
-
 def _stats_reply_markup(summary: UserStatsSummary, language: SupportedLanguage, i18n: I18nService):
-    return stats_keyboard(
-        language,
-        i18n,
-        review_ready=_recommended_review_size(summary.due_countries) is not None,
-    )
+    return stats_keyboard(language, i18n)
 
 
 def _format_stats_category_breakdown(
@@ -147,7 +94,10 @@ def _format_stats_category_breakdown(
     language: SupportedLanguage,
     i18n: I18nService,
 ) -> str:
-    breakdown = summary.category_breakdown or []
+    exposed_categories = set(EXPOSED_QUIZ_CATEGORIES)
+    breakdown = [
+        item for item in (summary.category_breakdown or []) if item.category in exposed_categories
+    ]
     if not breakdown:
         return ""
 
@@ -401,7 +351,7 @@ def _is_admin(user_id: int, settings: Settings) -> bool:
     return user_id in settings.admin_ids
 
 
-@router.message(CommandStart())
+@router.message(Command("start"))
 async def start_command(message: Message, session: AsyncSession, i18n: I18nService) -> None:
     users = UserRepository(session)
     user = await users.get_or_create(
@@ -410,31 +360,8 @@ async def start_command(message: Message, session: AsyncSession, i18n: I18nServi
         first_name=message.from_user.first_name,
     )
     if not user.language:
-        await message.answer(
-            i18n.text("choose_language", SupportedLanguage.RU),
-            reply_markup=language_keyboard(),
-        )
-        return
+        await users.set_language(user, SupportedLanguage.EN)
     await _show_menu(message, SupportedLanguage(user.language), i18n)
-
-
-@router.callback_query(F.data == "menu:change_language")
-async def change_language(
-    callback: CallbackQuery,
-    session: AsyncSession,
-    i18n: I18nService,
-) -> None:
-    users = UserRepository(session)
-    await users.get_or_create(
-        telegram_id=callback.from_user.id,
-        username=callback.from_user.username,
-        first_name=callback.from_user.first_name,
-    )
-    await callback.message.edit_text(
-        i18n.text("choose_language", SupportedLanguage.RU),
-        reply_markup=language_keyboard(),
-    )
-    await callback.answer()
 
 
 @router.message(Command("admin"))
@@ -471,11 +398,10 @@ async def admin_panel(
     )
 
 
-@router.callback_query(F.data.startswith("lang:"))
-async def choose_language(
+@router.callback_query(F.data == "menu:reset_hidden_countries")
+async def confirm_reset_hidden_countries(
     callback: CallbackQuery,
     session: AsyncSession,
-    state: FSMContext,
     i18n: I18nService,
 ) -> None:
     users = UserRepository(session)
@@ -484,33 +410,18 @@ async def choose_language(
         username=callback.from_user.username,
         first_name=callback.from_user.first_name,
     )
-    language = SupportedLanguage(callback.data.split(":")[1])
-    await users.set_language(user, language)
-    await state.clear()
-    await callback.answer(i18n.text("language_changed", language))
-    await _show_menu(callback, language, i18n)
-
-
-@router.callback_query(F.data == "menu:settings")
-async def settings(callback: CallbackQuery, session: AsyncSession, i18n: I18nService) -> None:
-    users = UserRepository(session)
-    user = await users.get_or_create(
-        telegram_id=callback.from_user.id,
-        username=callback.from_user.username,
-        first_name=callback.from_user.first_name,
-    )
     language = SupportedLanguage(user.language)
+    hidden_count = await HiddenCountriesRepository(session).hidden_count(user.id)
     await callback.message.edit_text(
-        i18n.text("settings_text", language),
-        reply_markup=main_menu_keyboard(language, i18n),
+        i18n.text("reset_hidden_countries_confirm", language, count=str(hidden_count)),
+        reply_markup=reset_hidden_countries_confirmation_keyboard(language, i18n),
     )
     await callback.answer()
 
 
-@router.callback_query(F.data == "menu:continue_learning")
-async def continue_learning(
+@router.callback_query(F.data == "menu:reset_hidden_countries:yes")
+async def reset_hidden_countries(
     callback: CallbackQuery,
-    state: FSMContext,
     session: AsyncSession,
     i18n: I18nService,
 ) -> None:
@@ -521,30 +432,27 @@ async def continue_learning(
         first_name=callback.from_user.first_name,
     )
     language = SupportedLanguage(user.language)
-    quiz_runs = QuizRunRepository(session)
-    preferences = await quiz_runs.get_last_quiz_preferences(user.id)
-    if preferences is None:
-        await callback.answer(i18n.text("continue_learning_missing", language), show_alert=True)
-        return
+    hidden_repo = HiddenCountriesRepository(session)
+    reset_count = await hidden_repo.reset_hidden_countries(user.id)
+    await _show_menu(callback, language, i18n)
+    await callback.answer(
+        i18n.text("settings_hidden_countries_reset", language, count=str(reset_count))
+    )
 
-    progress_repo = LearningProgressRepository(session)
-    due_country_count = len(
-        await progress_repo.get_due_country_codes(
-            user.id,
-            preferences.categories,
-            preferences.countries_count,
-        )
+
+@router.callback_query(F.data == "menu:reset_hidden_countries:no")
+async def cancel_reset_hidden_countries(
+    callback: CallbackQuery,
+    session: AsyncSession,
+    i18n: I18nService,
+) -> None:
+    users = UserRepository(session)
+    user = await users.get_or_create(
+        telegram_id=callback.from_user.id,
+        username=callback.from_user.username,
+        first_name=callback.from_user.first_name,
     )
-    selected_mode = _resolved_continue_mode(preferences, due_country_count)
-    await state.set_state(QuizStates.setup)
-    await state.update_data(
-        selected_count=preferences.countries_count,
-        selected_mode=selected_mode.value,
-        selected_categories=[category.value for category in preferences.categories],
-        language=language.value,
-    )
-    await render_quiz_setup(callback, state, language, i18n, edit_existing=False)
-    await callback.answer(i18n.text("continue_learning_restored", language))
+    await _show_menu(callback, SupportedLanguage(user.language), i18n)
 
 
 @router.callback_query(F.data == "menu:back")
@@ -573,38 +481,6 @@ async def stats(callback: CallbackQuery, session: AsyncSession, i18n: I18nServic
         reply_markup=_stats_reply_markup(summary, language, i18n),
     )
     await callback.answer()
-
-
-@router.callback_query(F.data == "stats:review_setup")
-async def stats_review_setup(
-    callback: CallbackQuery,
-    state: FSMContext,
-    session: AsyncSession,
-    i18n: I18nService,
-) -> None:
-    users = UserRepository(session)
-    user = await users.get_or_create(
-        telegram_id=callback.from_user.id,
-        username=callback.from_user.username,
-        first_name=callback.from_user.first_name,
-    )
-    language = SupportedLanguage(user.language)
-    summary = await QuizRunRepository(session).get_user_summary(user.id)
-    review_size = _recommended_review_size(summary.due_countries)
-    due_categories = _due_review_categories(summary)
-    if review_size is None or not due_categories:
-        await callback.answer(i18n.text("stats_review_unavailable", language), show_alert=True)
-        return
-
-    await state.set_state(QuizStates.setup)
-    await state.update_data(
-        selected_count=review_size,
-        selected_mode=QuizMode.REVIEW.value,
-        selected_categories=due_categories,
-        language=language.value,
-    )
-    await render_quiz_setup(callback, state, language, i18n, edit_existing=False)
-
 
 @router.callback_query(F.data.startswith("admin:"))
 async def admin_actions(

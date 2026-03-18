@@ -30,6 +30,7 @@ class User(Base):
     )
     quiz_runs: Mapped[list["QuizRun"]] = relationship(back_populates="user")
     learning_progress: Mapped[list["UserLearningProgress"]] = relationship(back_populates="user")
+    hidden_countries: Mapped[list["HiddenCountry"]] = relationship(back_populates="user")
 
 
 class CountryCatalog(Base):
@@ -127,3 +128,17 @@ class UserLearningProgress(Base):
     next_review_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
     user: Mapped[User] = relationship(back_populates="learning_progress")
+
+
+class HiddenCountry(Base):
+    __tablename__ = "hidden_countries"
+    __table_args__ = (
+        UniqueConstraint("user_id", "country_code", name="uq_hidden_countries_user_country"),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
+    country_code: Mapped[str] = mapped_column(String(3))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+    user: Mapped[User] = relationship(back_populates="hidden_countries")

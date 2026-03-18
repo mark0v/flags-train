@@ -41,4 +41,9 @@ QUESTION_ORDER = [
     QuizCategory.CURRENCY,
 ]
 
-QUIZ_SIZES = [10, 25, 50]
+EXPOSED_QUIZ_CATEGORIES = [
+    QuizCategory.FLAG,
+    QuizCategory.CAPITAL,
+]
+
+QUIZ_SIZES = [10, 20, 30]

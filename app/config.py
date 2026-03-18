@@ -10,6 +10,7 @@ class Settings(BaseSettings):
 
     bot_token: str = Field(alias="BOT_TOKEN")
     app_env: str = Field(default="dev", alias="APP_ENV")
+    app_base_dir: Path | None = Field(default=None, alias="APP_BASE_DIR")
     database_url: str = Field(alias="DATABASE_URL")
     countries_data_path: Path = Field(alias="COUNTRIES_DATA_PATH")
     flags_dir: Path = Field(alias="FLAGS_DIR")
@@ -19,6 +20,8 @@ class Settings(BaseSettings):
 
     @property
     def base_dir(self) -> Path:
+        if self.app_base_dir:
+            return self.app_base_dir
         return Path(__file__).resolve().parent.parent
 
     def resolve_path(self, path: Path) -> Path:

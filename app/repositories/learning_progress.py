@@ -3,7 +3,7 @@ from datetime import UTC, datetime
 from sqlalchemy import case, distinct, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.constants import QUESTION_ORDER, QuizAnswerOutcome, QuizCategory
+from app.constants import EXPOSED_QUIZ_CATEGORIES, QUESTION_ORDER, QuizAnswerOutcome, QuizCategory
 from app.db.models import UserLearningProgress
 from app.services.quiz.engine import Question
 from app.services.srs import schedule_next_review
@@ -13,6 +13,11 @@ from app.services.statistics import CategoryProgressStat
 class LearningProgressRepository:
     def __init__(self, session: AsyncSession) -> None:
         self._session = session
+
+    @staticmethod
+    def _category_values(categories: list[QuizCategory] | None) -> list[str]:
+        active_categories = categories or list(EXPOSED_QUIZ_CATEGORIES)
+        return [category.value for category in active_categories]
 
     async def record_result(
         self,
@@ -69,7 +74,12 @@ class LearningProgressRepository:
         await self._session.flush()
         return progress
 
-    async def get_progress_counters(self, user_id: int) -> tuple[int, int]:
+    async def get_progress_counters(
+        self,
+        user_id: int,
+        categories: list[QuizCategory] | None = None,
+    ) -> tuple[int, int]:
+        category_values = self._category_values(categories)
         stmt = select(
             func.count(UserLearningProgress.id),
             func.coalesce(
@@ -85,7 +95,10 @@ class LearningProgressRepository:
                 ),
                 0,
             ),
-        ).where(UserLearningProgress.user_id == user_id)
+        ).where(
+            UserLearningProgress.user_id == user_id,
+            UserLearningProgress.category.in_(category_values),
+        )
         result = await self._session.execute(stmt)
         row = result.one()
         return int(row[0] or 0), int(row[1] or 0)
@@ -93,10 +106,12 @@ class LearningProgressRepository:
     async def get_category_breakdown(
         self,
         user_id: int,
+        categories: list[QuizCategory] | None = None,
         *,
         now: datetime | None = None,
     ) -> list[CategoryProgressStat]:
         current_time = now or datetime.now(UTC)
+        category_values = self._category_values(categories)
         stmt = (
             select(
                 UserLearningProgress.category,
@@ -130,7 +145,10 @@ class LearningProgressRepository:
                 func.coalesce(func.sum(UserLearningProgress.correct_answers), 0),
                 func.coalesce(func.sum(UserLearningProgress.attempts_count), 0),
             )
-            .where(UserLearningProgress.user_id == user_id)
+            .where(
+                UserLearningProgress.user_id == user_id,
+                UserLearningProgress.category.in_(category_values),
+            )
             .group_by(UserLearningProgress.category)
         )
         result = await self._session.execute(stmt)
@@ -181,12 +199,15 @@ class LearningProgressRepository:
     async def get_due_items_count(
         self,
         user_id: int,
+        categories: list[QuizCategory] | None = None,
         *,
         now: datetime | None = None,
     ) -> int:
         current_time = now or datetime.now(UTC)
+        category_values = self._category_values(categories)
         stmt = select(func.count(UserLearningProgress.id)).where(
             UserLearningProgress.user_id == user_id,
+            UserLearningProgress.category.in_(category_values),
             UserLearningProgress.next_review_at.is_not(None),
             UserLearningProgress.next_review_at <= current_time,
         )
@@ -196,12 +217,15 @@ class LearningProgressRepository:
     async def get_due_country_count(
         self,
         user_id: int,
+        categories: list[QuizCategory] | None = None,
         *,
         now: datetime | None = None,
     ) -> int:
         current_time = now or datetime.now(UTC)
+        category_values = self._category_values(categories)
         stmt = select(func.count(distinct(UserLearningProgress.country_code))).where(
             UserLearningProgress.user_id == user_id,
+            UserLearningProgress.category.in_(category_values),
             UserLearningProgress.next_review_at.is_not(None),
             UserLearningProgress.next_review_at <= current_time,
         )

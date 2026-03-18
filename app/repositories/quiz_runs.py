@@ -3,11 +3,17 @@ from datetime import UTC, datetime, timedelta
 from sqlalchemy import case, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.constants import QuizAnswerOutcome, QuizCategory, QuizRunStatus, SupportedLanguage
+from app.constants import (
+    EXPOSED_QUIZ_CATEGORIES,
+    QuizAnswerOutcome,
+    QuizCategory,
+    QuizRunStatus,
+    SupportedLanguage,
+)
 from app.db.models import QuizAnswer, QuizRun
 from app.repositories.learning_progress import LearningProgressRepository
 from app.services.quiz.engine import Question
-from app.services.statistics import LastQuizPreferences, UserStatsSummary
+from app.services.statistics import UserStatsSummary
 
 
 class QuizRunRepository:
@@ -120,10 +126,19 @@ class QuizRunRepository:
         result = await self._session.execute(stmt)
         row = result.one()
         progress_repo = LearningProgressRepository(self._session)
-        tracked_items, mastered_items = await progress_repo.get_progress_counters(user_id)
-        due_items = await progress_repo.get_due_items_count(user_id)
-        due_countries = await progress_repo.get_due_country_count(user_id)
-        category_breakdown = await progress_repo.get_category_breakdown(user_id)
+        tracked_items, mastered_items = await progress_repo.get_progress_counters(
+            user_id,
+            EXPOSED_QUIZ_CATEGORIES,
+        )
+        due_items = await progress_repo.get_due_items_count(user_id, EXPOSED_QUIZ_CATEGORIES)
+        due_countries = await progress_repo.get_due_country_count(
+            user_id,
+            EXPOSED_QUIZ_CATEGORIES,
+        )
+        category_breakdown = await progress_repo.get_category_breakdown(
+            user_id,
+            EXPOSED_QUIZ_CATEGORIES,
+        )
         return UserStatsSummary(
             quizzes_started=row[0] or 0,
             quizzes_completed=row[1] or 0,
@@ -139,26 +154,4 @@ class QuizRunRepository:
             due_items=due_items,
             due_countries=due_countries,
             category_breakdown=category_breakdown,
-        )
-
-    async def get_last_quiz_preferences(self, user_id: int) -> LastQuizPreferences | None:
-        stmt = (
-            select(QuizRun.countries_count, QuizRun.categories_csv)
-            .where(QuizRun.user_id == user_id)
-            .order_by(QuizRun.started_at.desc(), QuizRun.id.desc())
-            .limit(1)
-        )
-        result = await self._session.execute(stmt)
-        row = result.first()
-        if row is None:
-            return None
-
-        categories = [
-            QuizCategory(value)
-            for value in row[1].split(",")
-            if value
-        ]
-        return LastQuizPreferences(
-            countries_count=int(row[0]),
-            categories=categories,
         )

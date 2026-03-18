@@ -40,6 +40,7 @@ class QuizSession:
     wrong_attempts_by_question: dict[str, int] = field(default_factory=dict)
     resolved_questions: int = 0
     correct_answers: int = 0
+    skipped_answers: int = 0
     mistakes: int = 0
 
     def current_question(self) -> Question | None:
@@ -68,6 +69,12 @@ class QuizSession:
         self.resolved_questions += 1
         return QuestionResolution(question, resolved=True, outcome="incorrect")
 
+    def skip_current(self) -> QuestionResolution:
+        question = self.questions.popleft()
+        self.resolved_questions += 1
+        self.skipped_answers += 1
+        return QuestionResolution(question, resolved=True, outcome="skipped")
+
     def progress_text(self) -> str:
         if self.total_questions == 0:
             return "0/0"
@@ -80,6 +87,16 @@ class QuizSession:
 
     def wrong_attempts(self, question_id: str) -> int:
         return self.wrong_attempts_by_question.get(question_id, 0)
+
+    def remove_country(self, country_code: str) -> int:
+        remaining_questions = [
+            question for question in self.questions if question.country_code != country_code
+        ]
+        removed_count = len(self.questions) - len(remaining_questions)
+        if removed_count:
+            self.questions = deque(remaining_questions)
+            self.total_questions -= removed_count
+        return removed_count
 
 
 class QuizEngine:

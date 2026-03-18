@@ -36,6 +36,11 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "en": "Settings",
         "de": "Einstellungen",
     },
+    "menu_reset_hidden_countries": {
+        "ru": "Reset hidden countries",
+        "en": "Reset hidden countries",
+        "de": "Reset hidden countries",
+    },
     "menu_change_language": {
         "ru": "Сменить язык",
         "en": "Change language",
@@ -592,7 +597,7 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
     },
     "quiz_choose_count": {
         "ru": "Количество стран",
-        "en": "Number of countries",
+        "en": "Number of questions",
         "de": "Anzahl der Länder",
     },
     "quiz_choose_mode": {
@@ -675,8 +680,43 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
     },
     "settings_text": {
         "ru": "Настройки: язык интерфейса можно менять в любой момент.",
-        "en": "Settings: you can change the interface language any time.",
+        "en": "Hidden countries: <b>{hidden_count}</b>",
         "de": "Einstellungen: Die Sprache kann jederzeit geändert werden.",
+    },
+    "settings_reset_hidden_countries": {
+        "ru": "Reset hidden countries",
+        "en": "Reset hidden countries",
+        "de": "Reset hidden countries",
+    },
+    "settings_hidden_countries_reset": {
+        "ru": "Reset: {count}",
+        "en": "Reset: {count}",
+        "de": "Reset: {count}",
+    },
+    "reset_hidden_countries_confirm": {
+        "ru": "Reset {count} hidden countries?",
+        "en": "Reset {count} hidden countries?",
+        "de": "Reset {count} hidden countries?",
+    },
+    "quiz_hide_country": {
+        "ru": "Don't repeat this country",
+        "en": "Don't repeat this country",
+        "de": "Don't repeat this country",
+    },
+    "quiz_hide_country_done": {
+        "ru": "Country hidden.",
+        "en": "Country hidden.",
+        "de": "Country hidden.",
+    },
+    "quiz_hide_country_limit": {
+        "ru": "At least 30 countries must remain.",
+        "en": "At least 30 countries must remain.",
+        "de": "At least 30 countries must remain.",
+    },
+    "quiz_not_enough_available": {
+        "ru": "Not enough available countries.",
+        "en": "Not enough available countries.",
+        "de": "Not enough available countries.",
     },
 }
 

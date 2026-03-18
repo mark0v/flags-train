@@ -2,7 +2,12 @@ from datetime import UTC, datetime, timedelta
 
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
-from app.constants import QuizAnswerOutcome, QuizCategory, QuizRunStatus, SupportedLanguage
+from app.constants import (
+    QuizAnswerOutcome,
+    QuizCategory,
+    QuizRunStatus,
+    SupportedLanguage,
+)
 from app.db.base import Base
 from app.repositories.admin import AdminRepository
 from app.repositories.learning_progress import LearningProgressRepository
