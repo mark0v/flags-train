@@ -149,6 +149,81 @@ If that appears, inspect the menu rendering path first.
 - number of admin IDs
 - final runtime preflight report
 
+## Production Deploy
+
+The project has been verified on a clean Ubuntu VM with Docker Engine, Docker Compose, and the
+application stack running through `docker-compose.yml`.
+
+Recommended production setup notes:
+
+- keep runtime secrets in `.env.docker`
+- restrict the env file permissions, for example `chmod 600 .env.docker`
+- do not run the bot locally and on the server with the same `BOT_TOKEN` at the same time
+- keep the system PostgreSQL service disabled if Docker already exposes `5432` for the `db`
+  container
+
+Recommended first deploy on a fresh Ubuntu VM:
+
+```bash
+docker compose up -d db
+docker compose --profile ops run --rm migrate
+docker compose --profile ops run --rm sync
+docker compose --profile ops run --rm preflight
+docker compose up -d --build bot
+```
+
+Useful verification commands on the server:
+
+```bash
+docker compose ps
+docker compose logs --tail=100 bot
+docker compose logs --tail=100 db
+```
+
+Healthy startup indicators:
+
+- `Overall: READY`
+- `Dataset: OK`
+- `Database: OK`
+- `Migrations: OK`
+- `Bot polling started`
+- `Run polling for bot @...`
+
+If the bot was previously running on another machine with the same token, stop that older instance
+before starting the server copy.
+
+## Reboot Behavior
+
+The Docker runtime is expected to recover automatically after a normal VM reboot:
+
+- `db` uses `restart: unless-stopped`
+- `bot` uses `restart: unless-stopped`
+
+This means both containers should come back automatically after the host restarts, as long as they
+were not intentionally stopped beforehand with Docker commands such as `docker stop` or
+`docker compose stop`.
+
+After a reboot, verify with:
+
+```bash
+docker compose ps
+docker compose logs --tail=100 bot
+```
+
+## Updating an Existing VM Deploy
+
+When updating a running VM deployment, use this order:
+
+```bash
+docker compose --profile ops run --rm migrate
+docker compose --profile ops run --rm sync
+docker compose --profile ops run --rm preflight
+docker compose up -d --build bot
+```
+
+This keeps schema changes explicit and avoids hiding database upgrades inside the application
+startup path.
+
 ## Data Pipeline
 
 The `scripts/fetch_countries_data.py` script:
